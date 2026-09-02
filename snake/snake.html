@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Snake PPO - live training</title>
-<style>
-  :root { --cell: 20px; }
-  body { margin: 0; background: #0d1117; color: #e6edf3; font-family: Arial, sans-serif; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Snake PPO — Live Training</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+  body { margin: 0; background: #0d1117; color: #e6edf3; font-family: 'Inter', -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
   #stage { min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 18px; box-sizing: border-box; }
   #title { font-size: 18px; font-weight: bold; margin: 0 0 4px; }
   #sub { font-size: 12px; color: #8b949e; margin: 0 0 14px; text-align: center; }
@@ -21,18 +23,22 @@
   .stat b { color:#58a6ff; }
   #status { margin-top: 12px; font-size: 12px; color:#8b949e; min-height:16px; text-align:center; }
   #err { margin-top: 12px; color:#f85149; white-space:pre-wrap; max-width:600px; font-size:12px; }
+  #die { margin-top: 10px; font-weight:bold; color:#f85149; height:18px; opacity:0; transition: opacity 0.25s; }
+  #die.flash { opacity: 1; }
 </style>
 </head>
 <body>
 <div id="stage">
   <p id="title">Snake — PPO training live in your browser</p>
-  <p id="sub">Running the original multi-agent PPO algorithm (ported to numpy) via Pyodide. Watch it learn in real time.</p>
+  <p id="sub">Running the original multi-agent PPO algorithm (ported to numpy) via Pyodide. Watch the snake move, learn, and die in real time.</p>
   <div id="boardWrap"><div id="board"></div></div>
+  <div id="die">&#10005; DIED</div>
   <div id="stats">
-    <span class="stat">Update <b id="st-update">0</b></span>
+    <span class="stat">Score <b id="st-score">1</b></span>
     <span class="stat">Eps <b id="st-episodes">0</b></span>
     <span class="stat">Best Reward <b id="st-best">0</b></span>
-    <span class="stat">Score <b id="st-score">1</b></span>
+    <span class="stat">Update <b id="st-update">0</b></span>
+    <span class="stat">Steps <b id="st-steps">0</b></span>
     <span class="stat">Entropy <b id="st-entropy">0.05</b></span>
   </div>
   <div id="status">Loading Python… (first load downloads the ~10&nbsp;MB Pyodide runtime)</div>
@@ -45,6 +51,7 @@
   const boardEl = document.getElementById('board');
   const statusEl = document.getElementById('status');
   const errEl = document.getElementById('err');
+  const dieEl = document.getElementById('die');
 
   function setStat(id, v) { document.getElementById(id).textContent = v; }
 
@@ -69,11 +76,17 @@
     const snake = snap.snake;
     snake.forEach(([x, y], k) => set(x, y, k === 0 ? 'head' : 'body'));
     set(snap.food[0], snap.food[1], 'food');
-    setStat('st-update', snap.update);
+    setStat('st-score', snap.score);
     setStat('st-episodes', snap.episodes);
     setStat('st-best', snap.best_reward);
-    setStat('st-score', snap.score);
+    setStat('st-update', snap.update);
+    setStat('st-steps', snap.steps);
     setStat('st-entropy', Number(snap.entropy).toFixed(4));
+    if (snap.died) {
+      dieEl.classList.remove('flash');
+      void dieEl.offsetWidth;
+      dieEl.classList.add('flash');
+    }
   }
 
   async function main() {
@@ -86,24 +99,26 @@
       pyodide.runPython(src);
 
       const initCode = `
-_trainer = Trainer(SnakeEnv(${GRID}, ${GRID}))
+import numpy as np, random
+random.seed(42); np.random.seed(42)
+_tr = BrowserTrainer(SnakeEnv(${GRID}, ${GRID}), rollout_steps=300, ppo_reps=5)
 `;
       pyodide.runPython(initCode);
 
       statusEl.textContent = 'Training…';
-      const runOne = pyodide.runPython.bind(pyodide, `_trainer.one_update()`);
-      let running = true;
+      const doStep = pyodide.runPython.bind(pyodide, `_tr.step()`);
+      const idx = (o) => (o && o.toJs ? o.toJs({ dict_converter: Object.fromEntries }) : o);
 
       function tick() {
-        if (!running) return;
-        const snapJs = runOne();
-        if (!snapJs || (snapJs.toJs && snapJs.toJs().done)) {
-          statusEl.textContent = 'Training complete ✓';
+        try {
+          const snap = idx(doStep());
+          if (!snap) { statusEl.textContent = 'Training complete ✓'; return; }
+          render(snap);
+        } catch (e) {
+          statusEl.textContent = 'Error: ' + (e && e.message ? e.message : e);
           return;
         }
-        const snap = snapJs.toJs ? snapJs.toJs({ dict_converter: Object.fromEntries }) : snapJs;
-        render(snap);
-        setTimeout(tick, 30);
+        setTimeout(tick, 40);
       }
       tick();
     } catch (e) {

@@ -1,12 +1,28 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%23111'/%3E%3Crect x='20' y='20' width='24' height='60' fill='%2358a6ff'/%3E%3Crect x='56' y='20' width='24' height='60' fill='%23f85149'/%3E%3C/svg%3E">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { display: flex; justify-content: center; min-height: 100vh; background: #111; overflow: auto; }
+    body { display: flex; justify-content: center; min-height: 100vh; background: #111; overflow: auto; font-family: 'Inter', -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+    .page-head {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      margin-top: 18px;
+      color: #e6edf3;
+      z-index: 10;
+    }
+    .page-head h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
+    .page-head p { font-size: 12px; color: #8b949e; margin-top: 2px; }
 
     .carousel-wrapper {
       position: relative;
@@ -67,7 +83,7 @@
       justify-content: center;
       align-items: center;
       color: #888;
-      font-family: Arial, sans-serif;
+      font-family: 'Inter', -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       font-size: 13px;
     }
 
@@ -80,13 +96,14 @@
     }
 
     .box.expanded .details {
-      max-height: 320px;
+      max-height: 460px;
+      overflow-y: auto;
     }
 
     .details-inner {
       padding: 12px;
       color: #ccc;
-      font-family: Arial, sans-serif;
+      font-family: 'Inter', -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     }
 
     .details-inner h3 {
@@ -133,6 +150,26 @@
 
     .rel-stats { font-size: 11px; color: #999; margin-top: 3px; }
     .rel-stats .dim { color: #666; }
+
+    .rel-playlist { cursor: default; background: rgba(88,166,255,0.08); border: 1px dashed #58a6ff; border-radius: 6px; }
+    .rel-playlist-badge {
+      flex-shrink: 0;
+      font-size: 10px;
+      font-weight: 700;
+      color: #0d1117;
+      background: #58a6ff;
+      border-radius: 4px;
+      padding: 3px 6px;
+      letter-spacing: 0.5px;
+    }
+    .rel-group-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: #8b949e;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin: 8px 2px 0;
+    }
 
     .fade-left,
     .fade-right {
@@ -197,7 +234,7 @@
 
     #chev-wrap { width: 100%; text-align: center; }
     #chev-container { width: 100%; height: 640px; background: #222; }
-    #chev-loading { color: #bbb; font-family: Arial, sans-serif; padding: 20px; }
+    #chev-loading { color: #bbb; font-family: 'Inter', -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; padding: 20px; }
     #chev-container canvas { max-width: 100% !important; }
 
     .chess-slot .chess-play {
@@ -209,7 +246,7 @@
       justify-content: center;
       gap: 12px;
       color: #eee;
-      font-family: Arial, sans-serif;
+      font-family: 'Inter', -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('chess/thumbnail.png') center/cover no-repeat;
     }
 
@@ -246,7 +283,7 @@
       background: #1d1d1d;
       border: 1px solid #333;
       color: #ccc;
-      font-family: Arial, sans-serif;
+      font-family: 'Inter', -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       min-height: 200px;
     }
 
@@ -264,6 +301,10 @@
   </style>
 </head>
 <body>
+  <div class="page-head">
+    <h1>NullTronPrime</h1>
+    <p>Minecraft mods, snake AI, chess engine &amp; more</p>
+  </div>
   <div class="carousel-wrapper" id="carousel">
     <div class="carousel-viewport">
       <div class="carousel-track" id="track">
@@ -403,6 +444,94 @@
     const fadeL = document.getElementById('fadeL');
     const fadeR = document.getElementById('fadeR');
 
+    const RELATED_COUNTS = {
+      '7bxRdLClzxI': { views: 96494, likes: 3318 },
+      '799KYQQbFII': { views: 4804, likes: 90 },
+      'zKJDlRjqNDo': { views: 490, likes: 4 },
+      'qB-Ry2M_v4o': { views: 172, likes: 0 },
+      'B4tmVOM8ocU': { views: 70, likes: 1 },
+      'jzIaM13gx50': { views: 50, likes: 0 },
+      'DKWE6gy-vdc': { views: 44, likes: 1 },
+      'LI5JkZG17OQ': { views: 35, likes: 0 },
+      'bSl9wtmP9uQ': { views: 46, likes: 1 },
+      'WcvWJNz2o_U': { views: 26, likes: 0 },
+      'uIdhBKO4GsA': { views: 33, likes: 0 },
+      '5vGjGWCzlEs': { views: 58, likes: 1 },
+      'VxM9ib83T8s': { views: 296, likes: 9 },
+      'vcl3qRJMMsc': { views: 2828, likes: 62 },
+      '89mRuQX4TTs': { views: 1293, likes: 38 },
+      'NS6CfEI4MR4': { views: 204, likes: 5 },
+      'jDOaDcaAiuE': { views: 328, likes: 10 },
+      'w8MAHWvhNpg': { views: 228262, likes: 6505 },
+      '5RnzghFDqww': { views: 66973, likes: 1787 },
+      '1foo4JKZPBE': { views: 73816, likes: 3017 },
+      '6mmuLgR6srY': { views: 5664, likes: 205 },
+      'R2_z213M8mU': { views: 20069, likes: 599 },
+      'AkFfycZuoS8': { views: 3998, likes: 133 },
+      'V6MoJcBu8yQ': { views: 80, likes: 4 },
+      '3KJ8B8r_8qA': { views: 16355, likes: 779 },
+      'LNGwQgUjL7M': { views: 70192, likes: 2348 },
+      'Yhg76TILLTA': { views: 10560, likes: 432 },
+      'ePcBLtDu7vM': { views: 82170, likes: 3018 }
+    };
+
+    const PLAYLIST = {
+      id: 'PLPuNYOmdRO8w',
+      count: 10, views: 1024, likes: 8,
+      videos: ['zKJDlRjqNDo','qB-Ry2M_v4o','B4tmVOM8ocU','jzIaM13gx50','DKWE6gy-vdc','LI5JkZG17OQ','bSl9wtmP9uQ','WcvWJNz2o_U','uIdhBKO4GsA','5vGjGWCzlEs']
+    };
+    const VIDEO1_LINKS = ['VxM9ib83T8s','vcl3qRJMMsc','89mRuQX4TTs','NS6CfEI4MR4','jDOaDcaAiuE'];
+    const VIDEO2_LINKS = ['w8MAHWvhNpg','5RnzghFDqww','1foo4JKZPBE','6mmuLgR6srY','R2_z213M8mU','AkFfycZuoS8','V6MoJcBu8yQ','3KJ8B8r_8qA','LNGwQgUjL7M','Yhg76TILLTA','ePcBLtDu7vM'];
+
+    function appendRel(container, yid) {
+      const a = document.createElement('a');
+      a.className = 'rel-item';
+      a.setAttribute('data-yid', yid);
+      a.href = 'https://www.youtube.com/watch?v=' + yid;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      const img = document.createElement('img');
+      img.className = 'rel-thumb';
+      img.alt = '';
+      img.src = 'https://i.ytimg.com/vi/' + yid + '/hqdefault.jpg';
+      const meta = document.createElement('div');
+      meta.className = 'rel-meta';
+      const t = document.createElement('div');
+      t.className = 'rel-title';
+      t.textContent = 'Loading...';
+      const s = document.createElement('div');
+      s.className = 'rel-stats';
+      s.setAttribute('data-yid', yid);
+      s.innerHTML = '&nbsp;';
+      meta.appendChild(t);
+      meta.appendChild(s);
+      a.appendChild(img);
+      a.appendChild(meta);
+      container.appendChild(a);
+    }
+
+    function buildRelated() {
+      const rel1 = orig[0].querySelector('.related');
+      const pl = document.createElement('div');
+      pl.className = 'rel-item rel-playlist';
+      pl.innerHTML =
+        '<div class="rel-playlist-badge">&#9654; Playlist</div>' +
+        '<div class="rel-meta">' +
+          '<div class="rel-title">' + PLAYLIST.count + ' videos, ' + fmt(PLAYLIST.views) + ' combined views, ' + fmt(PLAYLIST.likes) + ' combined likes</div>' +
+          '<div class="rel-stats"><a class="dim" href="https://www.youtube.com/playlist?list=' + PLAYLIST.id + '" target="_blank" rel="noopener">Open full playlist</a></div>' +
+        '</div>';
+      rel1.appendChild(pl);
+      PLAYLIST.videos.forEach(y => appendRel(rel1, y));
+      const g1 = document.createElement('div');
+      g1.className = 'rel-group-label';
+      g1.textContent = 'More from this creator';
+      rel1.appendChild(g1);
+      VIDEO1_LINKS.forEach(y => appendRel(rel1, y));
+      const related2 = orig[1].querySelector('.related');
+      VIDEO2_LINKS.forEach(y => appendRel(related2, y));
+    }
+    buildRelated();
+
     orig.slice(0, 3).forEach(b => track.appendChild(b.cloneNode(true)));
     orig.slice(-3).forEach(b => track.insertBefore(b.cloneNode(true), track.firstChild));
 
@@ -488,14 +617,17 @@
       script.src = 'https://cjrtnc.leaningtech.com/4.3/loader.js';
       script.onload = async () => {
         try {
-          const base = new URL('.', window.location.href).href;
-          await window.cheerpjInit({ overrideDocumentBase: base });
+          await window.cheerpjInit({ version: 17, status: "splash" });
+          const resp = await fetch('chess/chess-minimax.jar');
+          const buf = await resp.arrayBuffer();
+          window.cheerpOSAddStringFile('/str/chess-minimax.jar', new Uint8Array(buf));
           window.cheerpjCreateDisplay(-1, -1, document.getElementById('chev-container'));
           document.getElementById('chev-loading').style.display = 'none';
-          await window.cheerpjRunMain('ChessGame', '/app/chess/chess-minimax.jar');
+          await window.cheerpjRunMain('ChessGame', '/str/chess-minimax.jar');
         } catch (err) {
+          console.error('CHEERPJ_BOOT_ERROR', err);
           document.getElementById('chev-loading').textContent =
-            'Failed to start Java engine: ' + err.message;
+            'Failed to start Java engine: ' + (err && (err.message || err.stack || err));
         }
       };
       document.head.appendChild(script);
@@ -531,14 +663,9 @@
       const ids = rows.map(r => r.getAttribute('data-yid'));
       if (!ids.length) return;
 
-      const counts = {
-        '7bxRdLClzxI': { views: 96494, likes: 3318 },
-        '799KYQQbFII': { views: 4804, likes: 90 }
-      };
-
       for (const row of rows) {
         const id = row.getAttribute('data-yid');
-        const c = counts[id] || {};
+        const c = RELATED_COUNTS[id] || {};
         try {
           const res = await fetch('https://noembed.com/embed?url=' + encodeURIComponent('https://www.youtube.com/watch?v=' + id));
           const j = await res.json();

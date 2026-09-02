@@ -412,3 +412,108 @@ def train(env, callback):
     """Headless convenience: runs the full schedule, calling callback(snapshot)
     after every update. Returns the best episode reward."""
     return Trainer(env).train(callback)
+
+
+# ------------------------ Step-by-step trainer (browser animation) ------------------------ #
+class BrowserTrainer:
+    """Drives the exact same algorithm one environment step at a time, so a
+    browser page can render the snake moving and dying between steps (like the
+    original pygame trainer). Every `rollout_steps` steps it runs the PPO pass."""
+
+    def __init__(self, env, rollout_steps=CONFIG['rollout_steps'], ppo_reps=ppo_epochs):
+        self.env = env
+        self.rollout_steps = rollout_steps
+        self.ppo_reps = ppo_reps
+        self.rng = np.random.default_rng(seed)
+        self.agent = PPOAgent(state_dim, action_dim)
+        self.buffer = RolloutBuffer()
+        self.state = env.reset()
+        self.steps_this_rollout = 0
+        self.update = 0
+        self.ep_reward = 0.0
+        self.ep_len = 0
+        self.episodes = 0
+        self.best = -float('inf')
+        self.total_steps = 0
+        self.clip_epsilon = initial_clip_epsilon
+        self.last_entropy = initial_entropy_coef
+
+    def _snapshot(self, died):
+        return {
+            'snake': [[int(x), int(y)] for x, y in self.env.snake],
+            'food': [int(self.env.food[0]), int(self.env.food[1])],
+            'direction': self.env.direction,
+            'score': len(self.env.snake),
+            'died': died,
+            'episodes': self.episodes,
+            'best_reward': round(self.best, 2),
+            'update': self.update,
+            'steps': self.total_steps,
+            'entropy': round(self.last_entropy, 4),
+        }
+
+    def step(self):
+        probs, value = self.agent.forward(self.state)
+        action = self.rng.choice(action_dim, p=probs)
+        log_prob = float(np.log(probs[action] + 1e-10))
+
+        next_state, reward, done, _ = self.env.step(int(action))
+        self.ep_reward += reward
+        self.ep_len += 1
+
+        self.buffer.states.append(self.state)
+        self.buffer.actions.append(int(action))
+        self.buffer.log_probs.append(log_prob)
+        self.buffer.rewards.append(reward)
+        self.buffer.dones.append(done)
+        self.buffer.values.append(value)
+
+        self.state = next_state
+        self.steps_this_rollout += 1
+        self.total_steps += 1
+
+        died = False
+        if done or len(self.env.snake) >= self.env.grid_w * self.env.grid_h:
+            died = True
+            self.episodes += 1
+            if self.ep_reward > self.best:
+                self.best = self.ep_reward
+            self.state = self.env.reset()
+            self.ep_reward = 0.0
+            self.ep_len = 0
+
+        if self.steps_this_rollout >= self.rollout_steps:
+            self._policy_update()
+            self.steps_this_rollout = 0
+            self.buffer.clear()
+
+        return self._snapshot(died)
+
+    def _policy_update(self):
+        entropy_coef = max(initial_entropy_coef * (entropy_decay ** self.update), min_entropy_coef)
+        self.last_entropy = entropy_coef
+        if self.update % 100 == 0 and self.update > 0:
+            self.clip_epsilon = max(self.clip_epsilon * 0.95, min_clip_epsilon)
+
+        states_a = np.array(self.buffer.states, dtype=np.float64)
+        actions_a = np.array(self.buffer.actions, dtype=np.int64)
+        old_logp = np.array(self.buffer.log_probs, dtype=np.float64)
+
+        returns, advantages = compute_gae(self.buffer.rewards, self.buffer.values,
+                                          self.buffer.dones, gamma, gae_lambda)
+        returns = np.array(returns)
+        adv = np.array(advantages)
+        adv = (adv - adv.mean()) / (adv.std() + 1e-8)
+
+        dataset_size = states_a.shape[0]
+        for _epoch in range(self.ppo_reps):
+            permutation = np.random.permutation(dataset_size)
+            for i in range(0, dataset_size, batch_size):
+                indices = permutation[i:i + batch_size]
+                grads = _backward_ppo(self.agent, states_a[indices], actions_a[indices],
+                                      old_logp[indices], returns[indices], adv[indices],
+                                      self.clip_epsilon, entropy_coef)
+                self.agent.adam_step(grads)
+
+        self.update += 1
+
