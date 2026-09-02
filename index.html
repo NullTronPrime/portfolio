@@ -488,7 +488,8 @@
       script.src = 'https://cjrtnc.leaningtech.com/4.3/loader.js';
       script.onload = async () => {
         try {
-          await window.cheerpjInit();
+          const base = new URL('.', window.location.href).href;
+          await window.cheerpjInit({ overrideDocumentBase: base });
           window.cheerpjCreateDisplay(-1, -1, document.getElementById('chev-container'));
           document.getElementById('chev-loading').style.display = 'none';
           await window.cheerpjRunMain('ChessGame', '/app/chess/chess-minimax.jar');
