@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { display: flex; justify-content: center; min-height: 100vh; background: #111; overflow: auto; }
+
+    .carousel-wrapper {
+      position: relative;
+      width: 80vw;
+      max-width: 1000px;
+      margin: 60px 0 100px;
+    }
+
+    .carousel-viewport {
+      overflow-x: clip;
+      overflow-y: visible;
+      padding-top: 20px;
+    }
+
+    .carousel-track {
+      display: flex;
+      align-items: flex-start;
+      gap: 30px;
+      will-change: transform;
+    }
+
+    .box {
+      flex: 0 0 calc(100% / 3);
+      background: #333;
+      border: 1px solid #555;
+      cursor: pointer;
+      position: relative;
+      z-index: 1;
+      transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+
+    .box:hover {
+      box-shadow: 0 0 18px rgba(255,255,255,0.2);
+      border-color: #fff;
+      z-index: 5;
+    }
+
+    .box .video {
+      aspect-ratio: 16 / 9;
+      background: #222;
+      width: 100%;
+    }
+
+    .box .video iframe,
+    .box .video video,
+    .box .video img {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+      pointer-events: none;
+    }
+
+    .box .placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #888;
+      font-family: Arial, sans-serif;
+      font-size: 13px;
+    }
+
+    .box .details {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease;
+      background: #2a2a2a;
+      border-top: 1px solid #444;
+    }
+
+    .box.expanded .details {
+      max-height: 320px;
+    }
+
+    .details-inner {
+      padding: 12px;
+      color: #ccc;
+      font-family: Arial, sans-serif;
+    }
+
+    .details-inner h3 {
+      font-size: 14px;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .stats { display: flex; gap: 16px; font-size: 12px; color: #aaa; margin-bottom: 10px; }
+
+    .related { display: flex; flex-direction: column; gap: 8px; }
+
+    .rel-item {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      text-decoration: none;
+      color: inherit;
+      padding: 6px;
+      border-radius: 4px;
+    }
+
+    .rel-item:hover { background: #383838; }
+
+    .rel-thumb {
+      width: 110px;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      background: #222;
+      flex-shrink: 0;
+    }
+
+    .rel-meta { min-width: 0; }
+
+    .rel-title {
+      font-size: 12px;
+      color: #ddd;
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .rel-stats { font-size: 11px; color: #999; margin-top: 3px; }
+    .rel-stats .dim { color: #666; }
+
+    .fade-left,
+    .fade-right {
+      position: absolute;
+      width: 80px;
+      pointer-events: none;
+      z-index: 6;
+    }
+    .fade-left { left: -20px; background: linear-gradient(to right, #111 0%, transparent 100%); }
+    .fade-right { right: -20px; background: linear-gradient(to left, #111 0%, transparent 100%); }
+
+    .btn {
+      position: absolute;
+      transform: translateY(-50%);
+      z-index: 7;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 32px;
+      cursor: pointer;
+      padding: 10px;
+      line-height: 1;
+    }
+    .btn-prev { left: -40px; }
+    .btn-next { right: -40px; }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      z-index: 10;
+      display: flex;
+      overflow-y: auto;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+    .overlay.active { opacity: 1; pointer-events: auto; }
+
+    .overlay-inner {
+      margin: auto;
+      padding: 60px 40px 80px;
+      width: 72vw;
+      max-width: 980px;
+    }
+
+    .overlay .active-box {
+      aspect-ratio: 16 / 9;
+      background: #333;
+      border: 1px solid #666;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .overlay .active-box.chess {
+      aspect-ratio: auto;
+      min-height: 720px;
+      overflow: visible;
+    }
+
+    #chev-wrap { width: 100%; text-align: center; }
+    #chev-container { width: 100%; height: 640px; background: #222; }
+    #chev-loading { color: #bbb; font-family: Arial, sans-serif; padding: 20px; }
+    #chev-container canvas { max-width: 100% !important; }
+
+    .chess-slot .chess-play {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: #eee;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('chess/thumbnail.png') center/cover no-repeat;
+    }
+
+    .play-ico {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      padding-left: 4px;
+      border: 1px solid #999;
+    }
+
+    .snake-play {
+      background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.55)),
+        repeating-conic-gradient(#1f6feb 0% 25%, #0d1117 0% 50%) 0 0 / 20px 20px !important;
+    }
+
+    .overlay .active-box iframe,
+    .overlay .active-box video,
+    .overlay .active-box img {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    .overlay-content {
+      margin-top: 20px;
+      padding: 24px;
+      background: #1d1d1d;
+      border: 1px solid #333;
+      color: #ccc;
+      font-family: Arial, sans-serif;
+      min-height: 200px;
+    }
+
+    .overlay-close {
+      position: fixed;
+      top: 30px;
+      right: 40px;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 36px;
+      cursor: pointer;
+      z-index: 11;
+    }
+  </style>
+</head>
+<body>
+  <div class="carousel-wrapper" id="carousel">
+    <div class="carousel-viewport">
+      <div class="carousel-track" id="track">
+        <div class="box">
+          <div class="video" data-embed=""><div class="placeholder">Video 1</div></div>
+          <div class="details">
+            <div class="details-inner">
+              <h3>Video 1 title</h3>
+              <div class="stats">
+                <span>0 views</span>
+                <span>0 likes</span>
+              </div>
+              <div class="related">
+                <a class="rel-item" data-yid="7bxRdLClzxI" href="https://www.youtube.com/watch?v=7bxRdLClzxI" target="_blank" rel="noopener">
+                  <img class="rel-thumb" src="https://i.ytimg.com/vi/7bxRdLClzxI/hqdefault.jpg" alt="">
+                  <div class="rel-meta">
+                    <div class="rel-title">Loading...</div>
+                    <div class="rel-stats" data-yid="7bxRdLClzxI">&nbsp;</div>
+                  </div>
+                </a>
+                <a class="rel-item" data-yid="799KYQQbFII" href="https://www.youtube.com/watch?v=799KYQQbFII" target="_blank" rel="noopener">
+                  <img class="rel-thumb" src="https://i.ytimg.com/vi/799KYQQbFII/hqdefault.jpg" alt="">
+                  <div class="rel-meta">
+                    <div class="rel-title">Loading...</div>
+                    <div class="rel-stats" data-yid="799KYQQbFII">&nbsp;</div>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="box">
+          <div class="video" data-embed=""><div class="placeholder">Video 2</div></div>
+          <div class="details">
+            <div class="details-inner">
+              <h3>Video 2 title</h3>
+              <div class="stats">
+                <span>0 views</span>
+                <span>0 likes</span>
+              </div>
+              <div class="related"></div>
+            </div>
+          </div>
+        </div>
+        <div class="box">
+          <div class="video" data-embed=""><div class="placeholder">Video 3</div></div>
+          <div class="details">
+            <div class="details-inner">
+              <h3>Video 3 title</h3>
+              <div class="stats">
+                <span>0 views</span>
+                <span>0 likes</span>
+              </div>
+              <div class="related"></div>
+            </div>
+          </div>
+        </div>
+        <div class="box">
+          <div class="video" data-embed="snake">
+            <div class="chess-play snake-play">
+              <div class="play-ico">&#9654;</div>
+              <div>Train Snake PPO</div>
+            </div>
+          </div>
+          <div class="details">
+            <div class="details-inner">
+              <h3>Video 4 title</h3>
+              <div class="stats">
+                <span>0 views</span>
+                <span>0 likes</span>
+              </div>
+              <div class="related"></div>
+            </div>
+          </div>
+        </div>
+        <div class="box">
+          <div class="video chess-slot" data-embed="chess">
+            <div class="chess-play">
+              <div class="play-ico">&#9654;</div>
+              <div>Play Chess Bot</div>
+            </div>
+          </div>
+          <div class="details">
+            <div class="details-inner">
+              <h3>Video 5 title</h3>
+              <div class="stats">
+                <span>0 views</span>
+                <span>0 likes</span>
+              </div>
+              <div class="related"></div>
+            </div>
+          </div>
+        </div>
+        <div class="box">
+          <div class="video" data-embed=""><div class="placeholder">Video 6</div></div>
+          <div class="details">
+            <div class="details-inner">
+              <h3>Video 6 title</h3>
+              <div class="stats">
+                <span>0 views</span>
+                <span>0 likes</span>
+              </div>
+              <div class="related"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="fade-left" id="fadeL"></div>
+    <div class="fade-right" id="fadeR"></div>
+    <button class="btn btn-prev" id="btnPrev" onclick="go(-1)">&#8249;</button>
+    <button class="btn btn-next" id="btnNext" onclick="go(1)">&#8250;</button>
+  </div>
+
+  <div class="overlay" id="overlay" onclick="closeBox(event)">
+    <button class="overlay-close" onclick="closeBox(event)">&times;</button>
+    <div class="overlay-inner">
+      <div class="active-box">
+        <iframe id="overlay-embed" src="" allowfullscreen hidden></iframe>
+        <div id="chev-wrap" hidden>
+          <div id="chev-loading">Loading Java chess engine... (first load can take a minute)</div>
+          <div id="chev-container"></div>
+        </div>
+      </div>
+      <div class="overlay-content" id="overlay-content">
+        <p>Put your description text or embedded web app here.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const track = document.getElementById('track');
+    const orig = Array.from(track.children);
+    const step = () => orig[0].offsetWidth + 30;
+    const prevBtn = document.getElementById('btnPrev');
+    const nextBtn = document.getElementById('btnNext');
+    const fadeL = document.getElementById('fadeL');
+    const fadeR = document.getElementById('fadeR');
+
+    orig.slice(0, 3).forEach(b => track.appendChild(b.cloneNode(true)));
+    orig.slice(-3).forEach(b => track.insertBefore(b.cloneNode(true), track.firstChild));
+
+    const all = Array.from(track.children);
+
+    let W = 3;
+    let busy = false;
+
+    function apply(w, snap) {
+      track.style.transition = snap ? 'none' : 'transform 0.5s ease';
+      track.style.transform = 'translateX(' + (-w * step()) + 'px)';
+      W = w;
+    }
+
+    function layout() {
+      const vh = orig[0].querySelector('.video').offsetHeight;
+      const mid = 20 + vh / 2;
+      prevBtn.style.top = mid + 'px';
+      nextBtn.style.top = mid + 'px';
+      fadeL.style.top = '20px';
+      fadeR.style.top = '20px';
+      fadeL.style.height = vh + 'px';
+      fadeR.style.height = vh + 'px';
+    }
+
+    function go(dir) {
+      if (busy) return;
+      busy = true;
+      const W2 = W + dir;
+      if (W2 > 9) apply(3, true);
+      else if (W2 < 0) apply(6, true);
+      else apply(W2, false);
+      setTimeout(() => { busy = false; }, 500);
+    }
+
+    function openBox(el) {
+      const video = el.querySelector('.video');
+      const type = video.getAttribute('data-embed');
+      const box = document.querySelector('.overlay .active-box');
+      const iframe = document.getElementById('overlay-embed');
+      const wrap = document.getElementById('chev-wrap');
+      const overlay = document.getElementById('overlay');
+
+      if (type === 'chess') {
+        box.classList.add('chess');
+        iframe.style.display = 'none';
+        wrap.style.display = 'block';
+        overlay.classList.add('active');
+        overlay.scrollTop = 0;
+        bootChess();
+      } else if (type === 'snake') {
+        box.classList.remove('chess');
+        wrap.style.display = 'none';
+        iframe.style.display = 'block';
+        iframe.src = 'snake/snake.html';
+        overlay.classList.add('active');
+        overlay.scrollTop = 0;
+      } else {
+        box.classList.remove('chess');
+        wrap.style.display = 'none';
+        iframe.style.display = 'block';
+        const src = type || (video.querySelector('iframe') || {}).src || '';
+        iframe.src = src;
+        overlay.classList.add('active');
+        overlay.scrollTop = 0;
+      }
+    }
+
+    function closeBox(e) {
+      if (e.target === e.currentTarget || e.target.classList.contains('overlay-close')) {
+        document.getElementById('overlay').classList.remove('active');
+        document.getElementById('overlay-embed').style.display = 'none';
+        document.getElementById('overlay-embed').src = '';
+        document.getElementById('chev-wrap').style.display = 'none';
+      }
+    }
+
+    let chessBooted = false;
+    function bootChess() {
+      if (chessBooted) return;
+      chessBooted = true;
+      const script = document.createElement('script');
+      script.src = 'https://cjrtnc.leaningtech.com/4.3/loader.js';
+      script.onload = async () => {
+        try {
+          await window.cheerpjInit();
+          window.cheerpjCreateDisplay(-1, -1, document.getElementById('chev-container'));
+          document.getElementById('chev-loading').style.display = 'none';
+          await window.cheerpjRunMain('ChessGame', '/app/chess/chess-minimax.jar');
+        } catch (err) {
+          document.getElementById('chev-loading').textContent =
+            'Failed to start Java engine: ' + err.message;
+        }
+      };
+      document.head.appendChild(script);
+    }
+
+    all.forEach(box => {
+      box.addEventListener('mouseenter', () => {
+        clearTimeout(box._timer);
+        box._timer = setTimeout(() => box.classList.add('expanded'), 700);
+      });
+      box.addEventListener('mouseleave', () => {
+        clearTimeout(box._timer);
+        box.classList.remove('expanded');
+      });
+      box.addEventListener('click', (e) => {
+        if (e.target.closest('.rel-item')) return;
+        clearTimeout(box._timer);
+        box.classList.remove('expanded');
+        openBox(box);
+      });
+    });
+
+    function fmt(n) {
+      n = Number(n);
+      if (isNaN(n)) return '0';
+      if (n >= 1e6) return (n / 1e6).toFixed(1).replace(/\.0$/, '') + 'M';
+      if (n >= 1e3) return (n / 1e3).toFixed(1).replace(/\.0$/, '') + 'K';
+      return String(n);
+    }
+
+    async function loadRelated() {
+      const rows = Array.prototype.slice.call(document.querySelectorAll('.rel-item[data-yid]'));
+      const ids = rows.map(r => r.getAttribute('data-yid'));
+      if (!ids.length) return;
+
+      const counts = {
+        '7bxRdLClzxI': { views: 96494, likes: 3318 },
+        '799KYQQbFII': { views: 4804, likes: 90 }
+      };
+
+      for (const row of rows) {
+        const id = row.getAttribute('data-yid');
+        const c = counts[id] || {};
+        try {
+          const res = await fetch('https://noembed.com/embed?url=' + encodeURIComponent('https://www.youtube.com/watch?v=' + id));
+          const j = await res.json();
+          row.querySelector('.rel-title').textContent = j.title;
+          row.querySelector('.rel-thumb').src = j.thumbnail_url || 'https://i.ytimg.com/vi/' + id + '/hqdefault.jpg';
+        } catch (e) {
+          row.querySelector('.rel-title').textContent = 'https://youtu.be/' + id;
+        }
+        if (c.views !== undefined) {
+          row.querySelector('.rel-stats').innerHTML =
+            fmt(c.views) + ' views <span class="dim">|</span> ' +
+            fmt(c.likes) + ' likes';
+        } else {
+          row.querySelector('.rel-stats').innerHTML = '&nbsp;';
+        }
+      }
+    }
+
+    layout();
+    apply(W, true);
+    loadRelated();
+    window.addEventListener('resize', layout);
+  </script>
+</body>
+</html>

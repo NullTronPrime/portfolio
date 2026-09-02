@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Snake PPO - live training</title>
+<style>
+  :root { --cell: 20px; }
+  body { margin: 0; background: #0d1117; color: #e6edf3; font-family: Arial, sans-serif; }
+  #stage { min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 18px; box-sizing: border-box; }
+  #title { font-size: 18px; font-weight: bold; margin: 0 0 4px; }
+  #sub { font-size: 12px; color: #8b949e; margin: 0 0 14px; text-align: center; }
+  #boardWrap { background:#161b22; border:1px solid #30363d; border-radius:8px; padding:10px; }
+  #board { display: grid; gap: 1px; background:#21262d; }
+  .c { width: var(--cell); height: var(--cell); border-radius: 2px; }
+  .head { background:#58a6ff; border-radius:4px; }
+  .body { background:#1f6feb; border-radius:3px; }
+  .food { background:#f85149; border-radius:50%; }
+  .empty { background:#0d1117; }
+  #stats { margin-top: 14px; display:flex; flex-wrap:wrap; gap:10px 22px; justify-content:center; font-size:13px; }
+  .stat b { color:#58a6ff; }
+  #status { margin-top: 12px; font-size: 12px; color:#8b949e; min-height:16px; text-align:center; }
+  #err { margin-top: 12px; color:#f85149; white-space:pre-wrap; max-width:600px; font-size:12px; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <p id="title">Snake — PPO training live in your browser</p>
+  <p id="sub">Running the original multi-agent PPO algorithm (ported to numpy) via Pyodide. Watch it learn in real time.</p>
+  <div id="boardWrap"><div id="board"></div></div>
+  <div id="stats">
+    <span class="stat">Update <b id="st-update">0</b></span>
+    <span class="stat">Eps <b id="st-episodes">0</b></span>
+    <span class="stat">Best Reward <b id="st-best">0</b></span>
+    <span class="stat">Score <b id="st-score">1</b></span>
+    <span class="stat">Entropy <b id="st-entropy">0.05</b></span>
+  </div>
+  <div id="status">Loading Python… (first load downloads the ~10&nbsp;MB Pyodide runtime)</div>
+  <div id="err"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+<script>
+  const GRID = 16;
+  const boardEl = document.getElementById('board');
+  const statusEl = document.getElementById('status');
+  const errEl = document.getElementById('err');
+
+  function setStat(id, v) { document.getElementById(id).textContent = v; }
+
+  function buildBoard() {
+    boardEl.innerHTML = '';
+    boardEl.style.gridTemplateColumns = 'repeat(' + GRID + ', var(--cell))';
+    for (let i = 0; i < GRID * GRID; i++) {
+      const d = document.createElement('div');
+      d.className = 'c empty';
+      d.dataset.i = i;
+      boardEl.appendChild(d);
+    }
+  }
+
+  function render(snap) {
+    const cells = boardEl.children;
+    for (let i = 0; i < cells.length; i++) cells[i].className = 'c empty';
+    const set = (x, y, cls) => {
+      if (x < 0 || x >= GRID || y < 0 || y >= GRID) return;
+      cells[y * GRID + x].className = 'c ' + cls;
+    };
+    const snake = snap.snake;
+    snake.forEach(([x, y], k) => set(x, y, k === 0 ? 'head' : 'body'));
+    set(snap.food[0], snap.food[1], 'food');
+    setStat('st-update', snap.update);
+    setStat('st-episodes', snap.episodes);
+    setStat('st-best', snap.best_reward);
+    setStat('st-score', snap.score);
+    setStat('st-entropy', Number(snap.entropy).toFixed(4));
+  }
+
+  async function main() {
+    buildBoard();
+    try {
+      const pyodide = await loadPyodide();
+      await pyodide.loadPackage('numpy');
+      const resp = await fetch('snake_train.py');
+      const src = await resp.text();
+      pyodide.runPython(src);
+
+      const initCode = `
+_trainer = Trainer(SnakeEnv(${GRID}, ${GRID}))
+`;
+      pyodide.runPython(initCode);
+
+      statusEl.textContent = 'Training…';
+      const runOne = pyodide.runPython.bind(pyodide, `_trainer.one_update()`);
+      let running = true;
+
+      function tick() {
+        if (!running) return;
+        const snapJs = runOne();
+        if (!snapJs || (snapJs.toJs && snapJs.toJs().done)) {
+          statusEl.textContent = 'Training complete ✓';
+          return;
+        }
+        const snap = snapJs.toJs ? snapJs.toJs({ dict_converter: Object.fromEntries }) : snapJs;
+        render(snap);
+        setTimeout(tick, 30);
+      }
+      tick();
+    } catch (e) {
+      errEl.textContent = 'Error: ' + (e && (e.message || e)) + '\n\n' + (e && e.stack ? e.stack : '');
+      statusEl.textContent = 'Failed to start training.';
+    }
+  }
+
+  main();
+</script>
+</body>
+</html>
