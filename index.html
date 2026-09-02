@@ -444,6 +444,17 @@
     const fadeL = document.getElementById('fadeL');
     const fadeR = document.getElementById('fadeR');
 
+    const YOUTUBE_API_KEY = 'AIzaSyATrTPQrtzddEGcbiX-XRJj-yIB1w9O0vw';
+    const YT_BASE = 'https://www.googleapis.com/youtube/v3';
+
+    async function ytGet(path, params) {
+      let q = Object.keys(params).map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k])).join('&');
+      if (q) q += '&';
+      const res = await fetch(YT_BASE + '/' + path + '?' + q + 'key=' + YOUTUBE_API_KEY);
+      if (!res.ok) throw new Error('YT API ' + res.status);
+      return res.json();
+    }
+
     const RELATED_COUNTS = {
       '7bxRdLClzxI': { views: 96494, likes: 3318 },
       '799KYQQbFII': { views: 4804, likes: 90 },
@@ -483,10 +494,11 @@
     const VIDEO1_LINKS = ['VxM9ib83T8s','vcl3qRJMMsc','89mRuQX4TTs','NS6CfEI4MR4','jDOaDcaAiuE'];
     const VIDEO2_LINKS = ['w8MAHWvhNpg','5RnzghFDqww','1foo4JKZPBE','6mmuLgR6srY','R2_z213M8mU','AkFfycZuoS8','V6MoJcBu8yQ','3KJ8B8r_8qA','LNGwQgUjL7M','Yhg76TILLTA','ePcBLtDu7vM'];
 
-    function appendRel(container, yid) {
+    function appendRel(container, yid, plFlag) {
       const a = document.createElement('a');
       a.className = 'rel-item';
       a.setAttribute('data-yid', yid);
+      if (plFlag) a.setAttribute('data-pl', '1');
       a.href = 'https://www.youtube.com/watch?v=' + yid;
       a.target = '_blank';
       a.rel = 'noopener';
@@ -517,11 +529,11 @@
       pl.innerHTML =
         '<div class="rel-playlist-badge">&#9654; Playlist</div>' +
         '<div class="rel-meta">' +
-          '<div class="rel-title">' + PLAYLIST.count + ' videos, ' + fmt(PLAYLIST.views) + ' combined views, ' + fmt(PLAYLIST.likes) + ' combined likes</div>' +
+          '<div class="rel-title js-playlist-title">' + PLAYLIST.count + ' videos, ' + fmt(PLAYLIST.views) + ' combined views, ' + fmt(PLAYLIST.likes) + ' combined likes</div>' +
           '<div class="rel-stats"><a class="dim" href="https://www.youtube.com/playlist?list=' + PLAYLIST.id + '" target="_blank" rel="noopener">Open full playlist</a></div>' +
         '</div>';
       rel1.appendChild(pl);
-      PLAYLIST.videos.forEach(y => appendRel(rel1, y));
+      PLAYLIST.videos.forEach(y => appendRel(rel1, y, true));
       const g1 = document.createElement('div');
       g1.className = 'rel-group-label';
       g1.textContent = 'More from this creator';
@@ -684,9 +696,98 @@
       }
     }
 
+    async function refreshStats() {
+      const rows = Array.prototype.slice.call(document.querySelectorAll('.rel-item[data-yid]'));
+      const allIds = Array.from(new Set(rows.map(r => r.getAttribute('data-yid'))));
+      if (!allIds.length) return;
+
+      const setStat = (id, views, likes) => {
+        document.querySelectorAll('.rel-stats[data-yid="' + id + '"]').forEach(el => {
+          el.innerHTML = fmt(views) + ' views <span class="dim">|</span> ' + fmt(likes) + ' likes';
+        });
+      };
+
+      try {
+        let plIds = PLAYLIST.videos.slice();
+        try {
+          const plData = await ytGet('playlistItems', { part: 'contentDetails', maxResults: 50, playlistId: PLAYLIST.id });
+          const fetched = (plData.items || []).map(it => it.contentDetails.videoId).filter(Boolean);
+          if (fetched.length) plIds = fetched;
+        } catch (e) {
+          console.warn('Playlist item fetch failed; using cached list', e);
+        }
+
+        const toFetch = Array.from(new Set(allIds.concat(plIds)));
+        for (let i = 0; i < toFetch.length; i += 50) {
+          const chunk = toFetch.slice(i, i + 50);
+          const data = await ytGet('videos', { part: 'statistics', id: chunk.join(',') });
+          (data.items || []).forEach(it => {
+            const views = parseInt(it.statistics.viewCount, 10) || 0;
+            const likes = parseInt(it.statistics.likeCount, 10) || 0;
+            RELATED_COUNTS[it.id] = { views, likes };
+            setStat(it.id, views, likes);
+          });
+        }
+
+        const live = plIds.map(id => RELATED_COUNTS[id]).filter(Boolean);
+        if (live.length || plIds.length) {
+          PLAYLIST.count = plIds.length || live.length;
+          PLAYLIST.views = live.reduce((s, v) => s + v.views, 0);
+          PLAYLIST.likes = live.reduce((s, v) => s + v.likes, 0);
+          const title = document.querySelector('.js-playlist-title');
+          if (title) title.textContent = PLAYLIST.count + ' videos, ' + fmt(PLAYLIST.views) + ' combined views, ' + fmt(PLAYLIST.likes) + ' combined likes';
+        }
+
+        thisRefreshPlaylist(plIds);
+      } catch (e) {
+        console.warn('YouTube stats refresh failed; using cached numbers.', e);
+      }
+    }
+
+    function thisRefreshPlaylist(ids) {
+      const rel1 = orig[0].querySelector('.related');
+      const current = Array.prototype.slice.call(rel1.querySelectorAll('.rel-item[data-pl]')).map(a => a.getAttribute('data-yid'));
+      const same = current.length === ids.length && ids.every((id, i) => id === current[i]);
+      if (same) return;
+      rel1.querySelectorAll('.rel-item[data-pl]').forEach(a => a.remove());
+      ids.forEach(id => appendRel(rel1, id, true));
+      ids.forEach(async id => {
+        const row = rel1.querySelector('.rel-item[data-pl][data-yid="' + id + '"]');
+        if (!row) return;
+        const c = RELATED_COUNTS[id];
+        if (c) row.querySelector('.rel-stats').innerHTML = fmt(c.views) + ' views <span class="dim">|</span> ' + fmt(c.likes) + ' likes';
+        try {
+          const res = await fetch('https://noembed.com/embed?url=' + encodeURIComponent('https://www.youtube.com/watch?v=' + id));
+          const j = await res.json();
+          if (j.title) row.querySelector('.rel-title').textContent = j.title;
+        } catch (e) {}
+      });
+    }
+
+    function thisRefreshPlaylist(ids) {
+      const rel1 = orig[0].querySelector('.related');
+      const current = Array.prototype.slice.call(rel1.querySelectorAll('.rel-item[data-pl]')).map(a => a.getAttribute('data-yid'));
+      const same = current.length === ids.length && current.every((id, i) => id === ids[i]);
+      if (same) return;
+      rel1.querySelectorAll('.rel-item[data-pl]').forEach(a => a.remove());
+      ids.forEach(id => appendRel(rel1, id, true));
+      ids.forEach(async id => {
+        const row = rel1.querySelector('.rel-item[data-pl][data-yid="' + id + '"]');
+        if (!row) return;
+        const c = RELATED_COUNTS[id];
+        if (c) row.querySelector('.rel-stats').innerHTML = fmt(c.views) + ' views <span class="dim">|</span> ' + fmt(c.likes) + ' likes';
+        try {
+          const res = await fetch('https://noembed.com/embed?url=' + encodeURIComponent('https://www.youtube.com/watch?v=' + id));
+          const j = await res.json();
+          if (j.title) row.querySelector('.rel-title').textContent = j.title;
+        } catch (e) {}
+      });
+    }
+
     layout();
     apply(W, true);
     loadRelated();
+    refreshStats();
     window.addEventListener('resize', layout);
   </script>
 </body>
