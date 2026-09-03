@@ -124,6 +124,9 @@
     text-shadow: 0 2px 12px rgba(0,0,0,.8);
   }
   .chess-thumb:hover .chess-play { color: #fff; }
+  #chess-running { width: 480px; max-width: 100%; }
+  #chess-container { min-height: 480px; }
+  #chess-loading { color: var(--muted); padding: 24px 0; }
 
   .footer { margin-top: 48px; color: var(--muted); font-size: 13px; }
 
@@ -605,23 +608,33 @@
     e.preventDefault();
     if (chessBooted) return;
     chessBooted = true;
-    document.getElementById('chess-running').style.display = 'block';
-    document.getElementById('chess-loading').textContent = 'Loading Java chess engine... (first load can take a minute)';
+    var link = document.getElementById('chess-link');
+    if (link) link.style.display = 'none';
+    var running = document.getElementById('chess-running');
+    running.style.display = 'block';
+    var loading = document.getElementById('chess-loading');
+    loading.style.display = 'block';
+    loading.textContent = 'Loading Java chess engine... (first load takes up to a minute)';
     const script = document.createElement('script');
     script.src = 'https://cjrtnc.leaningtech.com/4.3/loader.js';
+    script.onerror = function () {
+      loading.textContent = 'Failed to load the Java runtime (network/CDN error). Try again.';
+    };
     script.onload = async () => {
       try {
         await window.cheerpjInit({ version: 17, status: "splash" });
         const resp = await fetch('chess/chess-minimax.jar');
+        if (!resp.ok) throw new Error('jar ' + resp.status);
         const buf = await resp.arrayBuffer();
         window.cheerpOSAddStringFile('/str/chess-minimax.jar', new Uint8Array(buf));
-        document.getElementById('chess-loading').style.display = 'none';
+        loading.style.display = 'none';
         document.getElementById('chess-container').style.display = 'block';
         window.cheerpjCreateDisplay(-1, -1, document.getElementById('chess-container'));
         await window.cheerpjRunMain('ChessGame', '/str/chess-minimax.jar');
       } catch (err) {
         console.error('CHEERPJ_BOOT_ERROR', err);
-        document.getElementById('chess-loading').textContent =
+        loading.style.display = 'block';
+        loading.textContent =
           'Failed to start Java engine: ' + (err && (err.message || err.stack || err));
       }
     };
