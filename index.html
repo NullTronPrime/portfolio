@@ -1,831 +1,449 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portfolio</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%23111'/%3E%3Crect x='20' y='20' width='24' height='60' fill='%2358a6ff'/%3E%3Crect x='56' y='20' width='24' height='60' fill='%23f85149'/%3E%3C/svg%3E">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { display: flex; justify-content: center; min-height: 100vh; background: #111; overflow: auto; font-family: 'Inter', -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
-    .page-head {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      text-align: center;
-      margin-top: 18px;
-      color: #e6edf3;
-      z-index: 10;
-    }
-    .page-head h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
-    .page-head p { font-size: 12px; color: #8b949e; margin-top: 2px; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NullTronPrime - Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%2358a6ff'/%3E%3Ctext x='50' y='70' font-size='60' text-anchor='middle' fill='%230d1117' font-family='Arial'%3ENT%3C/text%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #0d1117;
+    --panel: #161b22;
+    --card: #161b22;
+    --border: #30363d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --accent: #58a6ff;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
 
-    .carousel-wrapper {
-      position: relative;
-      width: 80vw;
-      max-width: 1000px;
-      margin: 60px 0 100px;
-    }
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    width: 280px;
+    height: 100vh;
+    overflow-y: auto;
+    background: var(--panel);
+    border-right: 1px solid var(--border);
+    padding: 40px 28px;
+    display: flex;
+    flex-direction: column;
+  }
+  .sidebar .name {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .sidebar .brand-desc {
+    color: var(--muted);
+    font-size: 14px;
+    margin: 4px 0 24px;
+  }
+  .nav {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    flex: 1;
+  }
+  .nav li { margin: 2px 0; }
+  .nav a {
+    display: block;
+    padding: 7px 12px;
+    color: var(--text);
+    border-radius: 6px;
+    font-size: 15px;
+  }
+  .nav a:hover {
+    background: #1f2630;
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .sidebar .contact {
+    margin-top: 24px;
+    border-top: 1px solid var(--border);
+    padding-top: 18px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .sidebar .contact a { display: inline-block; margin-top: 4px; }
 
-    .carousel-viewport {
-      overflow-x: clip;
-      overflow-y: visible;
-      padding-top: 20px;
-    }
+  .main {
+    margin-left: 280px;
+    padding: 48px 56px 80px;
+    max-width: 980px;
+  }
+  section { padding: 28px 0; scroll-margin-top: 32px; }
+  section + section { border-top: 1px solid var(--border); }
+  section h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 6px;
+    color: var(--text);
+  }
+  section .section-sub {
+    color: var(--muted);
+    font-size: 14px;
+    margin: 0 0 20px;
+  }
+  .placeholder {
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    color: var(--muted);
+    padding: 40px;
+    text-align: center;
+    font-size: 14px;
+    background: var(--panel);
+  }
 
-    .carousel-track {
-      display: flex;
-      align-items: flex-start;
-      gap: 30px;
-      will-change: transform;
-    }
+  .embed-slot {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #000;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 18px;
+    overflow: hidden;
+    position: relative;
+  }
+  .embed-slot iframe { width: 100%; height: 100%; border: 0; display: block; }
 
-    .box {
-      flex: 0 0 calc(100% / 3);
-      background: #333;
-      border: 1px solid #555;
-      cursor: pointer;
-      position: relative;
-      z-index: 1;
-      transition: box-shadow 0.3s ease, border-color 0.3s ease;
-    }
+  .vstrip {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+  .vcard {
+    flex: 0 0 240px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .vcard:hover { border-color: var(--accent); }
+  .vcard img { width: 100%; display: block; aspect-ratio: 16 / 9; object-fit: cover; }
+  .vcard .vmeta { padding: 8px 10px; }
+  .vcard .vt { font-size: 13px; font-weight: 600; line-height: 1.3; color: var(--text); }
+  .vcard .vs { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .vcard .vplay {
+    display: inline-block;
+    margin-left: 8px;
+    font-size: 12px;
+    color: var(--accent);
+  }
 
-    .box:hover {
-      box-shadow: 0 0 18px rgba(255,255,255,0.2);
-      border-color: #fff;
-      z-index: 5;
-    }
+  .dl-row { display: flex; gap: 12px; margin-top: 18px; }
+  .dl-tile {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    color: inherit;
+    padding: 14px 10px;
+    border-radius: 8px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    text-align: center;
+  }
+  .dl-tile:hover { border-color: var(--accent); text-decoration: none; }
+  .dl-ico { width: 34px; height: 34px; object-fit: contain; }
+  .dl-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .dl-count { font-size: 12px; color: var(--accent); font-weight: 600; }
 
-    .box .video {
-      aspect-ratio: 16 / 9;
-      background: #222;
+  #chess-poster {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #000;
+    cursor: pointer;
+    gap: 12px;
+  }
+  #chess-poster img { max-width: 100%; max-height: 100%; object-fit: contain; opacity: 0.75; }
+  #chess-poster .playlabel {
+    color: var(--text);
+    border: 1px solid var(--accent);
+    background: rgba(88,166,255,0.1);
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  #chess-placeholder { text-align: center; color: var(--muted); padding: 60px 20px; }
+  #chess-loading { color: var(--muted); padding: 20px; text-align: center; }
+  #chess-container { width: 100%; height: 640px; background: #000; }
+  #chess-container canvas { max-width: 100% !important; }
+
+  .mod-badge { margin-top: 18px; }
+  .mod-badge a { font-size: 13px; }
+
+  @media (max-width: 820px) {
+    .sidebar {
+      position: static;
       width: 100%;
+      height: auto;
+      border-right: none;
+      border-bottom: 1px solid var(--border);
     }
-
-    .box .video iframe,
-    .box .video video,
-    .box .video img {
-      width: 100%;
-      height: 100%;
-      border: none;
-      display: block;
-      pointer-events: none;
-    }
-
-    .box .placeholder {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #888;
-      font-family: 'Inter', -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      font-size: 13px;
-    }
-
-    .box .details {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.4s ease;
-      background: #2a2a2a;
-      border-top: 1px solid #444;
-    }
-
-    .box.expanded .details {
-      max-height: 460px;
-      overflow-y: auto;
-    }
-
-    .details-inner {
-      padding: 12px;
-      color: #ccc;
-      font-family: 'Inter', -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    }
-
-    .details-inner h3 {
-      font-size: 14px;
-      color: #fff;
-      margin-bottom: 8px;
-    }
-
-    .stats { display: flex; gap: 16px; font-size: 12px; color: #aaa; margin-bottom: 10px; }
-
-    .related { display: flex; flex-direction: column; gap: 8px; }
-
-    .dl-row { display: flex; gap: 10px; margin-bottom: 4px; }
-    .dl-tile {
-      flex: 1 1 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      text-decoration: none;
-      color: inherit;
-      padding: 12px 8px;
-      border-radius: 6px;
-      background: #262626;
-      border: 1px solid #3a3a3a;
-      text-align: center;
-    }
-    .dl-tile:hover { background: #303030; border-color: #58a6ff; }
-    .dl-ico {
-      width: 34px;
-      height: 34px;
-      object-fit: contain;
-    }
-    .dl-name { font-size: 12px; font-weight: 600; color: #e6edf3; }
-    .dl-count { font-size: 11px; color: #58a6ff; font-weight: 600; }
-
-
-    .rel-item {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      text-decoration: none;
-      color: inherit;
-      padding: 6px;
-      border-radius: 4px;
-    }
-
-    .rel-item:hover { background: #383838; }
-
-    .rel-thumb {
-      width: 110px;
-      aspect-ratio: 16 / 9;
-      object-fit: cover;
-      background: #222;
-      flex-shrink: 0;
-    }
-
-    .rel-meta { min-width: 0; }
-
-    .rel-title {
-      font-size: 12px;
-      color: #ddd;
-      line-height: 1.3;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .rel-stats { font-size: 11px; color: #999; margin-top: 3px; }
-    .rel-stats .dim { color: #666; }
-
-    .rel-playlist { border-left: 3px solid #58a6ff; }
-    .rel-playlist .rel-thumb { position: relative; }
-    .rel-group-label {
-      font-size: 10px;
-      font-weight: 700;
-      color: #8b949e;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin: 8px 2px 0;
-    }
-
-    .fade-left,
-    .fade-right {
-      position: absolute;
-      width: 80px;
-      pointer-events: none;
-      z-index: 6;
-    }
-    .fade-left { left: -20px; background: linear-gradient(to right, #111 0%, transparent 100%); }
-    .fade-right { right: -20px; background: linear-gradient(to left, #111 0%, transparent 100%); }
-
-    .btn {
-      position: absolute;
-      transform: translateY(-50%);
-      z-index: 7;
-      background: none;
-      border: none;
-      color: white;
-      font-size: 32px;
-      cursor: pointer;
-      padding: 10px;
-      line-height: 1;
-    }
-    .btn-prev { left: -40px; }
-    .btn-next { right: -40px; }
-
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.92);
-      z-index: 10;
-      display: flex;
-      overflow-y: auto;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.4s ease;
-    }
-    .overlay.active { opacity: 1; pointer-events: auto; }
-
-    .overlay-inner {
-      margin: auto;
-      padding: 60px 40px 80px;
-      width: 72vw;
-      max-width: 980px;
-    }
-
-    .overlay .active-box {
-      aspect-ratio: 16 / 9;
-      background: #333;
-      border: 1px solid #666;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .overlay .active-box.chess {
-      aspect-ratio: auto;
-      min-height: 720px;
-      overflow: visible;
-    }
-
-    #chev-wrap { width: 100%; text-align: center; }
-    #chev-container { width: 100%; height: 640px; background: #222; }
-    #chev-loading { color: #bbb; font-family: 'Inter', -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; padding: 20px; }
-    #chev-container canvas { max-width: 100% !important; }
-
-    .chess-slot .chess-play {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      color: #eee;
-      font-family: 'Inter', -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('chess/thumbnail.png') center/cover no-repeat;
-    }
-
-    .play-ico {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      background: rgba(0,0,0,0.55);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 26px;
-      padding-left: 4px;
-      border: 1px solid #999;
-    }
-
-    .snake-play {
-      background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.55)),
-        repeating-conic-gradient(#1f6feb 0% 25%, #0d1117 0% 50%) 0 0 / 20px 20px !important;
-    }
-
-    .overlay .active-box iframe,
-    .overlay .active-box video,
-    .overlay .active-box img {
-      width: 100%;
-      height: 100%;
-      border: none;
-      display: block;
-    }
-
-    .overlay-content {
-      margin-top: 20px;
-      padding: 24px;
-      background: #1d1d1d;
-      border: 1px solid #333;
-      color: #ccc;
-      font-family: 'Inter', -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      min-height: 200px;
-    }
-
-    .overlay-close {
-      position: fixed;
-      top: 30px;
-      right: 40px;
-      background: none;
-      border: none;
-      color: white;
-      font-size: 36px;
-      cursor: pointer;
-      z-index: 11;
-    }
-  </style>
+    .main { margin-left: 0; padding: 24px 18px 60px; }
+    .vcard { flex: 0 0 200px; }
+  }
+</style>
 </head>
 <body>
-  <div class="page-head">
-    <h1>NullTronPrime</h1>
-  </div>
-  <div class="carousel-wrapper" id="carousel">
-    <div class="carousel-viewport">
-      <div class="carousel-track" id="track">
-        <div class="box" data-stat="1">
-          <div class="video" data-embed=""><div class="placeholder">Angry Birds Videos</div></div>
-          <div class="details">
-            <div class="details-inner">
-              <h3>Angry Birds Epic Randomizer Mod (Playlist)</h3>
-              <div class="stats">
-                <span>1K views</span>
-                <span>8 likes</span>
-              </div>
-              <div class="related"></div>
-            </div>
-          </div>
-        </div>
-        <div class="box">
-          <div class="video" data-embed=""><div class="placeholder">Video 2</div></div>
-          <div class="details">
-            <div class="details-inner">
-              <h3>Video 2 title</h3>
-              <div class="stats">
-                <span>0 views</span>
-                <span>0 likes</span>
-              </div>
-              <div class="related"></div>
-            </div>
-          </div>
-        </div>
-        <div class="box">
-          <div class="video" data-embed=""><div class="placeholder">Video 3</div></div>
-          <div class="details">
-            <div class="details-inner">
-              <h3>Video 3 title</h3>
-              <div class="stats">
-                <span>0 views</span>
-                <span>0 likes</span>
-              </div>
-              <div class="related"></div>
-            </div>
-          </div>
-        </div>
-        <div class="box">
-          <div class="video" data-embed="snake">
-            <div class="chess-play snake-play">
-              <div class="play-ico">&#9654;</div>
-              <div>Train Snake PPO</div>
-            </div>
-          </div>
-          <div class="details">
-            <div class="details-inner">
-              <h3>Video 4 title</h3>
-              <div class="stats">
-                <span>0 views</span>
-                <span>0 likes</span>
-              </div>
-              <div class="related"></div>
-            </div>
-          </div>
-        </div>
-        <div class="box">
-          <div class="video chess-slot" data-embed="chess">
-            <div class="chess-play">
-              <div class="play-ico">&#9654;</div>
-              <div>Play Chess Bot</div>
-            </div>
-          </div>
-          <div class="details">
-            <div class="details-inner">
-              <h3>Video 5 title</h3>
-              <div class="stats">
-                <span>0 views</span>
-                <span>0 likes</span>
-              </div>
-              <div class="related"></div>
-            </div>
-          </div>
-        </div>
-        <div class="box">
-          <div class="video" data-embed="">
-            <div class="placeholder"></div>
-          </div>
-          <div class="details">
-            <div class="details-inner">
-              <div class="related"></div>
-            </div>
-          </div>
-        </div>
-      </div>
+
+  <aside class="sidebar">
+    <div class="name">NullTronPrime</div>
+    <div class="brand-desc">Game Mods, AI &amp; Python Projects</div>
+    <nav>
+      <ul class="nav">
+        <li><a href="#welcome">Welcome</a></li>
+        <li><a href="#deep-seas">Create: Deep Seas</a></li>
+        <li><a href="#arsenalists">Create: Arsenalists</a></li>
+        <li><a href="#randomiser">Angry Birds Epic: Randomiser</a></li>
+        <li><a href="#all-stars">Angry Birds Epic: All Stars</a></li>
+        <li><a href="#broken-rifts">Angry Birds Epic: Broken Rifts</a></li>
+        <li><a href="#chess">Chess Engine</a></li>
+        <li><a href="#ppo">PPO Training (Python)</a></li>
+        <li><a href="#gol">Game of Life Simulator</a></li>
+        <li><a href="#battleships">Battleships (CS50 Project)</a></li>
+      </ul>
+    </nav>
+    <div class="contact">
+      <div>Contact</div>
+      <a href="https://github.com/NullTronPrime">GitHub</a><br>
+      <a href="https://www.youtube.com/@BigJim713">YouTube</a>
     </div>
-    <div class="fade-left" id="fadeL"></div>
-    <div class="fade-right" id="fadeR"></div>
-    <button class="btn btn-prev" id="btnPrev" onclick="go(-1)">&#8249;</button>
-    <button class="btn btn-next" id="btnNext" onclick="go(1)">&#8250;</button>
-  </div>
+  </aside>
 
-  <div class="overlay" id="overlay" onclick="closeBox(event)">
-    <button class="overlay-close" onclick="closeBox(event)">&times;</button>
-    <div class="overlay-inner">
-      <div class="active-box">
-        <iframe id="overlay-embed" src="" allowfullscreen hidden></iframe>
-        <div id="chev-wrap" hidden>
-          <div id="chev-loading">Loading Java chess engine... (first load can take a minute)</div>
-          <div id="chev-container"></div>
+  <main class="main">
+
+    <section id="welcome">
+      <h2>Welcome</h2>
+      <div class="placeholder">Welcome section - content coming soon.</div>
+    </section>
+
+    <section id="deep-seas">
+      <h2>Create: Deep Seas</h2>
+      <p class="section-sub">Video 2 - Create: Deep Seas mod showcase videos</p>
+      <div class="embed-slot">
+        <iframe id="ds-player" src="" allowfullscreen></iframe>
+      </div>
+      <div class="vstrip" id="ds-strip"></div>
+      <div class="dl-row">
+        <a class="dl-tile" href="https://modrinth.com/mod/create-deep-seas" target="_blank" rel="noopener">
+          <img class="dl-ico" src="https://cdn.simpleicons.org/modrinth" alt="Modrinth logo">
+          <div class="dl-name">Modrinth</div>
+          <div class="dl-count" id="dl-modrinth">Loading...</div>
+        </a>
+        <a class="dl-tile" href="https://www.curseforge.com/minecraft/mc-mods/create-deep-seas" target="_blank" rel="noopener">
+          <img class="dl-ico" src="https://cdn.simpleicons.org/curseforge" alt="CurseForge logo">
+          <div class="dl-name">CurseForge</div>
+          <div class="dl-count" id="dl-curseforge">Loading...</div>
+        </a>
+      </div>
+    </section>
+
+    <section id="arsenalists">
+      <h2>Create: Arsenalists</h2>
+      <div class="placeholder">Content coming soon.</div>
+    </section>
+
+    <section id="randomiser">
+      <h2>Angry Birds Epic: Randomiser</h2>
+      <p class="section-sub">Video 1 - Angry Birds Epic Randomizer mod videos</p>
+      <div class="embed-slot">
+        <iframe id="ab-player" src="" allowfullscreen></iframe>
+      </div>
+      <div class="vstrip" id="ab-strip"></div>
+    </section>
+
+    <section id="all-stars">
+      <h2>Angry Birds Epic: All Stars</h2>
+      <div class="placeholder">Content coming soon.</div>
+    </section>
+
+    <section id="broken-rifts">
+      <h2>Angry Birds Epic: Broken Rifts</h2>
+      <div class="placeholder">Content coming soon.</div>
+    </section>
+
+    <section id="chess">
+      <h2>Chess Engine</h2>
+      <p class="section-sub">Java minimax chess engine with Zobrist hashing</p>
+      <div class="embed-slot">
+        <div id="chess-poster">
+          <img src="chess/thumbnail.png" alt="Chess engine preview">
+          <div class="playlabel">Run Chess Engine</div>
         </div>
+        <div id="chess-placeholder" style="display:none"></div>
+        <div id="chess-loading" style="display:none">Loading Java chess engine... (first load can take a minute)</div>
+        <div id="chess-container" style="display:none"></div>
       </div>
-      <div class="overlay-content" id="overlay-content">
-        <p>Put your description text or embedded web app here.</p>
-      </div>
-    </div>
-  </div>
+    </section>
 
-  <script>
-    const track = document.getElementById('track');
-    const orig = Array.from(track.children);
-    const step = () => orig[0].offsetWidth + 30;
-    const prevBtn = document.getElementById('btnPrev');
-    const nextBtn = document.getElementById('btnNext');
-    const fadeL = document.getElementById('fadeL');
-    const fadeR = document.getElementById('fadeR');
+    <section id="ppo">
+      <h2>PPO Training (Python)</h2>
+      <p class="section-sub">Proximal Policy Optimization pipeline written with explicit numpy gradients</p>
+      <div class="placeholder">PPO training pipeline details coming soon.</div>
+    </section>
 
-    const YOUTUBE_API_KEY = 'AIzaSyATrTPQrtzddEGcbiX-XRJj-yIB1w9O0vw';
-    const YT_BASE = 'https://www.googleapis.com/youtube/v3';
+    <section id="gol">
+      <h2>Game of Life Simulator</h2>
+      <div class="placeholder">Content coming soon.</div>
+    </section>
 
-    async function ytGet(path, params) {
-      let q = Object.keys(params).map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k])).join('&');
-      if (q) q += '&';
-      const res = await fetch(YT_BASE + '/' + path + '?' + q + 'key=' + YOUTUBE_API_KEY);
-      if (!res.ok) throw new Error('YT API ' + res.status);
-      return res.json();
-    }
+    <section id="battleships">
+      <h2>Battleships (CS50 Project)</h2>
+      <div class="placeholder">Content coming soon.</div>
+    </section>
 
-    const RELATED_COUNTS = {
-      '7bxRdLClzxI': { views: 96494, likes: 3318 },
-      '799KYQQbFII': { views: 4804, likes: 90 },
-      'zKJDlRjqNDo': { views: 490, likes: 4 },
-      'qB-Ry2M_v4o': { views: 172, likes: 0 },
-      'B4tmVOM8ocU': { views: 70, likes: 1 },
-      'jzIaM13gx50': { views: 50, likes: 0 },
-      'DKWE6gy-vdc': { views: 44, likes: 1 },
-      'LI5JkZG17OQ': { views: 35, likes: 0 },
-      'bSl9wtmP9uQ': { views: 46, likes: 1 },
-      'WcvWJNz2o_U': { views: 26, likes: 0 },
-      'uIdhBKO4GsA': { views: 33, likes: 0 },
-      '5vGjGWCzlEs': { views: 58, likes: 1 },
-      'VxM9ib83T8s': { views: 296, likes: 9 },
-      'vcl3qRJMMsc': { views: 2828, likes: 62 },
-      '89mRuQX4TTs': { views: 1293, likes: 38 },
-      'NS6CfEI4MR4': { views: 204, likes: 5 },
-      'jDOaDcaAiuE': { views: 328, likes: 10 },
-      'w8MAHWvhNpg': { views: 228262, likes: 6505 },
-      '5RnzghFDqww': { views: 66973, likes: 1787 },
-      '1foo4JKZPBE': { views: 73816, likes: 3017 },
-      '6mmuLgR6srY': { views: 5664, likes: 205 },
-      'R2_z213M8mU': { views: 20069, likes: 599 },
-      'AkFfycZuoS8': { views: 3998, likes: 133 },
-      'V6MoJcBu8yQ': { views: 80, likes: 4 },
-      '3KJ8B8r_8qA': { views: 16355, likes: 779 },
-      'LNGwQgUjL7M': { views: 70192, likes: 2348 },
-      'Yhg76TILLTA': { views: 10560, likes: 432 },
-      'ePcBLtDu7vM': { views: 82170, likes: 3018 }
-    };
+  </main>
 
-    const PLAYLIST = {
-      id: 'PLPuNYOmdRO8w',
-      count: 10, views: 1024, likes: 8,
-      videos: ['zKJDlRjqNDo','qB-Ry2M_v4o','B4tmVOM8ocU','jzIaM13gx50','DKWE6gy-vdc','LI5JkZG17OQ','bSl9wtmP9uQ','WcvWJNz2o_U','uIdhBKO4GsA','5vGjGWCzlEs']
-    };
-    const VIDEO1_LINKS = ['VxM9ib83T8s','vcl3qRJMMsc','89mRuQX4TTs','NS6CfEI4MR4','jDOaDcaAiuE'];
-    const VIDEO2_LINKS = ['w8MAHWvhNpg','5RnzghFDqww','1foo4JKZPBE','6mmuLgR6srY','R2_z213M8mU','AkFfycZuoS8','V6MoJcBu8yQ','3KJ8B8r_8qA','LNGwQgUjL7M','Yhg76TILLTA','ePcBLtDu7vM'];
+<script>
+  const VIDEOS = {
+    ds: [
+      { id: 'w8MAHWvhNpg', t: 'This Create Aeronautics Addon is TERRIFYING', views: 228262, likes: 6505 },
+      { id: '5RnzghFDqww', t: 'I Made A WORKING SUBMARINE in Minecraft (Create: Aeronautics)', views: 66973, likes: 1787 },
+      { id: 'ePcBLtDu7vM', t: 'These Aeronautics Addons Have Working Submarines!?', views: 82170, likes: 3018 },
+      { id: 'LNGwQgUjL7M', t: 'Airlock Test (Create Aeronautics:Deep See Prep)', views: 70192, likes: 2348 },
+      { id: '1foo4JKZPBE', t: 'Create Deep Seas Mod', views: 73816, likes: 3017 },
+      { id: 'R2_z213M8mU', t: 'I Built a Working BATTLE SUBMARINE With CREATE: AERONAUTICS!', views: 20069, likes: 599 },
+      { id: '3KJ8B8r_8qA', t: 'HOW TO BUILD SHIPS IN CREATE AERONAUTICS | CREATE MOD | MINECRAFT', views: 16355, likes: 779 },
+      { id: 'Yhg76TILLTA', t: 'Technical test of the sail for the Create Deep Seas mod', views: 10560, likes: 432 },
+      { id: '6mmuLgR6srY', t: 'Submarines are fun (Aeronautics)', views: 5664, likes: 205 },
+      { id: 'AkFfycZuoS8', t: 'WORKING Attack Submarine with Create Aeronautics', views: 3998, likes: 133 },
+      { id: 'V6MoJcBu8yQ', t: 'Test Driving My Submersible! Create: Deep Seas!', views: 80, likes: 4 }
+    ],
+    ab: [
+      { id: '7bxRdLClzxI', t: 'I tried the Angry Birds Epic Randomizer', views: 96494, likes: 3318 },
+      { id: '799KYQQbFII', t: 'Can You Beat Angry Birds Epic If Every Level Is Randomized? - Part 1', views: 4804, likes: 90 },
+      { id: '89mRuQX4TTs', t: 'The Angry Birds Epic Randomiser Experience...', views: 1293, likes: 38 },
+      { id: 'vcl3qRJMMsc', t: 'Angry Birds Epic Randomized mod - Part 1 | No Commentary | Gameplay', views: 2828, likes: 62 },
+      { id: 'jDOaDcaAiuE', t: '(FILLER) Angry Birds Epic But All The Pigs Are Randomised - Cave 2', views: 328, likes: 10 },
+      { id: 'VxM9ib83T8s', t: 'Things get interesting! | Angry Birds Epic Randomizer Part 3', views: 296, likes: 9 },
+      { id: 'NS6CfEI4MR4', t: 'LIVE - Playing Angry Birds Epic Randomizer Mod On PC!', views: 204, likes: 5 }
+    ]
+  };
 
-    function appendRel(container, yid, plFlag) {
-      const a = document.createElement('a');
-      a.className = 'rel-item rel-sortable';
-      a.setAttribute('data-yid', yid);
-      if (plFlag) a.setAttribute('data-pl', '1');
-      a.href = 'https://www.youtube.com/watch?v=' + yid;
-      a.target = '_blank';
-      a.rel = 'noopener';
+  function fmt(n) {
+    n = Number(n);
+    if (isNaN(n)) return '0';
+    if (n >= 1e6) return (n / 1e6).toFixed(1).replace(/\.0$/, '') + 'M';
+    if (n >= 1e3) return (n / 1e3).toFixed(1).replace(/\.0$/, '') + 'K';
+    return String(n);
+  }
+
+  function buildStrip(elId, playerId, list) {
+    const el = document.getElementById(elId);
+    list.forEach((v, i) => {
+      const card = document.createElement('div');
+      card.className = 'vcard';
+
       const img = document.createElement('img');
-      img.className = 'rel-thumb';
+      img.src = 'https://i.ytimg.com/vi/' + v.id + '/hqdefault.jpg';
       img.alt = '';
-      img.src = 'https://i.ytimg.com/vi/' + yid + '/hqdefault.jpg';
+      img.loading = 'lazy';
+
       const meta = document.createElement('div');
-      meta.className = 'rel-meta';
+      meta.className = 'vmeta';
       const t = document.createElement('div');
-      t.className = 'rel-title';
-      t.textContent = 'Loading...';
+      t.className = 'vt';
+      t.textContent = v.t;
       const s = document.createElement('div');
-      s.className = 'rel-stats';
-      s.setAttribute('data-yid', yid);
-      s.innerHTML = '&nbsp;';
+      s.className = 'vs';
+      s.textContent = fmt(v.views) + ' views / ' + fmt(v.likes) + ' likes';
+      const p = document.createElement('span');
+      p.className = 'vplay';
+      p.textContent = '&#9658; Play';
+
       meta.appendChild(t);
       meta.appendChild(s);
-      a.appendChild(img);
-      a.appendChild(meta);
-      container.appendChild(a);
-    }
+      meta.appendChild(p);
 
-    function appendDownloadTile(container, name, href, iconSrc, countId, countText) {
-      const a = document.createElement('a');
-      a.className = 'dl-tile';
-      a.href = href;
-      a.target = '_blank';
-      a.rel = 'noopener';
-      const img = document.createElement('img');
-      img.className = 'dl-ico';
-      img.alt = name + ' logo';
-      img.src = iconSrc;
-      const nm = document.createElement('div');
-      nm.className = 'dl-name';
-      nm.textContent = name;
-      const ct = document.createElement('div');
-      ct.className = 'dl-count';
-      ct.id = countId;
-      ct.textContent = countText;
-      a.appendChild(img);
-      a.appendChild(nm);
-      a.appendChild(ct);
-      container.appendChild(a);
-    }
+      card.appendChild(img);
+      card.appendChild(meta);
 
-    function buildRelated() {
-      const rel1 = orig[0].querySelector('.related');
-      const pl = document.createElement('a');
-      pl.className = 'rel-item rel-playlist rel-sortable';
-      pl.href = 'https://www.youtube.com/playlist?list=' + PLAYLIST.id;
-      pl.target = '_blank';
-      pl.rel = 'noopener';
-      const plImg = document.createElement('img');
-      plImg.className = 'rel-thumb';
-      plImg.alt = '';
-      plImg.src = 'https://i.ytimg.com/vi/' + PLAYLIST.videos[0] + '/hqdefault.jpg';
-      const plMeta = document.createElement('div');
-      plMeta.className = 'rel-meta';
-      const plTitle = document.createElement('div');
-      plTitle.className = 'rel-title';
-      plTitle.textContent = 'Angry Birds Epic Randomizer Mod (Playlist)';
-      const plStats = document.createElement('div');
-      plStats.className = 'rel-stats js-playlist-title';
-      plStats.innerHTML = PLAYLIST.count + ' videos &middot; ' + fmt(PLAYLIST.views) + ' views &middot; ' + fmt(PLAYLIST.likes) + ' likes';
-      plMeta.appendChild(plTitle);
-      plMeta.appendChild(plStats);
-      pl.appendChild(plImg);
-      pl.appendChild(plMeta);
-      rel1.appendChild(pl);
-      ['7bxRdLClzxI', '799KYQQbFII'].forEach(y => appendRel(rel1, y));
-      VIDEO1_LINKS.forEach(y => appendRel(rel1, y));
-
-      const related2 = orig[1].querySelector('.related');
-      const dLabel = document.createElement('div');
-      dLabel.className = 'rel-group-label';
-      dLabel.textContent = 'Download the mod';
-      related2.appendChild(dLabel);
-      const dlRow = document.createElement('div');
-      dlRow.className = 'dl-row';
-      appendDownloadTile(dlRow, 'Modrinth', 'https://modrinth.com/mod/create-deep-seas', 'https://cdn.simpleicons.org/modrinth', 'dl-modrinth', '325K+ downloads');
-      appendDownloadTile(dlRow, 'CurseForge', 'https://www.curseforge.com/minecraft/mc-mods/create-deep-seas', 'https://cdn.simpleicons.org/curseforge', 'dl-curseforge', '716K+ downloads');
-      related2.appendChild(dlRow);
-      VIDEO2_LINKS.forEach(y => appendRel(related2, y));
-    }
-    buildRelated();
-
-    async function loadModDownloads() {
-      try {
-        const res = await fetch('https://api.modrinth.com/v2/project/create-deep-seas');
-        const j = await res.json();
-        const n = Number(j.downloads) || 0;
-        document.querySelectorAll('#dl-modrinth').forEach(el => { el.textContent = fmt(n) + ' downloads'; });
-      } catch (e) {}
-    }
-
-    async function loadCurseForgeCount() {
-      try {
-        const badge = 'https://mod-download-count-badge.vercel.app?curseforge=1533137&format=json';
-        const url = 'https://img.shields.io/endpoint?url=' + encodeURIComponent(badge);
-        const res = await fetch(url);
-        const svg = await res.text();
-        const m = svg.match(/aria-label="Downloads:\s*([\d,]+)"/);
-        const raw = m ? m[1].replace(/,/g, '') : '';
-        const n = Number(raw);
-        if (n > 0) document.querySelectorAll('#dl-curseforge').forEach(el => { el.textContent = fmt(n) + ' downloads'; });
-      } catch (e) {}
-    }
-    orig.slice(-3).forEach(b => track.insertBefore(b.cloneNode(true), track.firstChild));
-
-    const all = Array.from(track.children);
-
-    let W = 3;
-    let busy = false;
-
-    function apply(w, snap) {
-      track.style.transition = snap ? 'none' : 'transform 0.5s ease';
-      track.style.transform = 'translateX(' + (-w * step()) + 'px)';
-      W = w;
-    }
-
-    function layout() {
-      const vh = orig[0].querySelector('.video').offsetHeight;
-      const mid = 20 + vh / 2;
-      prevBtn.style.top = mid + 'px';
-      nextBtn.style.top = mid + 'px';
-      fadeL.style.top = '20px';
-      fadeR.style.top = '20px';
-      fadeL.style.height = vh + 'px';
-      fadeR.style.height = vh + 'px';
-    }
-
-    function go(dir) {
-      if (busy) return;
-      busy = true;
-      const W2 = W + dir;
-      if (W2 > 9) apply(3, true);
-      else if (W2 < 0) apply(6, true);
-      else apply(W2, false);
-      setTimeout(() => { busy = false; }, 500);
-    }
-
-    function openBox(el) {
-      const video = el.querySelector('.video');
-      const type = video.getAttribute('data-embed');
-      const box = document.querySelector('.overlay .active-box');
-      const iframe = document.getElementById('overlay-embed');
-      const wrap = document.getElementById('chev-wrap');
-      const overlay = document.getElementById('overlay');
-
-      if (type === 'chess') {
-        box.classList.add('chess');
-        iframe.style.display = 'none';
-        wrap.style.display = 'block';
-        overlay.classList.add('active');
-        overlay.scrollTop = 0;
-        bootChess();
-      } else if (type === 'snake') {
-        box.classList.remove('chess');
-        wrap.style.display = 'none';
-        iframe.style.display = 'block';
-        iframe.src = 'snake/snake.html';
-        overlay.classList.add('active');
-        overlay.scrollTop = 0;
-      } else {
-        box.classList.remove('chess');
-        wrap.style.display = 'none';
-        iframe.style.display = 'block';
-        const src = type || (video.querySelector('iframe') || {}).src || '';
-        iframe.src = src;
-        overlay.classList.add('active');
-        overlay.scrollTop = 0;
-      }
-    }
-
-    function closeBox(e) {
-      if (e.target === e.currentTarget || e.target.classList.contains('overlay-close')) {
-        document.getElementById('overlay').classList.remove('active');
-        document.getElementById('overlay-embed').style.display = 'none';
-        document.getElementById('overlay-embed').src = '';
-        document.getElementById('chev-wrap').style.display = 'none';
-      }
-    }
-
-    let chessBooted = false;
-    function bootChess() {
-      if (chessBooted) return;
-      chessBooted = true;
-      const script = document.createElement('script');
-      script.src = 'https://cjrtnc.leaningtech.com/4.3/loader.js';
-      script.onload = async () => {
-        try {
-          await window.cheerpjInit({ version: 17, status: "splash" });
-          const resp = await fetch('chess/chess-minimax.jar');
-          const buf = await resp.arrayBuffer();
-          window.cheerpOSAddStringFile('/str/chess-minimax.jar', new Uint8Array(buf));
-          window.cheerpjCreateDisplay(-1, -1, document.getElementById('chev-container'));
-          document.getElementById('chev-loading').style.display = 'none';
-          await window.cheerpjRunMain('ChessGame', '/str/chess-minimax.jar');
-        } catch (err) {
-          console.error('CHEERPJ_BOOT_ERROR', err);
-          document.getElementById('chev-loading').textContent =
-            'Failed to start Java engine: ' + (err && (err.message || err.stack || err));
-        }
-      };
-      document.head.appendChild(script);
-    }
-
-    all.forEach(box => {
-      box.addEventListener('mouseenter', () => {
-        clearTimeout(box._timer);
-        box._timer = setTimeout(() => box.classList.add('expanded'), 700);
+      card.addEventListener('click', () => {
+        document.getElementById(playerId).src = 'https://www.youtube.com/embed/' + v.id + '?autoplay=1';
       });
-      box.addEventListener('mouseleave', () => {
-        clearTimeout(box._timer);
-        box.classList.remove('expanded');
-      });
-      box.addEventListener('click', (e) => {
-        if (e.target.closest('.rel-item')) return;
-        clearTimeout(box._timer);
-        box.classList.remove('expanded');
-        openBox(box);
-      });
+
+      el.appendChild(card);
     });
+  }
 
-    function fmt(n) {
-      n = Number(n);
-      if (isNaN(n)) return '0';
-      if (n >= 1e6) return (n / 1e6).toFixed(1).replace(/\.0$/, '') + 'M';
-      if (n >= 1e3) return (n / 1e3).toFixed(1).replace(/\.0$/, '') + 'K';
-      return String(n);
-    }
+  buildStrip('ds-strip', 'ds-player', VIDEOS.ds);
+  buildStrip('ab-strip', 'ab-player', VIDEOS.ab);
+  document.getElementById('ds-player').src = 'https://www.youtube.com/embed/' + VIDEOS.ds[0].id;
+  document.getElementById('ab-player').src = 'https://www.youtube.com/embed/' + VIDEOS.ab[0].id;
 
-    async function loadRelated() {
-      const rows = Array.prototype.slice.call(document.querySelectorAll('.rel-item[data-yid]'));
-      const ids = rows.map(r => r.getAttribute('data-yid'));
-      if (!ids.length) return;
+  async function loadModDownloads() {
+    try {
+      const res = await fetch('https://api.modrinth.com/v2/project/create-deep-seas');
+      const j = await res.json();
+      const n = Number(j.downloads) || 0;
+      if (n > 0) document.getElementById('dl-modrinth').textContent = fmt(n) + ' downloads';
+    } catch (e) {}
+  }
+  async function loadCurseForgeCount() {
+    try {
+      const badge = 'https://mod-download-count-badge.vercel.app?curseforge=1533137&format=json';
+      const url = 'https://img.shields.io/endpoint?url=' + encodeURIComponent(badge);
+      const res = await fetch(url);
+      const svg = await res.text();
+      const m = svg.match(/aria-label="Downloads:\s*([\d,]+)"/);
+      const raw = m ? m[1].replace(/,/g, '') : '';
+      const n = Number(raw);
+      if (n > 0) document.getElementById('dl-curseforge').textContent = fmt(n) + ' downloads';
+    } catch (e) {}
+  }
+  loadModDownloads();
+  loadCurseForgeCount();
 
-      for (const row of rows) {
-        const id = row.getAttribute('data-yid');
-        const c = RELATED_COUNTS[id] || {};
-        try {
-          const res = await fetch('https://noembed.com/embed?url=' + encodeURIComponent('https://www.youtube.com/watch?v=' + id));
-          const j = await res.json();
-          row.querySelector('.rel-title').textContent = j.title;
-          row.querySelector('.rel-thumb').src = j.thumbnail_url || 'https://i.ytimg.com/vi/' + id + '/hqdefault.jpg';
-        } catch (e) {
-          row.querySelector('.rel-title').textContent = 'https://youtu.be/' + id;
-        }
-        if (c.views !== undefined) {
-          row.querySelector('.rel-stats').innerHTML =
-            fmt(c.views) + ' views <span class="dim">|</span> ' +
-            fmt(c.likes) + ' likes';
-        } else {
-          row.querySelector('.rel-stats').innerHTML = '&nbsp;';
-        }
-      }
-    }
-
-    function sortKey(el) {
-      if (el.classList.contains('rel-playlist')) return { views: PLAYLIST.views, likes: PLAYLIST.likes };
-      const yid = el.getAttribute('data-yid');
-      const c = yid ? RELATED_COUNTS[yid] : null;
-      return c ? { views: c.views, likes: c.likes } : { views: -1, likes: -1 };
-    }
-
-    function sortRelated() {
-      document.querySelectorAll('.related').forEach(rel => {
-        const items = Array.from(rel.querySelectorAll('.rel-sortable'));
-        if (items.length < 2) return;
-        const anchor = items[items.length - 1].nextSibling;
-        items.forEach(el => el.remove());
-        items.sort((a, b) => {
-          const ka = sortKey(a), kb = sortKey(b);
-          return kb.views - ka.views || kb.likes - ka.likes;
-        });
-        items.forEach(el => rel.insertBefore(el, anchor));
-      });
-    }
-
-    async function refreshStats() {
-      const rows = Array.prototype.slice.call(document.querySelectorAll('.rel-item[data-yid]'));
-      const allIds = Array.from(new Set(rows.map(r => r.getAttribute('data-yid'))));
-
-      const setStat = (id, views, likes) => {
-        document.querySelectorAll('.rel-stats[data-yid="' + id + '"]').forEach(el => {
-          el.innerHTML = fmt(views) + ' views <span class="dim">|</span> ' + fmt(likes) + ' likes';
-        });
-      };
-
+  let chessBooted = false;
+  function bootChess() {
+    if (chessBooted) return;
+    chessBooted = true;
+    document.getElementById('chess-poster').style.display = 'none';
+    document.getElementById('chess-loading').style.display = 'block';
+    const script = document.createElement('script');
+    script.src = 'https://cjrtnc.leaningtech.com/4.3/loader.js';
+    script.onload = async () => {
       try {
-        const toFetch = Array.from(new Set(allIds.concat(PLAYLIST.videos)));
-        const liveCounts = {};
-        for (let i = 0; i < toFetch.length; i += 50) {
-          const chunk = toFetch.slice(i, i + 50);
-          const data = await ytGet('videos', { part: 'statistics', id: chunk.join(',') });
-          (data.items || []).forEach(it => {
-            const views = parseInt(it.statistics.viewCount, 10) || 0;
-            const likes = parseInt(it.statistics.likeCount, 10) || 0;
-            liveCounts[it.id] = { views, likes };
-            RELATED_COUNTS[it.id] = { views, likes };
-            setStat(it.id, views, likes);
-          });
-        }
-
-        const livePl = PLAYLIST.videos.map(id => liveCounts[id] || RELATED_COUNTS[id]).filter(Boolean);
-        if (livePl.length || PLAYLIST.videos.length) {
-          PLAYLIST.count = PLAYLIST.videos.length || livePl.length;
-          PLAYLIST.views = livePl.reduce((s, v) => s + v.views, 0);
-          PLAYLIST.likes = livePl.reduce((s, v) => s + v.likes, 0);
-          const t = document.querySelector('.js-playlist-title');
-          if (t) t.innerHTML = PLAYLIST.count + ' videos &middot; ' + fmt(PLAYLIST.views) + ' views &middot; ' + fmt(PLAYLIST.likes) + ' likes';
-          const boxStat = document.querySelector('.box[data-stat="1"] .stats');
-          if (boxStat) boxStat.innerHTML = '<span>' + fmt(PLAYLIST.views) + ' views</span><span>' + fmt(PLAYLIST.likes) + ' likes</span>';
-        }
-
-        sortRelated();
-      } catch (e) {
-        console.warn('YouTube stats refresh failed; using cached numbers.', e);
+        await window.cheerpjInit({ version: 17, status: "splash" });
+        const resp = await fetch('chess/chess-minimax.jar');
+        const buf = await resp.arrayBuffer();
+        window.cheerpOSAddStringFile('/str/chess-minimax.jar', new Uint8Array(buf));
+        document.getElementById('chess-loading').style.display = 'none';
+        document.getElementById('chess-container').style.display = 'block';
+        window.cheerpjCreateDisplay(-1, -1, document.getElementById('chess-container'));
+        await window.cheerpjRunMain('ChessGame', '/str/chess-minimax.jar');
+      } catch (err) {
+        console.error('CHEERPJ_BOOT_ERROR', err);
+        document.getElementById('chess-loading').textContent =
+          'Failed to start Java engine: ' + (err && (err.message || err.stack || err));
       }
-    }
-
-    layout();
-    apply(W, true);
-    loadRelated();
-    sortRelated();
-    refreshStats();
-    loadModDownloads();
-    loadCurseForgeCount();
-    window.addEventListener('resize', layout);
-  </script>
+    };
+    document.head.appendChild(script);
+  }
+  document.getElementById('chess-poster').addEventListener('click', bootChess);
+</script>
 </body>
 </html>
