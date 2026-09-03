@@ -6,16 +6,13 @@
 <title>NullTronPrime - Portfolio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%2358a6ff'/%3E%3Ctext x='50' y='70' font-size='60' text-anchor='middle' fill='%230d1117' font-family='Arial'%3ENT%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%2358a6ff'/%3E%3Ctext x='50' y='70' font-size='60' text-anchor='middle' fill='%230d1117' font-family='Arial'%3ENT%3C/text%3E%3C/svg%3E">
 <style>
   :root {
     --bg: #0d1117;
-    --panel: #161b22;
-    --card: #161b22;
-    --border: #30363d;
     --text: #e6edf3;
-    --muted: #8b949e;
+    --muted: #9da7b3;
     --accent: #58a6ff;
   }
   * { box-sizing: border-box; }
@@ -29,241 +26,105 @@
   a { color: var(--accent); text-decoration: none; }
   a:hover { text-decoration: underline; }
 
+  .layout { display: flex; min-height: 100vh; }
+
   .sidebar {
-    position: fixed;
-    top: 0; left: 0;
     width: 280px;
+    flex: 0 0 280px;
+    padding: 48px 28px;
+    position: sticky;
+    top: 0;
     height: 100vh;
     overflow-y: auto;
-    background: var(--panel);
-    border-right: 1px solid var(--border);
-    padding: 40px 28px;
-    display: flex;
-    flex-direction: column;
   }
-  .sidebar .name {
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--text);
-  }
-  .sidebar .brand-desc {
-    color: var(--muted);
-    font-size: 14px;
-    margin: 4px 0 24px;
-  }
-  .nav {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    flex: 1;
-  }
+  .sidebar .name { font-size: 26px; font-weight: 800; color: var(--text); }
+  .sidebar .brand-desc { color: var(--muted); font-size: 14px; margin-top: 6px; margin-bottom: 32px; }
+  .nav { list-style: none; margin: 0; padding: 0; }
   .nav li { margin: 2px 0; }
   .nav a {
     display: block;
-    padding: 7px 12px;
-    color: var(--text);
-    border-radius: 6px;
+    padding: 6px 0;
+    color: var(--muted);
     font-size: 15px;
   }
-  .nav a:hover {
-    background: #1f2630;
-    color: var(--accent);
-    text-decoration: none;
-  }
-  .sidebar .contact {
-    margin-top: 24px;
-    border-top: 1px solid var(--border);
-    padding-top: 18px;
-    font-size: 13px;
-    color: var(--muted);
-  }
-  .sidebar .contact a { display: inline-block; margin-top: 4px; }
+  .nav a:hover { color: var(--accent); text-decoration: none; }
+  .nav a.active { color: var(--accent); }
+  .sidebar .contact { margin-top: 32px; color: var(--muted); font-size: 13px; }
+  .sidebar .contact div { margin-top: 4px; }
 
-  .main {
-    margin-left: 280px;
-    padding: 48px 56px 80px;
-    max-width: 980px;
+  .content {
+    flex: 1 1 auto;
+    padding: 48px 40px 80px;
+    max-width: 860px;
   }
-  section { padding: 28px 0; scroll-margin-top: 32px; }
-  section + section { border-top: 1px solid var(--border); }
+
+  .hero { margin-bottom: 48px; }
+  .hero .hero-name { font-size: 44px; font-weight: 800; margin: 0 0 16px; }
+  .hero .hero-tag { color: var(--muted); font-size: 16px; max-width: 680px; margin: 0 0 20px; }
+  .hero .hero-links { display: flex; gap: 18px; flex-wrap: wrap; }
+  .hero .hero-links a { font-size: 14px; font-weight: 600; }
+  .hero .hero-links a:hover { text-decoration: underline; }
+
+  section { padding: 36px 0; }
   section h2 {
-    font-size: 22px;
+    font-size: 26px;
     font-weight: 700;
-    margin: 0 0 6px;
-    color: var(--text);
+    margin: 0 0 8px;
   }
-  section .section-sub {
-    color: var(--muted);
-    font-size: 14px;
-    margin: 0 0 20px;
-  }
-  .placeholder {
-    border: 1px dashed var(--border);
-    border-radius: 8px;
-    color: var(--muted);
-    padding: 40px;
-    text-align: center;
-    font-size: 14px;
-    background: var(--panel);
-  }
+  section .section-sub { color: var(--muted); font-size: 15px; margin: 0 0 16px; }
+  section p.lead { margin: 0 0 18px; color: var(--text); }
 
-  .embed-slot {
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    background: #000;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    margin-bottom: 18px;
-    overflow: hidden;
-    position: relative;
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .about-col h3 { font-size: 17px; font-weight: 700; margin: 0 0 8px; }
+  .about-col p { color: var(--muted); margin: 0; }
+
+  .mod-grid { margin-top: 18px; }
+  .mod-row {
+    padding: 12px 0;
+    border-bottom: 1px solid #21262d;
   }
-  .embed-slot iframe { width: 100%; height: 100%; border: 0; display: block; }
+  .mod-row:last-child { border-bottom: none; }
+  .mod-row .mt-name { font-weight: 600; font-size: 15px; }
+  .mod-row .mt-count { color: var(--accent); font-size: 13px; margin-top: 2px; }
+  .mod-row .mt-links { margin-top: 4px; font-size: 13px; }
+  .mod-row .mt-links span { color: var(--muted); }
+  .mod-row .mt-links a { margin-right: 14px; }
 
   .vstrip {
+    margin-top: 8px;
     display: flex;
-    gap: 12px;
+    gap: 18px;
     overflow-x: auto;
-    padding-bottom: 8px;
+    padding-bottom: 12px;
+    padding-top: 4px;
   }
-  .vcard {
-    flex: 0 0 240px;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-    cursor: pointer;
-  }
-  .vcard:hover { border-color: var(--accent); }
-  .vcard img { width: 100%; display: block; aspect-ratio: 16 / 9; object-fit: cover; }
-  .vcard .vmeta { padding: 8px 10px; }
-  .vcard .vt { font-size: 13px; font-weight: 600; line-height: 1.3; color: var(--text); }
-  .vcard .vs { font-size: 12px; color: var(--muted); margin-top: 4px; }
-  .vcard .vplay {
-    display: inline-block;
-    margin-left: 8px;
-    font-size: 12px;
-    color: var(--accent);
-  }
+  .vcard { flex: 0 0 220px; }
+  .vcard.video-click { cursor: pointer; }
+  .vcard img { width: 100%; display: block; aspect-ratio: 16 / 9; object-fit: cover; border: 1px solid #21262d; }
+  .vcard .vt { font-size: 13px; font-weight: 600; line-height: 1.35; margin-top: 8px; }
+  .vcard .vs { font-size: 12px; color: var(--muted); margin-top: 3px; }
+  .vcard .vplay { display: block; font-size: 12px; color: var(--accent); margin-top: 4px; }
 
-  .dl-row { display: flex; gap: 12px; margin-top: 18px; }
-  .dl-tile {
-    flex: 1 1 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    text-decoration: none;
-    color: inherit;
-    padding: 14px 10px;
-    border-radius: 8px;
-    background: var(--panel);
-    border: 1px solid var(--border);
-    text-align: center;
-  }
-  .dl-tile:hover { border-color: var(--accent); text-decoration: none; }
-  .dl-ico { width: 34px; height: 34px; object-fit: contain; }
-  .dl-name { font-size: 13px; font-weight: 600; color: var(--text); }
-  .dl-count { font-size: 12px; color: var(--accent); font-weight: 600; }
-
-  #chess-poster {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: #000;
-    cursor: pointer;
-    gap: 12px;
-  }
-  #chess-poster img { max-width: 100%; max-height: 100%; object-fit: contain; opacity: 0.75; }
-  #chess-poster .playlabel {
-    color: var(--text);
-    border: 1px solid var(--accent);
-    background: rgba(88,166,255,0.1);
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-  }
-  #chess-placeholder { text-align: center; color: var(--muted); padding: 60px 20px; }
-  #chess-loading { color: var(--muted); padding: 20px; text-align: center; }
-  #chess-container { width: 100%; height: 640px; background: #000; }
-  #chess-container canvas { max-width: 100% !important; }
-
-  .mod-badge { margin-top: 18px; }
-  .mod-badge a { font-size: 13px; }
-
-  .hero { padding: 40px 0 8px; }
-  .hero .hero-name { font-size: 40px; font-weight: 800; color: var(--text); margin: 0 0 12px; }
-  .hero .hero-tag { color: var(--muted); font-size: 16px; max-width: 700px; line-height: 1.6; margin: 0 0 16px; }
-  .hero .hero-links { display: flex; gap: 18px; }
-  .hero .hero-links a {
-    color: var(--accent);
-    border: 1px solid var(--accent);
-    padding: 8px 18px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-  }
-  .hero .hero-links a:hover { background: rgba(88,166,255,0.1); text-decoration: none; }
-
-  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 12px; }
-  .about-card {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 20px;
-  }
-  .about-card h3 { font-size: 16px; font-weight: 700; margin: 0 0 10px; color: var(--text); }
-  .about-card p { color: var(--muted); font-size: 14px; margin: 0; }
-
-  .mod-group { margin-top: 22px; }
-  .mod-group h3 { font-size: 15px; font-weight: 700; color: var(--text); margin: 0 0 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
-  .mod-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
-  .mod-tile {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 14px;
-  }
-  .mod-tile .mt-name { font-size: 14px; font-weight: 600; color: var(--text); }
-  .mod-tile .mt-links { display: flex; flex-direction: column; gap: 4px; }
-  .mod-tile .mt-links a { font-size: 13px; }
-  .mod-tile .mt-links a .ico { width: 14px; height: 14px; vertical-align: -2px; margin-right: 6px; }
-
-  .vcard.playlist .vthumb {
-    width: 100%; aspect-ratio: 16 / 9;
-    display: flex; align-items: center; justify-content: center;
-    background: #1f2630;
-    color: var(--accent);
-    font-size: 13px; font-weight: 700;
-  }
+  .footer { margin-top: 48px; color: var(--muted); font-size: 13px; }
 
   @media (max-width: 820px) {
-    .sidebar {
-      position: static;
-      width: 100%;
-      height: auto;
-      border-right: none;
-      border-bottom: 1px solid var(--border);
-    }
-    .main { margin-left: 0; padding: 24px 18px 60px; }
-    .vcard { flex: 0 0 200px; }
+    .layout { flex-direction: column; }
+    .sidebar { width: 100%; flex: none; position: static; height: auto; padding: 24px 20px; }
+    .content { padding: 20px 20px 60px; }
+    .about-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
+<div class="layout">
 
   <aside class="sidebar">
     <div class="name">NullTronPrime</div>
-    <div class="brand-desc">Game Mods, AI &amp; Python Projects</div>
+    <div class="brand-desc">Game mods, AI &amp; programming projects</div>
     <nav>
-      <ul class="nav">
+      <ul class="nav" id="nav">
         <li><a href="#welcome">Welcome</a></li>
+        <li><a href="#create">Create</a></li>
         <li><a href="#deep-seas">Create: Deep Seas</a></li>
         <li><a href="#arsenalists">Create: Arsenalists</a></li>
         <li><a href="#randomiser">Angry Birds Epic: Randomiser</a></li>
@@ -271,22 +132,23 @@
         <li><a href="#broken-rifts">Angry Birds Epic: Broken Rifts</a></li>
         <li><a href="#chess">Chess Engine</a></li>
         <li><a href="#ppo">PPO Training (Python)</a></li>
+        <li><a href="#fluid-sim">Fluid Sim (Rust)</a></li>
         <li><a href="#gol">Game of Life Simulator</a></li>
         <li><a href="#battleships">Battleships (CS50 Project)</a></li>
       </ul>
     </nav>
     <div class="contact">
-      <div>Contact</div>
-      <a href="https://github.com/NullTronPrime">GitHub</a><br>
-      <a href="https://www.youtube.com/@BigJim713">YouTube</a>
+      Contact
+      <div><a href="https://github.com/NullTronPrime">GitHub</a></div>
+      <div><a href="https://www.youtube.com/@BigJim713">YouTube</a></div>
     </div>
   </aside>
 
-  <main class="main">
+  <main class="content">
 
-    <div class="hero" id="top">
+    <div class="hero">
       <h1 class="hero-name">-(INSERT NAME HERE)-</h1>
-      <p class="hero-tag">Solo developer of Randomiser, co-developer of Create&nbsp;Deep&nbsp;Seas, part of the Create&nbsp;Arsenalists mod dev team, part of the All&nbsp;Stars development team, co-developer of the Broken&nbsp;Rifts mod.</p>
+      <p class="hero-tag">Solo developer of Randomiser, co-developer of Create Deep Seas, part of the Create Arsenalists mod dev team, part of the All Stars development team, co-developer of the Broken Rifts mod.</p>
       <div class="hero-links">
         <a href="#" target="_blank" rel="noopener">Resume</a>
       </div>
@@ -295,155 +157,96 @@
     <section id="welcome">
       <h2>Welcome</h2>
       <div class="about-grid">
-        <div class="about-card">
+        <div class="about-col">
           <h3>I love working with people on the games I play</h3>
           <p>Filler text to be added.</p>
         </div>
-        <div class="about-card">
+        <div class="about-col">
           <h3>I'm an adept programmer and I love learning</h3>
           <p>Filler text to be added.</p>
         </div>
       </div>
     </section>
 
+    <section id="create">
+      <h2>Create</h2>
+      <p class="lead">Filler text describing the Create mod series and modding work.</p>
+      <p class="lead">The Create projects on this page are Create: Deep Seas, Create: Arsenalists and the mods below.</p>
+    </section>
+
     <section id="deep-seas">
       <h2>Create: Deep Seas</h2>
-      <p class="section-sub">Video 2 - Create: Deep Seas mod showcase videos</p>
-      <div class="embed-slot">
-        <iframe id="ds-player" src="" allowfullscreen></iframe>
-      </div>
+      <p class="lead">Filler text describing Create: Deep Seas, the mod content and the videos below.</p>
       <div class="vstrip" id="ds-strip"></div>
-      <div class="dl-row">
-        <a class="dl-tile" href="https://modrinth.com/mod/create-deep-seas" target="_blank" rel="noopener">
-          <img class="dl-ico" src="https://cdn.simpleicons.org/modrinth" alt="Modrinth logo">
-          <div class="dl-name">Modrinth</div>
-          <div class="dl-count" id="dl-modrinth">Loading...</div>
-        </a>
-        <a class="dl-tile" href="https://www.curseforge.com/minecraft/mc-mods/create-deep-seas" target="_blank" rel="noopener">
-          <img class="dl-ico" src="https://cdn.simpleicons.org/curseforge" alt="CurseForge logo">
-          <div class="dl-name">CurseForge</div>
-          <div class="dl-count" id="dl-curseforge">Loading...</div>
-        </a>
-      </div>
     </section>
 
     <section id="arsenalists">
       <h2>Create: Arsenalists</h2>
-      <p class="section-sub">Create: Arsenalists is a team. Description of the team and its work goes here (fill in).</p>
-      <div class="mod-group">
-        <h3>Mods</h3>
-        <div class="mod-grid" id="ars-mod-grid"></div>
-      </div>
+      <p class="lead">Create: Arsenalists is a team. Filler text describing the team and its mods.</p>
+      <div class="mod-grid" id="ars-mods"></div>
     </section>
 
     <section id="randomiser">
       <h2>Angry Birds Epic: Randomiser</h2>
-      <p class="section-sub">Video 1 - Angry Birds Epic Randomizer mod videos</p>
-      <div class="embed-slot">
-        <iframe id="ab-player" src="" allowfullscreen></iframe>
-      </div>
+      <p class="lead">Filler text about the Angry Birds Epic Randomiser mod and its content.</p>
       <div class="vstrip" id="ab-strip"></div>
     </section>
 
     <section id="all-stars">
       <h2>Angry Birds Epic: All Stars</h2>
-      <p class="section-sub">All Stars videos and playlists</p>
-      <div class="embed-slot">
-        <iframe id="as-player" src="" allowfullscreen></iframe>
-      </div>
+      <p class="lead">Filler text about the Angry Birds Epic All Stars mod.</p>
       <div class="vstrip" id="as-strip"></div>
     </section>
 
     <section id="broken-rifts">
       <h2>Angry Birds Epic: Broken Rifts</h2>
-      <p class="section-sub">Broken Rifts videos</p>
-      <div class="embed-slot">
-        <iframe id="br-player" src="" allowfullscreen></iframe>
-      </div>
+      <p class="lead">Filler text about the Angry Birds Epic Broken Rifts mod.</p>
       <div class="vstrip" id="br-strip"></div>
     </section>
 
     <section id="chess">
       <h2>Chess Engine</h2>
-      <p class="section-sub">Java minimax chess engine with Zobrist hashing</p>
-      <div class="embed-slot">
-        <div id="chess-poster">
-          <img src="chess/thumbnail.png" alt="Chess engine preview">
-          <div class="playlabel">Run Chess Engine</div>
-        </div>
-        <div id="chess-placeholder" style="display:none"></div>
-        <div id="chess-loading" style="display:none">Loading Java chess engine... (first load can take a minute)</div>
-        <div id="chess-container" style="display:none"></div>
+      <p class="lead">A Java minimax chess engine with Zobrist hashing, playable in the browser.</p>
+      <a href="#" onclick="bootChessFromLink(event)" id="chess-link">Run Chess Engine</a>
+      <div id="chess-running" style="display:none; margin-top:12px;">
+        <div id="chess-loading">Loading Java chess engine... (first load can take a minute)</div>
+        <div id="chess-container"></div>
       </div>
     </section>
 
     <section id="ppo">
       <h2>PPO Training (Python)</h2>
-      <p class="section-sub">Proximal Policy Optimization pipeline written with explicit numpy gradients</p>
-      <div class="placeholder">PPO training pipeline details coming soon.</div>
+      <p class="lead">Proximal Policy Optimization pipeline written with explicit numpy gradients. Filler text to be added.</p>
+    </section>
+
+    <section id="fluid-sim">
+      <h2>Fluid Sim (Rust)</h2>
+      <p class="lead">A fluid simulation written in Rust. Filler text to be added.</p>
+      <p><a href="https://github.com/NullTronPrime/fluidsimrust" target="_blank" rel="noopener">GitHub: fluidsimrust</a></p>
     </section>
 
     <section id="gol">
       <h2>Game of Life Simulator</h2>
-      <div class="placeholder">Content coming soon.</div>
+      <p class="lead">A Conway's Game of Life simulator. Filler text to be added.</p>
+      <p><a href="https://github.com/NullTronPrime/gameoflifeanalysis" target="_blank" rel="noopener">GitHub: gameoflifeanalysis</a></p>
     </section>
 
     <section id="battleships">
       <h2>Battleships (CS50 Project)</h2>
-      <div class="placeholder">Content coming soon.</div>
+      <p class="lead">Battleships project made for CS50. Filler text to be added.</p>
+      <p><a href="https://github.com/NullTronPrime/Battleships--VARIANTS" target="_blank" rel="noopener">GitHub: Battleships Variants</a></p>
     </section>
 
+    <div class="footer">
+      NullTronPrime &middot; Portfolio
+    </div>
+
   </main>
+</div>
 
 <script>
-  const VIDEOS = {
-    ds: [
-      { id: 'w8MAHWvhNpg', t: 'This Create Aeronautics Addon is TERRIFYING', views: 228262, likes: 6505 },
-      { id: '5RnzghFDqww', t: 'I Made A WORKING SUBMARINE in Minecraft (Create: Aeronautics)', views: 66973, likes: 1787 },
-      { id: 'ePcBLtDu7vM', t: 'These Aeronautics Addons Have Working Submarines!?', views: 82170, likes: 3018 },
-      { id: 'LNGwQgUjL7M', t: 'Airlock Test (Create Aeronautics:Deep See Prep)', views: 70192, likes: 2348 },
-      { id: '1foo4JKZPBE', t: 'Create Deep Seas Mod', views: 73816, likes: 3017 },
-      { id: 'R2_z213M8mU', t: 'I Built a Working BATTLE SUBMARINE With CREATE: AERONAUTICS!', views: 20069, likes: 599 },
-      { id: '3KJ8B8r_8qA', t: 'HOW TO BUILD SHIPS IN CREATE AERONAUTICS | CREATE MOD | MINECRAFT', views: 16355, likes: 779 },
-      { id: 'Yhg76TILLTA', t: 'Technical test of the sail for the Create Deep Seas mod', views: 10560, likes: 432 },
-      { id: '6mmuLgR6srY', t: 'Submarines are fun (Aeronautics)', views: 5664, likes: 205 },
-      { id: 'AkFfycZuoS8', t: 'WORKING Attack Submarine with Create Aeronautics', views: 3998, likes: 133 },
-      { id: 'V6MoJcBu8yQ', t: 'Test Driving My Submersible! Create: Deep Seas!', views: 80, likes: 4 }
-    ],
-    ab: [
-      { id: '7bxRdLClzxI', t: 'I tried the Angry Birds Epic Randomizer', views: 96494, likes: 3318 },
-      { id: '799KYQQbFII', t: 'Can You Beat Angry Birds Epic If Every Level Is Randomized? - Part 1', views: 4804, likes: 90 },
-      { id: '89mRuQX4TTs', t: 'The Angry Birds Epic Randomiser Experience...', views: 1293, likes: 38 },
-      { id: 'vcl3qRJMMsc', t: 'Angry Birds Epic Randomized mod - Part 1 | No Commentary | Gameplay', views: 2828, likes: 62 },
-      { id: 'jDOaDcaAiuE', t: '(FILLER) Angry Birds Epic But All The Pigs Are Randomised - Cave 2', views: 328, likes: 10 },
-      { id: 'VxM9ib83T8s', t: 'Things get interesting! | Angry Birds Epic Randomizer Part 3', views: 296, likes: 9 },
-      { id: 'NS6CfEI4MR4', t: 'LIVE - Playing Angry Birds Epic Randomizer Mod On PC!', views: 204, likes: 5 }
-    ],
-    as: [
-      { id: 'oOUYWHTGgPY', t: 'Angry Birds Epic: All Stars Trailer' },
-      { list: 'PLdkybawjWcB_ORHAz0fcKLjZqOzXwUJHd', t: 'All Stars Playlist 1' },
-      { id: 'nWHNNADX-bU', t: 'Angry Birds Epic (All Stars): NEW CLASS UPGRADE! (English Ver)' },
-      { list: 'PL3YcdTcy0LJIAJbR9rHGMy56FuMj1F5dO', t: 'All Stars Playlist 2' },
-      { list: 'PLdHlIyNH5la0DM7e6SoLHGZSqwTlX0v1w', t: 'All Stars Playlist 3' },
-      { list: 'PLi6Osa4ODYSTjaCPSfIYxZDQduTPywbew', t: 'All Stars Playlist 4' },
-      { list: 'PL0UddEIVlOmpA4_Jmg0LWLFpFwrMnfWqC', t: 'All Stars Playlist 5' }
-    ],
-    br: [
-      { id: 'EXD31HyCTzw', t: 'Angry Birds Epic: Broken Rifts Is INSANE!' },
-      { id: 'ET9gOWZ49Jw', t: 'Angry Birds Epic : Broken Rifts (Part 1)' },
-      { id: 'VxhpX6u5zTQ', t: 'Angry Birds Epic: Broken Rifts. New Enemies' },
-      { id: 'HXvWrtqsAI8', t: 'Angry Birds Epic: Broken Rifts Cutscene WIP' },
-      { id: '0V0185q5R60', t: 'ABE: Broken Rifts QnA. Edited by @Skulky277' },
-      { id: 'EBx7AE_a0ow', t: 'Angry Birds Epic: Broken Rifts. The Constructs' }
-    ]
-  };
-
-  const ARS_MODS = [
-    { name: 'Create: Radars', modrinth: 'https://modrinth.com/mod/create-radars', curse: 'https://www.curseforge.com/minecraft/mc-mods/create-radars' },
-    { name: 'Create: Energy Cannons', modrinth: 'https://modrinth.com/mod/create-energy-cannons', curse: 'https://www.curseforge.com/minecraft/mc-mods/create-energy-cannons' },
-    { name: 'Create: Radars (Refabricated)', modrinth: 'https://modrinth.com/mod/create-radars-refabricated' },
-    { name: 'Create: Clothes', modrinth: 'https://modrinth.com/mod/create-clothes', curse: 'https://www.curseforge.com/minecraft/mc-mods/create-clothes' }
-  ];
+  const YOUTUBE_API_KEY = 'AIzaSyATrTPQrtzddEGcbiX-XRJj-yIB1w9O0vw';
+  const YT_BASE = 'https://www.googleapis.com/youtube/v3';
 
   function fmt(n) {
     n = Number(n);
@@ -453,132 +256,218 @@
     return String(n);
   }
 
-  function buildStrip(elId, playerId, list) {
+  const PLAYLISTS = {
+    'PLdkybawjWcB_ORHAz0fcKLjZqOzXwUJHd': 'All Stars Playlist 1',
+    'PL3YcdTcy0LJIAJbR9rHGMy56FuMj1F5dO': 'All Stars Playlist 2',
+    'PLdHlIyNH5la0DM7e6SoLHGZSqwTlX0v1w': 'All Stars Playlist 3',
+    'PLi6Osa4ODYSTjaCPSfIYxZDQduTPywbew': 'All Stars Playlist 4',
+    'PL0UddEIVlOmpA4_Jmg0LWLFpFwrMnfWqC': 'All Stars Playlist 5',
+    'PLPuNYOmdRO8w': 'Angry Birds Epic Randomizer Mod (Playlist)'
+  };
+
+  const STRIPS = {
+    ds: [{ id: 'w8MAHWvhNpg', t: 'This Create Aeronautics Addon is TERRIFYING', views: 228262, likes: 6505 },
+      { id: '5RnzghFDqww', t: 'I Made A WORKING SUBMARINE in Minecraft (Create: Aeronautics)', views: 66973, likes: 1787 },
+      { id: 'ePcBLtDu7vM', t: 'These Aeronautics Addons Have Working Submarines!?', views: 82170, likes: 3018 },
+      { id: 'LNGwQgUjL7M', t: 'Airlock Test (Create Aeronautics:Deep See Prep)', views: 70192, likes: 2348 },
+      { id: '1foo4JKZPBE', t: 'Create Deep Seas Mod', views: 73816, likes: 3017 },
+      { id: 'R2_z213M8mU', t: 'I Built a Working BATTLE SUBMARINE With CREATE: AERONAUTICS!', views: 20069, likes: 599 },
+      { id: '3KJ8B8r_8qA', t: 'HOW TO BUILD SHIPS IN CREATE AERONAUTICS | CREATE MOD | MINECRAFT', views: 16355, likes: 779 },
+      { id: 'Yhg76TILLTA', t: 'Technical test of the sail for the Create Deep Seas mod', views: 10560, likes: 432 },
+      { id: '6mmuLgR6srY', t: 'Submarines are fun (Aeronautics)', views: 5664, likes: 205 },
+      { id: 'AkFfycZuoS8', t: 'WORKING Attack Submarine with Create Aeronautics', views: 3998, likes: 133 },
+      { id: 'V6MoJcBu8yQ', t: 'Test Driving My Submersible! Create: Deep Seas!', views: 80, likes: 4 }],
+    ab: [{ id: '7bxRdLClzxI', t: 'I tried the Angry Birds Epic Randomizer', views: 96494, likes: 3318 },
+      { id: '799KYQQbFII', t: 'Can You Beat Angry Birds Epic If Every Level Is Randomized? - Part 1', views: 4804, likes: 90 },
+      { id: '89mRuQX4TTs', t: 'The Angry Birds Epic Randomiser Experience...', views: 1293, likes: 38 },
+      { id: 'vcl3qRJMMsc', t: 'Angry Birds Epic Randomized mod - Part 1 | No Commentary | Gameplay', views: 2828, likes: 62 },
+      { id: 'jDOaDcaAiuE', t: '(FILLER) Angry Birds Epic But All The Pigs Are Randomised - Cave 2', views: 328, likes: 10 },
+      { id: 'VxM9ib83T8s', t: 'Things get interesting! | Angry Birds Epic Randomizer Part 3', views: 296, likes: 9 },
+      { id: 'NS6CfEI4MR4', t: 'LIVE - Playing Angry Birds Epic Randomizer Mod On PC!', views: 204, likes: 5 }],
+    as: [{ id: 'oOUYWHTGgPY', t: 'Angry Birds Epic: All Stars Trailer' },
+      { list: 'PLdkybawjWcB_ORHAz0fcKLjZqOzXwUJHd', t: 'All Stars Playlist 1' },
+      { id: 'nWHNNADX-bU', t: 'Angry Birds Epic (All Stars): NEW CLASS UPGRADE! (English Ver)' },
+      { list: 'PL3YcdTcy0LJIAJbR9rHGMy56FuMj1F5dO', t: 'All Stars Playlist 2' },
+      { list: 'PLdHlIyNH5la0DM7e6SoLHGZSqwTlX0v1w', t: 'All Stars Playlist 3' },
+      { list: 'PLi6Osa4ODYSTjaCPSfIYxZDQduTPywbew', t: 'All Stars Playlist 4' },
+      { list: 'PL0UddEIVlOmpA4_Jmg0LWLFpFwrMnfWqC', t: 'All Stars Playlist 5' }],
+    br: [{ id: 'EXD31HyCTzw', t: 'Angry Birds Epic: Broken Rifts Is INSANE!' },
+      { id: 'ET9gOWZ49Jw', t: 'Angry Birds Epic : Broken Rifts (Part 1)' },
+      { id: 'VxhpX6u5zTQ', t: 'Angry Birds Epic: Broken Rifts. New Enemies' },
+      { id: 'HXvWrtqsAI8', t: 'Angry Birds Epic: Broken Rifts Cutscene WIP' },
+      { id: '0V0185q5R60', t: 'ABE: Broken Rifts QnA. Edited by @Skulky277' },
+      { id: 'EBx7AE_a0ow', t: 'Angry Birds Epic: Broken Rifts. The Constructs' }]
+  };
+
+  function buildStrip(elId, list) {
     const el = document.getElementById(elId);
-    list.forEach((v, i) => {
+    list.forEach(v => {
       const card = document.createElement('div');
-      card.className = 'vcard' + (v.list ? ' playlist' : '');
-
+      card.className = 'vcard video-click';
+      let img = document.createElement('img');
+      img.alt = '';
+      img.loading = 'lazy';
       if (v.list) {
-        const thumb = document.createElement('div');
-        thumb.className = 'vthumb';
-        thumb.textContent = 'Playlist';
-        card.appendChild(thumb);
+        img.id = 'pl-thumb-' + v.list;
+        img.src = 'https://i.ytimg.com/vi/' + v.image + '/hqdefault.jpg';
       } else {
-        const img = document.createElement('img');
+        img.dataset.yid = v.id;
         img.src = 'https://i.ytimg.com/vi/' + v.id + '/hqdefault.jpg';
-        img.alt = '';
-        img.loading = 'lazy';
-        card.appendChild(img);
       }
-
-      const meta = document.createElement('div');
-      meta.className = 'vmeta';
+      card.appendChild(img);
       const t = document.createElement('div');
       t.className = 'vt';
+      if (v.list) t.dataset.plTitle = v.list;
+      else t.dataset.vidTitle = v.id;
       t.textContent = v.t;
+      card.appendChild(t);
       const s = document.createElement('div');
       s.className = 'vs';
       if (v.list) {
+        s.dataset.plCount = v.list;
         s.textContent = 'Playlist';
-      } else if (typeof v.views === 'number') {
-        s.textContent = fmt(v.views) + ' views / ' + fmt(v.likes) + ' likes';
       } else {
-        s.textContent = '';
+        s.dataset.vidStats = v.id;
+        s.textContent = (typeof v.views === 'number') ? fmt(v.views) + ' views / ' + fmt(v.likes) + ' likes' : '';
       }
-      const p = document.createElement('span');
+      card.appendChild(s);
+      const p = document.createElement('div');
       p.className = 'vplay';
-      p.style.display = 'block';
-      p.textContent = '&#9658; Play';
-
-      meta.appendChild(t);
-      meta.appendChild(s);
-      meta.appendChild(p);
-
-      card.appendChild(meta);
-
+      p.textContent = '\u25B6 Play';
+      card.appendChild(p);
       card.addEventListener('click', () => {
-        const src = v.list
-          ? 'https://www.youtube.com/embed/videoseries?list=' + v.list + '&autoplay=1'
-          : 'https://www.youtube.com/embed/' + v.id + '?autoplay=1';
-        document.getElementById(playerId).src = src;
+        const url = v.list
+          ? 'https://www.youtube.com/playlist?list=' + v.list
+          : 'https://www.youtube.com/watch?v=' + v.id;
+        window.open(url, '_blank', 'noopener');
       });
-
       el.appendChild(card);
     });
+    return list;
   }
 
-  buildStrip('ds-strip', 'ds-player', VIDEOS.ds);
-  buildStrip('ab-strip', 'ab-player', VIDEOS.ab);
-  buildStrip('as-strip', 'as-player', VIDEOS.as);
-  buildStrip('br-strip', 'br-player', VIDEOS.br);
-  document.getElementById('ds-player').src = 'https://www.youtube.com/embed/' + VIDEOS.ds[0].id;
-  document.getElementById('ab-player').src = 'https://www.youtube.com/embed/' + VIDEOS.ab[0].id;
-  document.getElementById('as-player').src = 'https://www.youtube.com/embed/' + VIDEOS.as[0].id;
-  document.getElementById('br-player').src = 'https://www.youtube.com/embed/' + VIDEOS.br[0].id;
+  function buildAllStrips() {
+    buildStrip('ds-strip', STRIPS.ds);
+    buildStrip('ab-strip', STRIPS.ab);
+    buildStrip('as-strip', STRIPS.as);
+    buildStrip('br-strip', STRIPS.br);
+  }
+
+  async function refreshLive() {
+    const videoIds = [];
+    Object.keys(STRIPS).forEach(k => STRIPS[k].forEach(v => { if (v.id) videoIds.push(v.id); }));
+    const plIds = Object.keys(PLAYLISTS);
+    const uniqueVids = Array.from(new Set(videoIds));
+
+    try {
+      for (let i = 0; i < uniqueVids.length; i += 50) {
+        const batch = uniqueVids.slice(i, i + 50);
+        const q = batch.map(id => 'id=' + id).join('&');
+        const res = await fetch(YT_BASE + '/videos?part=snippet,statistics&' + q + '&key=' + YOUTUBE_API_KEY);
+        if (!res.ok) throw new Error('videos ' + res.status);
+        const j = await res.json();
+        (j.items || []).forEach(it => {
+          const ti = it.snippet.title;
+          const v = it.statistics ? it.statistics.viewCount : 0;
+          const l = it.statistics ? it.statistics.likeCount : 0;
+          document.querySelectorAll('[data-vid-title="' + it.id + '"]').forEach(el => { if (ti) el.textContent = ti; });
+          document.querySelectorAll('[data-vid-stats="' + it.id + '"]').forEach(el => {
+            el.textContent = fmt(v) + ' views / ' + fmt(l) + ' likes';
+          });
+          const th = (it.snippet.thumbnails && (it.snippet.thumbnails.high || it.snippet.thumbnails.medium)) ? (it.snippet.thumbnails.high || it.snippet.thumbnails.medium).url : null;
+          if (th) document.querySelectorAll('[data-yid="' + it.id + '"]').forEach(el => { el.src = th; });
+        });
+      }
+    } catch (e) { console.warn('video live refresh failed', e); }
+
+    try {
+      if (plIds.length) {
+        const q = plIds.map(id => 'id=' + id).join('&');
+        const res = await fetch(YT_BASE + '/playlists?part=snippet,contentDetails&' + q + '&key=' + YOUTUBE_API_KEY);
+        if (!res.ok) throw new Error('playlists ' + res.status);
+        const j = await res.json();
+        (j.items || []).forEach(it => {
+          const title = it.snippet.title;
+          const count = it.contentDetails.itemCount;
+          document.querySelectorAll('[data-pl-title="' + it.id + '"]').forEach(el => { if (title) el.textContent = title; });
+          document.querySelectorAll('[data-pl-count="' + it.id + '"]').forEach(el => {
+            el.textContent = count + ' videos';
+          });
+          const th = (it.snippet.thumbnails && (it.snippet.thumbnails.high || it.snippet.thumbnails.medium || it.snippet.thumbnails.default)) ?
+            (it.snippet.thumbnails.high || it.snippet.thumbnails.medium || it.snippet.thumbnails.default).url : null;
+          if (th && it.id) {
+            const img = document.getElementById('pl-thumb-' + it.id);
+            if (img) img.src = th;
+          }
+        });
+      }
+    } catch (e) { console.warn('playlist live refresh failed', e); }
+  }
+
+  const ARS_MATRIX = [
+    { name: 'Create: Radars', modrinth: 'create-radars', curse: 1152836 },
+    { name: 'Create: Energy Cannons', modrinth: 'create-energy-cannons', curse: 1476035 },
+    { name: 'Create: Radars (Refabricated)', modrinth: 'create-radars-refabricated' },
+    { name: 'Create: Clothes', modrinth: 'create-clothes', curse: 1262083 },
+    { name: 'Create More Fluid Tanks', modrinth: 'create-more-fluid-tanks' }
+  ];
 
   function buildArsenalists() {
-    const grid = document.getElementById('ars-mod-grid');
-    ARS_MODS.forEach(m => {
-      const tile = document.createElement('div');
-      tile.className = 'mod-tile';
-      const name = document.createElement('div');
-      name.className = 'mt-name';
-      name.textContent = m.name;
-      tile.appendChild(name);
-      const links = document.createElement('div');
-      links.className = 'mt-links';
-      if (m.modrinth) {
-        const a = document.createElement('a');
-        a.href = m.modrinth;
-        a.target = '_blank';
-        a.rel = 'noopener';
-        a.innerHTML = '<img class="ico" src="https://cdn.simpleicons.org/modrinth" alt="">Modrinth';
-        links.appendChild(a);
-      }
-      if (m.curse) {
-        const a = document.createElement('a');
-        a.href = m.curse;
-        a.target = '_blank';
-        a.rel = 'noopener';
-        a.innerHTML = '<img class="ico" src="https://cdn.simpleicons.org/curseforge" alt="">CurseForge';
-        links.appendChild(a);
-      }
-      tile.appendChild(links);
-      grid.appendChild(tile);
+    const grid = document.getElementById('ars-mods');
+    ARS_MATRIX.forEach(m => {
+      const row = document.createElement('div');
+      row.className = 'mod-row';
+      row.innerHTML = '<div class="mt-name">' + m.name + '</div>' +
+        '<div class="mt-count" id="mc-' + (m.modrinth || '') + '">Loading downloads...</div>' +
+        '<div class="mt-links">' +
+          (m.modrinth ? '<a href="https://modrinth.com/mod/' + m.modrinth + '" target="_blank" rel="noopener">Modrinth</a>' : '') +
+          (m.curse ? '<a href="https://www.curseforge.com/minecraft/mc-mods/' + m.modrinth + '" target="_blank" rel="noopener">CurseForge</a>' : '') +
+        '</div>';
+      grid.appendChild(row);
     });
   }
-  buildArsenalists();
 
-  async function loadModDownloads() {
-    try {
-      const res = await fetch('https://api.modrinth.com/v2/project/create-deep-seas');
-      const j = await res.json();
-      const n = Number(j.downloads) || 0;
-      if (n > 0) document.getElementById('dl-modrinth').textContent = fmt(n) + ' downloads';
-    } catch (e) {}
+  async function loadModCounts() {
+    for (const m of ARS_MATRIX) {
+      let countEl = document.getElementById('mc-' + (m.modrinth || ''));
+      if (!countEl) continue;
+      const parts = [];
+      if (m.modrinth) {
+        try {
+          const r = await fetch('https://api.modrinth.com/v2/project/' + m.modrinth);
+          const j = await r.json();
+          const n = Number(j.downloads) || 0;
+          if (n > 0) parts.push('Modrinth: ' + fmt(n) + ' downloads');
+        } catch (e) {}
+      }
+      if (m.curse) {
+        try {
+          const badge = 'https://mod-download-count-badge.vercel.app?curseforge=' + m.curse + '&format=json';
+          const url = 'https://img.shields.io/endpoint?url=' + encodeURIComponent(badge);
+          const res = await fetch(url);
+          const svg = await res.text();
+          const mm = svg.match(/aria-label="Downloads:\s*([\d,]+)"/);
+          const raw = mm ? mm[1].replace(/,/g, '') : '';
+          const n = Number(raw);
+          if (n > 0) parts.push('CurseForge: ' + fmt(n) + ' downloads');
+        } catch (e) {}
+      }
+      if (parts.length) countEl.textContent = parts.join(' &middot; ');
+    }
   }
-  async function loadCurseForgeCount() {
-    try {
-      const badge = 'https://mod-download-count-badge.vercel.app?curseforge=1533137&format=json';
-      const url = 'https://img.shields.io/endpoint?url=' + encodeURIComponent(badge);
-      const res = await fetch(url);
-      const svg = await res.text();
-      const m = svg.match(/aria-label="Downloads:\s*([\d,]+)"/);
-      const raw = m ? m[1].replace(/,/g, '') : '';
-      const n = Number(raw);
-      if (n > 0) document.getElementById('dl-curseforge').textContent = fmt(n) + ' downloads';
-    } catch (e) {}
-  }
-  loadModDownloads();
-  loadCurseForgeCount();
+
+  buildAllStrips();
+  buildArsenalists();
+  refreshLive();
+  loadModCounts();
 
   let chessBooted = false;
-  function bootChess() {
+  function bootChessFromLink(e) {
+    e.preventDefault();
     if (chessBooted) return;
     chessBooted = true;
-    document.getElementById('chess-poster').style.display = 'none';
-    document.getElementById('chess-loading').style.display = 'block';
+    document.getElementById('chess-running').style.display = 'block';
+    document.getElementById('chess-loading').textContent = 'Loading Java chess engine... (first load can take a minute)';
     const script = document.createElement('script');
     script.src = 'https://cjrtnc.leaningtech.com/4.3/loader.js';
     script.onload = async () => {
@@ -599,7 +488,28 @@
     };
     document.head.appendChild(script);
   }
-  document.getElementById('chess-poster').addEventListener('click', bootChess);
+
+  var spy = (function () {
+    var links = Array.prototype.slice.call(document.querySelectorAll('.nav a'));
+    var map = {};
+    links.forEach(function (a) {
+      var id = a.getAttribute('href').slice(1);
+      var sec = document.getElementById(id);
+      if (sec) map[id] = sec;
+    });
+    function onScroll() {
+      var pos = window.pageYOffset + 120;
+      var cur = links[0].getAttribute('href').slice(1);
+      Object.keys(map).forEach(function (id) {
+        if (map[id].offsetTop <= pos) cur = id;
+      });
+      links.forEach(function (a) {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + cur);
+      });
+    }
+    window.addEventListener('scroll', onScroll);
+    onScroll();
+  })();
 </script>
 </body>
 </html>
