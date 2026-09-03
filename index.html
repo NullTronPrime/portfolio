@@ -116,6 +116,31 @@
 
     .related { display: flex; flex-direction: column; gap: 8px; }
 
+    .dl-row { display: flex; gap: 10px; margin-bottom: 4px; }
+    .dl-tile {
+      flex: 1 1 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      color: inherit;
+      padding: 12px 8px;
+      border-radius: 6px;
+      background: #262626;
+      border: 1px solid #3a3a3a;
+      text-align: center;
+    }
+    .dl-tile:hover { background: #303030; border-color: #58a6ff; }
+    .dl-ico {
+      width: 34px;
+      height: 34px;
+      object-fit: contain;
+    }
+    .dl-name { font-size: 12px; font-weight: 600; color: #e6edf3; }
+    .dl-count { font-size: 11px; color: #58a6ff; font-weight: 600; }
+
+
     .rel-item {
       display: flex;
       gap: 10px;
@@ -151,17 +176,8 @@
     .rel-stats { font-size: 11px; color: #999; margin-top: 3px; }
     .rel-stats .dim { color: #666; }
 
-    .rel-playlist { cursor: default; background: rgba(88,166,255,0.08); border: 1px dashed #58a6ff; border-radius: 6px; }
-    .rel-playlist-badge {
-      flex-shrink: 0;
-      font-size: 10px;
-      font-weight: 700;
-      color: #0d1117;
-      background: #58a6ff;
-      border-radius: 4px;
-      padding: 3px 6px;
-      letter-spacing: 0.5px;
-    }
+    .rel-playlist { border-left: 3px solid #58a6ff; }
+    .rel-playlist .rel-thumb { position: relative; }
     .rel-group-label {
       font-size: 10px;
       font-weight: 700;
@@ -303,36 +319,20 @@
 <body>
   <div class="page-head">
     <h1>NullTronPrime</h1>
-    <p>Minecraft mods, snake AI, chess engine &amp; more</p>
   </div>
   <div class="carousel-wrapper" id="carousel">
     <div class="carousel-viewport">
       <div class="carousel-track" id="track">
-        <div class="box">
-          <div class="video" data-embed=""><div class="placeholder">Video 1</div></div>
+        <div class="box" data-stat="1">
+          <div class="video" data-embed=""><div class="placeholder">Angry Birds Videos</div></div>
           <div class="details">
             <div class="details-inner">
-              <h3>Video 1 title</h3>
+              <h3>Angry Birds Epic Randomizer Mod (Playlist)</h3>
               <div class="stats">
-                <span>0 views</span>
-                <span>0 likes</span>
+                <span>1K views</span>
+                <span>8 likes</span>
               </div>
-              <div class="related">
-                <a class="rel-item" data-yid="7bxRdLClzxI" href="https://www.youtube.com/watch?v=7bxRdLClzxI" target="_blank" rel="noopener">
-                  <img class="rel-thumb" src="https://i.ytimg.com/vi/7bxRdLClzxI/hqdefault.jpg" alt="">
-                  <div class="rel-meta">
-                    <div class="rel-title">Loading...</div>
-                    <div class="rel-stats" data-yid="7bxRdLClzxI">&nbsp;</div>
-                  </div>
-                </a>
-                <a class="rel-item" data-yid="799KYQQbFII" href="https://www.youtube.com/watch?v=799KYQQbFII" target="_blank" rel="noopener">
-                  <img class="rel-thumb" src="https://i.ytimg.com/vi/799KYQQbFII/hqdefault.jpg" alt="">
-                  <div class="rel-meta">
-                    <div class="rel-title">Loading...</div>
-                    <div class="rel-stats" data-yid="799KYQQbFII">&nbsp;</div>
-                  </div>
-                </a>
-              </div>
+              <div class="related"></div>
             </div>
           </div>
         </div>
@@ -399,14 +399,11 @@
           </div>
         </div>
         <div class="box">
-          <div class="video" data-embed=""><div class="placeholder">Video 6</div></div>
+          <div class="video" data-embed="">
+            <div class="placeholder"></div>
+          </div>
           <div class="details">
             <div class="details-inner">
-              <h3>Video 6 title</h3>
-              <div class="stats">
-                <span>0 views</span>
-                <span>0 likes</span>
-              </div>
               <div class="related"></div>
             </div>
           </div>
@@ -496,7 +493,7 @@
 
     function appendRel(container, yid, plFlag) {
       const a = document.createElement('a');
-      a.className = 'rel-item';
+      a.className = 'rel-item rel-sortable';
       a.setAttribute('data-yid', yid);
       if (plFlag) a.setAttribute('data-pl', '1');
       a.href = 'https://www.youtube.com/watch?v=' + yid;
@@ -522,27 +519,78 @@
       container.appendChild(a);
     }
 
+    function appendDownloadTile(container, name, href, iconSrc, countId, countText) {
+      const a = document.createElement('a');
+      a.className = 'dl-tile';
+      a.href = href;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      const img = document.createElement('img');
+      img.className = 'dl-ico';
+      img.alt = name + ' logo';
+      img.src = iconSrc;
+      const nm = document.createElement('div');
+      nm.className = 'dl-name';
+      nm.textContent = name;
+      const ct = document.createElement('div');
+      ct.className = 'dl-count';
+      ct.id = countId;
+      ct.textContent = countText;
+      a.appendChild(img);
+      a.appendChild(nm);
+      a.appendChild(ct);
+      container.appendChild(a);
+    }
+
     function buildRelated() {
       const rel1 = orig[0].querySelector('.related');
-      const pl = document.createElement('div');
-      pl.className = 'rel-item rel-playlist';
-      pl.innerHTML =
-        '<div class="rel-playlist-badge">&#9654; Playlist</div>' +
-        '<div class="rel-meta">' +
-          '<div class="rel-title js-playlist-title">' + PLAYLIST.count + ' videos, ' + fmt(PLAYLIST.views) + ' combined views, ' + fmt(PLAYLIST.likes) + ' combined likes</div>' +
-          '<div class="rel-stats"><a class="dim" href="https://www.youtube.com/playlist?list=' + PLAYLIST.id + '" target="_blank" rel="noopener">Open full playlist</a></div>' +
-        '</div>';
+      const pl = document.createElement('a');
+      pl.className = 'rel-item rel-playlist rel-sortable';
+      pl.href = 'https://www.youtube.com/playlist?list=' + PLAYLIST.id;
+      pl.target = '_blank';
+      pl.rel = 'noopener';
+      const plImg = document.createElement('img');
+      plImg.className = 'rel-thumb';
+      plImg.alt = '';
+      plImg.src = 'https://i.ytimg.com/vi/' + PLAYLIST.videos[0] + '/hqdefault.jpg';
+      const plMeta = document.createElement('div');
+      plMeta.className = 'rel-meta';
+      const plTitle = document.createElement('div');
+      plTitle.className = 'rel-title';
+      plTitle.textContent = 'Angry Birds Epic Randomizer Mod (Playlist)';
+      const plStats = document.createElement('div');
+      plStats.className = 'rel-stats js-playlist-title';
+      plStats.innerHTML = PLAYLIST.count + ' videos &middot; ' + fmt(PLAYLIST.views) + ' views &middot; ' + fmt(PLAYLIST.likes) + ' likes';
+      plMeta.appendChild(plTitle);
+      plMeta.appendChild(plStats);
+      pl.appendChild(plImg);
+      pl.appendChild(plMeta);
       rel1.appendChild(pl);
-      PLAYLIST.videos.forEach(y => appendRel(rel1, y, true));
-      const g1 = document.createElement('div');
-      g1.className = 'rel-group-label';
-      g1.textContent = 'More from this creator';
-      rel1.appendChild(g1);
+      ['7bxRdLClzxI', '799KYQQbFII'].forEach(y => appendRel(rel1, y));
       VIDEO1_LINKS.forEach(y => appendRel(rel1, y));
+
       const related2 = orig[1].querySelector('.related');
+      const dLabel = document.createElement('div');
+      dLabel.className = 'rel-group-label';
+      dLabel.textContent = 'Download the mod';
+      related2.appendChild(dLabel);
+      const dlRow = document.createElement('div');
+      dlRow.className = 'dl-row';
+      appendDownloadTile(dlRow, 'Modrinth', 'https://modrinth.com/mod/create-deep-seas', 'https://cdn.simpleicons.org/modrinth', 'dl-modrinth', '325K+ downloads');
+      appendDownloadTile(dlRow, 'CurseForge', 'https://www.curseforge.com/minecraft/mc-mods/create-deep-seas', 'https://cdn.simpleicons.org/curseforge', 'dl-curseforge', '716K+ downloads');
+      related2.appendChild(dlRow);
       VIDEO2_LINKS.forEach(y => appendRel(related2, y));
     }
     buildRelated();
+
+    async function loadModDownloads() {
+      try {
+        const res = await fetch('https://api.modrinth.com/v2/project/create-deep-seas');
+        const j = await res.json();
+        const n = Number(j.downloads) || 0;
+        document.querySelectorAll('#dl-modrinth').forEach(el => { el.textContent = fmt(n) + ' downloads'; });
+      } catch (e) {}
+    }
 
     orig.slice(0, 3).forEach(b => track.appendChild(b.cloneNode(true)));
     orig.slice(-3).forEach(b => track.insertBefore(b.cloneNode(true), track.firstChild));
@@ -696,10 +744,30 @@
       }
     }
 
+    function sortKey(el) {
+      if (el.classList.contains('rel-playlist')) return { views: PLAYLIST.views, likes: PLAYLIST.likes };
+      const yid = el.getAttribute('data-yid');
+      const c = yid ? RELATED_COUNTS[yid] : null;
+      return c ? { views: c.views, likes: c.likes } : { views: -1, likes: -1 };
+    }
+
+    function sortRelated() {
+      document.querySelectorAll('.related').forEach(rel => {
+        const items = Array.from(rel.querySelectorAll('.rel-sortable'));
+        if (items.length < 2) return;
+        const anchor = items[items.length - 1].nextSibling;
+        items.forEach(el => el.remove());
+        items.sort((a, b) => {
+          const ka = sortKey(a), kb = sortKey(b);
+          return kb.views - ka.views || kb.likes - ka.likes;
+        });
+        items.forEach(el => rel.insertBefore(el, anchor));
+      });
+    }
+
     async function refreshStats() {
       const rows = Array.prototype.slice.call(document.querySelectorAll('.rel-item[data-yid]'));
       const allIds = Array.from(new Set(rows.map(r => r.getAttribute('data-yid'))));
-      if (!allIds.length) return;
 
       const setStat = (id, views, likes) => {
         document.querySelectorAll('.rel-stats[data-yid="' + id + '"]').forEach(el => {
@@ -708,86 +776,43 @@
       };
 
       try {
-        let plIds = PLAYLIST.videos.slice();
-        try {
-          const plData = await ytGet('playlistItems', { part: 'contentDetails', maxResults: 50, playlistId: PLAYLIST.id });
-          const fetched = (plData.items || []).map(it => it.contentDetails.videoId).filter(Boolean);
-          if (fetched.length) plIds = fetched;
-        } catch (e) {
-          console.warn('Playlist item fetch failed; using cached list', e);
-        }
-
-        const toFetch = Array.from(new Set(allIds.concat(plIds)));
+        const toFetch = Array.from(new Set(allIds.concat(PLAYLIST.videos)));
+        const liveCounts = {};
         for (let i = 0; i < toFetch.length; i += 50) {
           const chunk = toFetch.slice(i, i + 50);
           const data = await ytGet('videos', { part: 'statistics', id: chunk.join(',') });
           (data.items || []).forEach(it => {
             const views = parseInt(it.statistics.viewCount, 10) || 0;
             const likes = parseInt(it.statistics.likeCount, 10) || 0;
+            liveCounts[it.id] = { views, likes };
             RELATED_COUNTS[it.id] = { views, likes };
             setStat(it.id, views, likes);
           });
         }
 
-        const live = plIds.map(id => RELATED_COUNTS[id]).filter(Boolean);
-        if (live.length || plIds.length) {
-          PLAYLIST.count = plIds.length || live.length;
-          PLAYLIST.views = live.reduce((s, v) => s + v.views, 0);
-          PLAYLIST.likes = live.reduce((s, v) => s + v.likes, 0);
-          const title = document.querySelector('.js-playlist-title');
-          if (title) title.textContent = PLAYLIST.count + ' videos, ' + fmt(PLAYLIST.views) + ' combined views, ' + fmt(PLAYLIST.likes) + ' combined likes';
+        const livePl = PLAYLIST.videos.map(id => liveCounts[id] || RELATED_COUNTS[id]).filter(Boolean);
+        if (livePl.length || PLAYLIST.videos.length) {
+          PLAYLIST.count = PLAYLIST.videos.length || livePl.length;
+          PLAYLIST.views = livePl.reduce((s, v) => s + v.views, 0);
+          PLAYLIST.likes = livePl.reduce((s, v) => s + v.likes, 0);
+          const t = document.querySelector('.js-playlist-title');
+          if (t) t.innerHTML = PLAYLIST.count + ' videos &middot; ' + fmt(PLAYLIST.views) + ' views &middot; ' + fmt(PLAYLIST.likes) + ' likes';
+          const boxStat = document.querySelector('.box[data-stat="1"] .stats');
+          if (boxStat) boxStat.innerHTML = '<span>' + fmt(PLAYLIST.views) + ' views</span><span>' + fmt(PLAYLIST.likes) + ' likes</span>';
         }
 
-        thisRefreshPlaylist(plIds);
+        sortRelated();
       } catch (e) {
         console.warn('YouTube stats refresh failed; using cached numbers.', e);
       }
     }
 
-    function thisRefreshPlaylist(ids) {
-      const rel1 = orig[0].querySelector('.related');
-      const current = Array.prototype.slice.call(rel1.querySelectorAll('.rel-item[data-pl]')).map(a => a.getAttribute('data-yid'));
-      const same = current.length === ids.length && ids.every((id, i) => id === current[i]);
-      if (same) return;
-      rel1.querySelectorAll('.rel-item[data-pl]').forEach(a => a.remove());
-      ids.forEach(id => appendRel(rel1, id, true));
-      ids.forEach(async id => {
-        const row = rel1.querySelector('.rel-item[data-pl][data-yid="' + id + '"]');
-        if (!row) return;
-        const c = RELATED_COUNTS[id];
-        if (c) row.querySelector('.rel-stats').innerHTML = fmt(c.views) + ' views <span class="dim">|</span> ' + fmt(c.likes) + ' likes';
-        try {
-          const res = await fetch('https://noembed.com/embed?url=' + encodeURIComponent('https://www.youtube.com/watch?v=' + id));
-          const j = await res.json();
-          if (j.title) row.querySelector('.rel-title').textContent = j.title;
-        } catch (e) {}
-      });
-    }
-
-    function thisRefreshPlaylist(ids) {
-      const rel1 = orig[0].querySelector('.related');
-      const current = Array.prototype.slice.call(rel1.querySelectorAll('.rel-item[data-pl]')).map(a => a.getAttribute('data-yid'));
-      const same = current.length === ids.length && current.every((id, i) => id === ids[i]);
-      if (same) return;
-      rel1.querySelectorAll('.rel-item[data-pl]').forEach(a => a.remove());
-      ids.forEach(id => appendRel(rel1, id, true));
-      ids.forEach(async id => {
-        const row = rel1.querySelector('.rel-item[data-pl][data-yid="' + id + '"]');
-        if (!row) return;
-        const c = RELATED_COUNTS[id];
-        if (c) row.querySelector('.rel-stats').innerHTML = fmt(c.views) + ' views <span class="dim">|</span> ' + fmt(c.likes) + ' likes';
-        try {
-          const res = await fetch('https://noembed.com/embed?url=' + encodeURIComponent('https://www.youtube.com/watch?v=' + id));
-          const j = await res.json();
-          if (j.title) row.querySelector('.rel-title').textContent = j.title;
-        } catch (e) {}
-      });
-    }
-
     layout();
     apply(W, true);
     loadRelated();
+    sortRelated();
     refreshStats();
+    loadModDownloads();
     window.addEventListener('resize', layout);
   </script>
 </body>
