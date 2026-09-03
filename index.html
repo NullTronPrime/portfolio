@@ -592,7 +592,18 @@
       } catch (e) {}
     }
 
-    orig.slice(0, 3).forEach(b => track.appendChild(b.cloneNode(true)));
+    async function loadCurseForgeCount() {
+      try {
+        const badge = 'https://mod-download-count-badge.vercel.app?curseforge=1533137&format=json';
+        const url = 'https://img.shields.io/endpoint?url=' + encodeURIComponent(badge);
+        const res = await fetch(url);
+        const svg = await res.text();
+        const m = svg.match(/aria-label="Downloads:\s*([\d,]+)"/);
+        const raw = m ? m[1].replace(/,/g, '') : '';
+        const n = Number(raw);
+        if (n > 0) document.querySelectorAll('#dl-curseforge').forEach(el => { el.textContent = fmt(n) + ' downloads'; });
+      } catch (e) {}
+    }
     orig.slice(-3).forEach(b => track.insertBefore(b.cloneNode(true), track.firstChild));
 
     const all = Array.from(track.children);
@@ -813,6 +824,7 @@
     sortRelated();
     refreshStats();
     loadModDownloads();
+    loadCurseForgeCount();
     window.addEventListener('resize', layout);
   </script>
 </body>
