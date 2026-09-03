@@ -109,6 +109,22 @@
   .vcard .vs { font-size: 12px; color: var(--muted); margin-top: 3px; }
   .vcard .vplay { display: block; font-size: 12px; color: var(--accent); margin-top: 4px; }
 
+  .vstrip-sm { gap: 12px; }
+  .vstrip-sm .vcard { flex: 0 0 150px; }
+  .vstrip-sm .vcard .vt { font-size: 11px; margin-top: 5px; }
+  .vstrip-sm .vcard .vs { font-size: 10px; margin-top: 2px; }
+  .vstrip-sm .vcard .vplay { font-size: 10px; margin-top: 3px; }
+
+  .chess-link { display: inline-block; }
+  .chess-thumb { position: relative; display: inline-block; cursor: pointer; }
+  .chess-thumb img { max-width: 100%; width: 480px; display: block; border: 1px solid #21262d; }
+  .chess-thumb .chess-play {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    color: var(--accent); font-size: 64px; line-height: 1; pointer-events: none;
+    text-shadow: 0 2px 12px rgba(0,0,0,.8);
+  }
+  .chess-thumb:hover .chess-play { color: #fff; }
+
   .footer { margin-top: 48px; color: var(--muted); font-size: 13px; }
 
   @media (max-width: 820px) {
@@ -189,11 +205,12 @@
       <p class="lead">Create: Arsenalists is a team. Filler text describing the team and its mods.</p>
       <div class="mod-grid" id="ars-mods"></div>
       <h3 class="ars-sub">Create: Radars</h3>
-      <p class="lead">Filler text describing Create: Radars and the videos below.</p>
-      <div class="vstrip" id="rad-strip"></div>
+      <p class="lead ars-lead">Filler text describing Create: Radars and the videos below.</p>
+      <div class="vstrip vstrip-sm" id="rad-strip"></div>
     </section>
 
-    <style>.ars-sub { margin: 28px 0 8px; padding-left: 18px; font-size: 20px; font-weight: 700; letter-spacing: 1px; }</style>
+    <style>.ars-sub { margin: 28px 0 8px; padding-left: 18px; font-size: 20px; font-weight: 700; letter-spacing: 1px; }
+    .ars-lead { margin-left: 18px; max-width: 640px; }</style>
 
     <section id="randomiser">
       <h2>Angry Birds Epic: Randomiser</h2>
@@ -216,8 +233,11 @@
     <section id="chess">
       <h2>Chess Engine</h2>
       <p class="lead">A Java minimax chess engine with Zobrist hashing, playable in the browser.</p>
-      <a href="#" onclick="bootChessFromLink(event)" id="chess-link" style="display:block;">
-        <img src="chess/thumbnail.png" alt="Run Chess Engine" style="max-width:100%; width:480px; display:block; border:1px solid #21262d;" id="chess-poster">
+      <a href="#" onclick="bootChessFromLink(event)" id="chess-link" class="chess-link">
+        <span class="chess-thumb">
+          <img src="chess/thumbnail.png" alt="Run Chess Engine" id="chess-poster">
+          <span class="chess-play">&#9654;</span>
+        </span>
         <span style="color:var(--accent); font-weight:600; display:block; margin-top:8px;">&#9654; Run Chess Engine</span>
       </a>
       <div id="chess-running" style="display:none; margin-top:12px;">
