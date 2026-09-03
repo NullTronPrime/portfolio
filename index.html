@@ -6,7 +6,7 @@
 <title>NullTronPrime - Portfolio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%2358a6ff'/%3E%3Ctext x='50' y='70' font-size='60' text-anchor='middle' fill='%230d1117' font-family='Arial'%3ENT%3C/text%3E%3C/svg%3E">
 <style>
   :root {
@@ -20,9 +20,12 @@
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: 'Inter', -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-family: 'Titillium Web', -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-weight: 300;
     line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
   }
+  h1, h2, h3, h4, h5, h6, strong, b { font-weight: 700; }
   a { color: var(--accent); text-decoration: none; }
   a:hover { text-decoration: underline; }
 
@@ -37,7 +40,7 @@
     height: 100vh;
     overflow-y: auto;
   }
-  .sidebar .name { font-size: 26px; font-weight: 800; color: var(--text); }
+  .sidebar .name { font-size: 26px; font-weight: 800; color: var(--text); letter-spacing: 2px; }
   .sidebar .brand-desc { color: var(--muted); font-size: 14px; margin-top: 6px; margin-bottom: 32px; }
   .nav { list-style: none; margin: 0; padding: 0; }
   .nav li { margin: 2px 0; }
@@ -59,7 +62,7 @@
   }
 
   .hero { margin-bottom: 48px; }
-  .hero .hero-name { font-size: 44px; font-weight: 800; margin: 0 0 16px; }
+  .hero .hero-name { font-size: 44px; font-weight: 800; margin: 0 0 16px; letter-spacing: 2px; }
   .hero .hero-tag { color: var(--muted); font-size: 16px; max-width: 680px; margin: 0 0 20px; }
   .hero .hero-links { display: flex; gap: 18px; flex-wrap: wrap; }
   .hero .hero-links a { font-size: 14px; font-weight: 600; }
@@ -69,6 +72,7 @@
   section h2 {
     font-size: 26px;
     font-weight: 700;
+    letter-spacing: 2px;
     margin: 0 0 8px;
   }
   section .section-sub { color: var(--muted); font-size: 15px; margin: 0 0 16px; }
@@ -78,17 +82,17 @@
   .about-col h3 { font-size: 17px; font-weight: 700; margin: 0 0 8px; }
   .about-col p { color: var(--muted); margin: 0; }
 
-  .mod-grid { margin-top: 18px; }
+  .mod-grid { margin-top: 18px; padding-left: 18px; }
   .mod-row {
     padding: 12px 0;
-    border-bottom: 1px solid #21262d;
   }
-  .mod-row:last-child { border-bottom: none; }
+  .mod-row:last-child { padding-bottom: 0; }
   .mod-row .mt-name { font-weight: 600; font-size: 15px; }
   .mod-row .mt-count { color: var(--accent); font-size: 13px; margin-top: 2px; }
-  .mod-row .mt-links { margin-top: 4px; font-size: 13px; }
+  .mod-row .mt-links { margin-top: 4px; font-size: 13px; padding-left: 14px; }
   .mod-row .mt-links span { color: var(--muted); }
   .mod-row .mt-links a { margin-right: 14px; }
+  .mt-links .micon { width: 14px; height: 14px; vertical-align: -2px; margin-right: 4px; display: inline-block; }
 
   .vstrip {
     margin-top: 8px;
@@ -184,7 +188,12 @@
       <h2>Create: Arsenalists</h2>
       <p class="lead">Create: Arsenalists is a team. Filler text describing the team and its mods.</p>
       <div class="mod-grid" id="ars-mods"></div>
+      <h3 class="ars-sub">Create: Radars</h3>
+      <p class="lead">Filler text describing Create: Radars and the videos below.</p>
+      <div class="vstrip" id="rad-strip"></div>
     </section>
+
+    <style>.ars-sub { margin: 28px 0 8px; padding-left: 18px; font-size: 20px; font-weight: 700; letter-spacing: 1px; }</style>
 
     <section id="randomiser">
       <h2>Angry Birds Epic: Randomiser</h2>
@@ -207,7 +216,10 @@
     <section id="chess">
       <h2>Chess Engine</h2>
       <p class="lead">A Java minimax chess engine with Zobrist hashing, playable in the browser.</p>
-      <a href="#" onclick="bootChessFromLink(event)" id="chess-link">Run Chess Engine</a>
+      <a href="#" onclick="bootChessFromLink(event)" id="chess-link" style="display:block;">
+        <img src="chess/thumbnail.png" alt="Run Chess Engine" style="max-width:100%; width:480px; display:block; border:1px solid #21262d;" id="chess-poster">
+        <span style="color:var(--accent); font-weight:600; display:block; margin-top:8px;">&#9654; Run Chess Engine</span>
+      </a>
       <div id="chess-running" style="display:none; margin-top:12px;">
         <div id="chess-loading">Loading Java chess engine... (first load can take a minute)</div>
         <div id="chess-container"></div>
@@ -228,13 +240,11 @@
     <section id="gol">
       <h2>Game of Life Simulator</h2>
       <p class="lead">A Conway's Game of Life simulator. Filler text to be added.</p>
-      <p><a href="https://github.com/NullTronPrime/gameoflifeanalysis" target="_blank" rel="noopener">GitHub: gameoflifeanalysis</a></p>
     </section>
 
     <section id="battleships">
       <h2>Battleships (CS50 Project)</h2>
       <p class="lead">Battleships project made for CS50. Filler text to be added.</p>
-      <p><a href="https://github.com/NullTronPrime/Battleships--VARIANTS" target="_blank" rel="noopener">GitHub: Battleships Variants</a></p>
     </section>
 
     <div class="footer">
@@ -254,6 +264,23 @@
     if (n >= 1e6) return (n / 1e6).toFixed(1).replace(/\.0$/, '') + 'M';
     if (n >= 1e3) return (n / 1e3).toFixed(1).replace(/\.0$/, '') + 'K';
     return String(n);
+  }
+
+  const CACHE_PREFIX = 'NTP_CACHE_v1_';
+  const CACHE_TTL = 60 * 60 * 1000;
+  const REFRESH_KEY = 'ntp-refresh-2026';
+
+  function cacheGet(key) { try { const o = JSON.parse(localStorage.getItem(CACHE_PREFIX + key)); if (o && (Date.now() - o.ts) < CACHE_TTL) return o.data; } catch (e) {} return null; }
+  function cacheSet(key, data) { try { localStorage.setItem(CACHE_PREFIX + key, JSON.stringify({ ts: Date.now(), data })); } catch (e) {} }
+  function forceRequested() { try { return new URLSearchParams(location.search).get('refresh') === REFRESH_KEY; } catch (e) { return false; } }
+
+  async function cachedJSON(url, key) {
+    if (!forceRequested()) { const c = cacheGet(key); if (c) return c; }
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(res.status);
+    const j = await res.json();
+    cacheSet(key, j);
+    return j;
   }
 
   const PLAYLISTS = {
@@ -296,7 +323,22 @@
       { id: 'VxhpX6u5zTQ', t: 'Angry Birds Epic: Broken Rifts. New Enemies' },
       { id: 'HXvWrtqsAI8', t: 'Angry Birds Epic: Broken Rifts Cutscene WIP' },
       { id: '0V0185q5R60', t: 'ABE: Broken Rifts QnA. Edited by @Skulky277' },
-      { id: 'EBx7AE_a0ow', t: 'Angry Birds Epic: Broken Rifts. The Constructs' }]
+      { id: 'EBx7AE_a0ow', t: 'Angry Birds Epic: Broken Rifts. The Constructs' }],
+    rad: [{ id: 'a4Qur1rKeyQ', t: 'Create Mod Radars got a Huge Update!' },
+      { id: '2gbv_aWLi-k', t: 'Create Radars mod. Radars, automatic aiming of guns and weapons. Tutorial 1.20.1 (minecraft java)' },
+      { id: 'u5K52TNNZWo', t: 'Automatic Radar Tracking in Aeronautics!! #minecraft #create #aeronautics' },
+      { id: '5WIMMbT1g8I', t: 'Create Radars mod. Create mod addons Tutorial 1.20.1 (minecraft java)' },
+      { id: 'DeS7Ptwe1aw', t: 'Guided Nuclear Artillery Strike - Create Radars' },
+      { id: '6cRl-zwa0xM', t: 'Aeronautics FINALLY has Radars!' },
+      { id: '-4zWuKVLZg8', t: 'Create Aero Radars' },
+      { id: 'mk41zxTnmdQ', t: 'Create: Radars - working radars in Minecraft' },
+      { id: 'o9sFIjICFPg', t: 'Minecraft Create Mod Radar Auto Cannon Build Guide' },
+      { id: 'JR5nVipdkuQ', t: 'Create Mod now has RADARS?' },
+      { id: '51eXCQGj_GA', t: 'Create:Radars Guided Fuse on Mortar' },
+      { id: 'CYCd_AuhuPQ', t: 'Automatic Cannons with Create!' },
+      { id: 'oQUzGXu1u-w', t: 'Defending My Colony With RADAR Autocannons in Create Mod' },
+      { id: '-LmA5reO0zM', t: 'I Built The BEST Create Mod Air Defense Systems' },
+      { id: '8sSmkOBWg9E', t: 'Гайд по Create Radars 1.20.1 Радары, Автонаведение пушек и орудий. Часть 1. (minecraft java edition)' }]
   };
 
   function buildStrip(elId, list) {
@@ -325,6 +367,7 @@
       s.className = 'vs';
       if (v.list) {
         s.dataset.plCount = v.list;
+        s.dataset.plAgg = v.list;
         s.textContent = 'Playlist';
       } else {
         s.dataset.vidStats = v.id;
@@ -351,6 +394,101 @@
     buildStrip('ab-strip', STRIPS.ab);
     buildStrip('as-strip', STRIPS.as);
     buildStrip('br-strip', STRIPS.br);
+    buildStrip('rad-strip', STRIPS.rad);
+  }
+
+  async function refreshVideoStats(uniqueVids) {
+    const force = forceRequested();
+    const key = 'videoStats';
+    let map = {};
+    if (!force) { const c = cacheGet(key); if (c) map = c; }
+    const missing = uniqueVids.filter(id => !map[id]);
+    const nMissing = missing.length;
+    for (let i = 0; i < nMissing; i += 50) {
+      const batch = missing.slice(i, i + 50);
+      const q = batch.map(id => 'id=' + id).join('&');
+      const j = await cachedJSON(YT_BASE + '/videos?part=snippet,statistics&' + q + '&key=' + YOUTUBE_API_KEY, 'videoBatch_' + q);
+      (j.items || []).forEach(it => {
+        const ti = it.snippet ? it.snippet.title : '';
+        const v = it.statistics ? it.statistics.viewCount : 0;
+        const l = it.statistics ? it.statistics.likeCount : 0;
+        const th = (it.snippet && it.snippet.thumbnails && (it.snippet.thumbnails.high || it.snippet.thumbnails.medium)) ?
+          (it.snippet.thumbnails.high || it.snippet.thumbnails.medium).url : null;
+        map[it.id] = { title: ti, views: Number(v) || 0, likes: Number(l) || 0, thumb: th };
+      });
+    }
+    cacheSet(key, map);
+    return { map, fresh: nMissing > 0 };
+  }
+
+  function applyVideoStats(map) {
+    Object.keys(map).forEach(id => {
+      const d = map[id];
+      if (d.title) document.querySelectorAll('[data-vid-title="' + id + '"]').forEach(el => { el.textContent = d.title; });
+      document.querySelectorAll('[data-vid-stats="' + id + '"]').forEach(el => {
+        el.textContent = fmt(d.views) + ' views / ' + fmt(d.likes) + ' likes';
+      });
+      if (d.thumb) document.querySelectorAll('[data-yid="' + id + '"]').forEach(el => { el.src = d.thumb; });
+    });
+  }
+
+  async function refreshPlaylistInfo(plIds) {
+    if (!plIds.length) return;
+    const j = await cachedJSON(YT_BASE + '/playlists?part=snippet,contentDetails&' + plIds.map(id => 'id=' + id).join('&') + '&key=' + YOUTUBE_API_KEY, 'playlistInfo');
+    (j.items || []).forEach(it => {
+      const title = it.snippet.title;
+      const count = it.contentDetails.itemCount;
+      document.querySelectorAll('[data-pl-title="' + it.id + '"]').forEach(el => { if (title) el.textContent = title; });
+      document.querySelectorAll('[data-pl-count="' + it.id + '"]').forEach(el => {
+        el.textContent = count + ' videos';
+      });
+      const th = (it.snippet.thumbnails && (it.snippet.thumbnails.high || it.snippet.thumbnails.medium || it.snippet.thumbnails.default)) ?
+        (it.snippet.thumbnails.high || it.snippet.thumbnails.medium || it.snippet.thumbnails.default).url : null;
+      if (th && it.id) {
+        const img = document.getElementById('pl-thumb-' + it.id);
+        if (img) img.src = th;
+      }
+    });
+  }
+
+  async function aggregatePlaylist(plId) {
+    const force = forceRequested();
+    const key = 'playlistAgg_' + plId;
+    if (!force) { const c = cacheGet(key); if (c) return c; }
+    const videoIds = [];
+    let token = '';
+    do {
+      let url = YT_BASE + '/playlistItems?part=contentDetails&playlistId=' + plId + '&maxResults=50&key=' + YOUTUBE_API_KEY;
+      if (token) url += '&pageToken=' + token;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('playlistItems ' + res.status);
+      const j = await res.json();
+      (j.items || []).forEach(it => { const vid = it.contentDetails && it.contentDetails.videoId; if (vid) videoIds.push(vid); });
+      token = j.nextPageToken || '';
+      if (token && videoIds.length > 2000) break;
+    } while (token);
+    const unique = Array.from(new Set(videoIds));
+    let views = 0, likes = 0;
+    for (let i = 0; i < unique.length; i += 50) {
+      const batch = unique.slice(i, i + 50);
+      const q = batch.map(id => 'id=' + id).join('&');
+      const res = await fetch(YT_BASE + '/videos?part=statistics&' + q + '&key=' + YOUTUBE_API_KEY);
+      if (!res.ok) throw new Error('videos ' + res.status);
+      const j = await res.json();
+      (j.items || []).forEach(it => {
+        views += Number(it.statistics && it.statistics.viewCount) || 0;
+        likes += Number(it.statistics && it.statistics.likeCount) || 0;
+      });
+    }
+    const result = { count: unique.length, views, likes };
+    cacheSet(key, result);
+    return result;
+  }
+
+  function applyPlaylistAgg(id, agg) {
+    document.querySelectorAll('[data-pl-agg="' + id + '"]').forEach(el => {
+      el.textContent = agg.count + ' videos \u00B7 ' + fmt(agg.views) + ' views \u00B7 ' + fmt(agg.likes) + ' likes';
+    });
   }
 
   async function refreshLive() {
@@ -360,49 +498,29 @@
     const uniqueVids = Array.from(new Set(videoIds));
 
     try {
-      for (let i = 0; i < uniqueVids.length; i += 50) {
-        const batch = uniqueVids.slice(i, i + 50);
-        const q = batch.map(id => 'id=' + id).join('&');
-        const res = await fetch(YT_BASE + '/videos?part=snippet,statistics&' + q + '&key=' + YOUTUBE_API_KEY);
-        if (!res.ok) throw new Error('videos ' + res.status);
-        const j = await res.json();
-        (j.items || []).forEach(it => {
-          const ti = it.snippet.title;
-          const v = it.statistics ? it.statistics.viewCount : 0;
-          const l = it.statistics ? it.statistics.likeCount : 0;
-          document.querySelectorAll('[data-vid-title="' + it.id + '"]').forEach(el => { if (ti) el.textContent = ti; });
-          document.querySelectorAll('[data-vid-stats="' + it.id + '"]').forEach(el => {
-            el.textContent = fmt(v) + ' views / ' + fmt(l) + ' likes';
-          });
-          const th = (it.snippet.thumbnails && (it.snippet.thumbnails.high || it.snippet.thumbnails.medium)) ? (it.snippet.thumbnails.high || it.snippet.thumbnails.medium).url : null;
-          if (th) document.querySelectorAll('[data-yid="' + it.id + '"]').forEach(el => { el.src = th; });
-        });
-      }
+      const { map } = await refreshVideoStats(uniqueVids);
+      applyVideoStats(map);
     } catch (e) { console.warn('video live refresh failed', e); }
 
     try {
-      if (plIds.length) {
-        const q = plIds.map(id => 'id=' + id).join('&');
-        const res = await fetch(YT_BASE + '/playlists?part=snippet,contentDetails&' + q + '&key=' + YOUTUBE_API_KEY);
-        if (!res.ok) throw new Error('playlists ' + res.status);
-        const j = await res.json();
-        (j.items || []).forEach(it => {
-          const title = it.snippet.title;
-          const count = it.contentDetails.itemCount;
-          document.querySelectorAll('[data-pl-title="' + it.id + '"]').forEach(el => { if (title) el.textContent = title; });
-          document.querySelectorAll('[data-pl-count="' + it.id + '"]').forEach(el => {
-            el.textContent = count + ' videos';
-          });
-          const th = (it.snippet.thumbnails && (it.snippet.thumbnails.high || it.snippet.thumbnails.medium || it.snippet.thumbnails.default)) ?
-            (it.snippet.thumbnails.high || it.snippet.thumbnails.medium || it.snippet.thumbnails.default).url : null;
-          if (th && it.id) {
-            const img = document.getElementById('pl-thumb-' + it.id);
-            if (img) img.src = th;
-          }
-        });
-      }
+      await refreshPlaylistInfo(plIds);
+      await Promise.all(plIds.map(async id => {
+        try { applyPlaylistAgg(id, await aggregatePlaylist(id)); } catch (e) { console.warn('playlist agg ' + id + ' failed', e); }
+      }));
     } catch (e) { console.warn('playlist live refresh failed', e); }
   }
+
+  window.forceRefreshLive = async function (key) {
+    if (arguments.length === 0 || key === REFRESH_KEY) {
+      try { localStorage.removeItem(CACHE_PREFIX + 'videoStats'); } catch (e) {}
+      try { localStorage.removeItem(CACHE_PREFIX + 'playlistInfo'); } catch (e) {}
+      try { Object.keys(PLAYLISTS).forEach(id => localStorage.removeItem(CACHE_PREFIX + 'playlistAgg_' + id)); } catch (e) {}
+      await refreshLive();
+      await loadModCounts(true);
+      return 'refreshed';
+    }
+    return 'invalid key';
+  };
 
   const ARS_MATRIX = [
     { name: 'Create: Radars', modrinth: 'create-radars', curse: 1152836 },
@@ -420,22 +538,23 @@
       row.innerHTML = '<div class="mt-name">' + m.name + '</div>' +
         '<div class="mt-count" id="mc-' + (m.modrinth || '') + '">Loading downloads...</div>' +
         '<div class="mt-links">' +
-          (m.modrinth ? '<a href="https://modrinth.com/mod/' + m.modrinth + '" target="_blank" rel="noopener">Modrinth</a>' : '') +
-          (m.curse ? '<a href="https://www.curseforge.com/minecraft/mc-mods/' + m.modrinth + '" target="_blank" rel="noopener">CurseForge</a>' : '') +
+          (m.modrinth ? '<a href="https://modrinth.com/mod/' + m.modrinth + '" target="_blank" rel="noopener"><img class="micon" src="https://cdn.simpleicons.org/modrinth/9da7b3" alt="">Modrinth</a>' : '') +
+          (m.curse ? '<a href="https://www.curseforge.com/minecraft/mc-mods/' + m.modrinth + '" target="_blank" rel="noopener"><img class="micon" src="https://cdn.simpleicons.org/curseforge/9da7b3" alt="">CurseForge</a>' : '') +
         '</div>';
       grid.appendChild(row);
     });
   }
 
-  async function loadModCounts() {
+  async function loadModCounts(force) {
     for (const m of ARS_MATRIX) {
       let countEl = document.getElementById('mc-' + (m.modrinth || ''));
       if (!countEl) continue;
+      const cacheKey = 'modCounts_' + (m.modrinth || m.curse || m.name);
+      if (!force) { const c = cacheGet(cacheKey); if (c) { countEl.textContent = c; continue; } }
       const parts = [];
       if (m.modrinth) {
         try {
-          const r = await fetch('https://api.modrinth.com/v2/project/' + m.modrinth);
-          const j = await r.json();
+          const j = await cachedJSON('https://api.modrinth.com/v2/project/' + m.modrinth, 'modrinth_' + m.modrinth);
           const n = Number(j.downloads) || 0;
           if (n > 0) parts.push('Modrinth: ' + fmt(n) + ' downloads');
         } catch (e) {}
@@ -452,14 +571,14 @@
           if (n > 0) parts.push('CurseForge: ' + fmt(n) + ' downloads');
         } catch (e) {}
       }
-      if (parts.length) countEl.textContent = parts.join(' &middot; ');
+      if (parts.length) { countEl.textContent = parts.join(' &middot; '); cacheSet(cacheKey, parts.join(' &middot; ')); }
     }
   }
 
   buildAllStrips();
   buildArsenalists();
   refreshLive();
-  loadModCounts();
+  loadModCounts(forceRequested());
 
   let chessBooted = false;
   function bootChessFromLink(e) {
