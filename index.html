@@ -603,7 +603,7 @@
     for (const m of ARS_MATRIX) {
       let countEl = document.getElementById('mc-' + (m.modrinth || ''));
       if (!countEl) continue;
-      const cacheKey = 'modCounts_' + (m.modrinth || m.curse || m.name);
+      const cacheKey = 'modCounts2_' + (m.modrinth || m.curse || m.name);
       if (!force) { const c = cacheGet(cacheKey); if (c) { countEl.textContent = c; continue; } }
       const parts = [];
       if (m.modrinth) {
@@ -625,7 +625,7 @@
           if (n > 0) parts.push('CurseForge: ' + fmt(n) + ' downloads');
         } catch (e) {}
       }
-      if (parts.length) { countEl.textContent = parts.join(' &middot; '); cacheSet(cacheKey, parts.join(' &middot; ')); }
+      if (parts.length) { const t = parts.join(' \u00b7 '); countEl.textContent = t; cacheSet(cacheKey, t); }
     }
   }
 
