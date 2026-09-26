@@ -64,9 +64,6 @@
   .hero { margin-bottom: 48px; }
   .hero .hero-name { font-size: 44px; font-weight: 800; margin: 0 0 16px; letter-spacing: 2px; }
   .hero .hero-tag { color: var(--muted); font-size: 16px; max-width: 680px; margin: 0 0 20px; }
-  .hero .hero-links { display: flex; gap: 18px; flex-wrap: wrap; }
-  .hero .hero-links a { font-size: 14px; font-weight: 600; }
-  .hero .hero-links a:hover { text-decoration: underline; }
 
   section { padding: 36px 0; }
   section h2 {
@@ -136,7 +133,7 @@
   .gol-btn:hover { border-color: var(--accent); color: #fff; }
   .gol-btn.active { border-color: var(--accent); color: var(--accent); }
   .gol-speed { color: var(--muted); font-size: 13px; display: flex; align-items: center; gap: 8px; }
-  .gol-speed input { width: 120px; accent-color: var(--accent); }
+  .gol-speed input { width: 220px; accent-color: var(--accent); cursor: pointer; }
   .gol-stats { color: var(--muted); font-size: 13px; margin-bottom: 10px; }
   #gol-canvas { width: 480px; height: 480px; max-width: 100%; border: 1px solid #21262d; background: #0d1117; image-rendering: pixelated; display: block; cursor: crosshair; }
 
@@ -184,9 +181,6 @@
     <div class="hero">
       <h1 class="hero-name">-(INSERT NAME HERE)-</h1>
       <p class="hero-tag">Solo developer of Randomiser, co-developer of Create Deep Seas, Current lead developer of create radars, part of the All Stars development team, co-developer of the Broken Rifts mod.</p>
-      <div class="hero-links">
-        <a href="#" target="_blank" rel="noopener">Resume</a>
-      </div>
     </div>
 
     <section id="welcome">
@@ -207,6 +201,7 @@
     <section id="deep-seas">
       <h2>Create: Deep Seas</h2>
       <p class="lead">Create deep seas is a mod that adds full submarine functionality to minecraft including but not limited to : a fully function finite element analysis system to calculate accurate hull pressure distribution ,  procedurally generated accurate ocean terrain with simulated tectonic boundries and plate shift using voronoi cells .The mod is split into 2 main parts , create submarine that deals with all the aspects of a submarine like the hull controller, the hermetic seal , fog controller among other things; the second part is the abyss , a new dimension over 1000 blocks deep yet generates faster than regular minecraft. It uses accurate plate tectonics to generate abberations at plate boundries for more realism.</p>
+      <p><a href="https://github.com/MaxCreateMC/Create-Deep-Seas" target="_blank" rel="noopener">GitHub: Create: Deep Seas</a></p>
       <div class="vstrip" id="ds-strip"></div>
     </section>
 
@@ -216,6 +211,7 @@
       <div class="mod-grid" id="ars-mods"></div>
       <h3 class="ars-sub">Create: Radars</h3>
       <p class="lead ars-lead"> Create Radars is a mod that offers a variety of tools and blocks for Surveillance, Detection, and Controlling Weapons.It also incorporates advanced ballistics calculation to more accurately aim cannons</p>
+      <p><a href="https://github.com/Arsenalists-of-Create/Create-Radar" target="_blank" rel="noopener">GitHub: Create: Radars</a></p>
       <div class="vstrip vstrip-sm" id="rad-strip"></div>
     </section>
 
@@ -269,7 +265,7 @@
 
     <section id="gol">
       <h2>Game of Life Simulator</h2>
-      <p class="lead">A Conway's Game of Life simulator. Able to run up to 4 million cells at a decent 24 generations per second with features to analyse still forms , methelbauhs and even the occurence frequencies across runs. It also incorporates a new file type (.gol) that preserves data from incredibly long runs to be analysed later or started from that point</p>
+      <p class="lead">A Conway's Game of Life simulator. Able to run up to 4 million cells at a decent 24 generations per second with features to analyse still forms , methelbauhs and even the occurence frequencies across runs. It also incorporates a new file type (.gol) that preserves data from incredibly long runs to be analysed later or started from that point. The original code is actually written in c++ as you can see (<a href="https://github.com/NullTronPrime/gameoflifeanalysis" target="_blank" rel="noopener">here</a>) i did not recreate this in javascript i compiled it to a wasm so i can run 1:1 the exact code in the browser</p>
       <div class="gol-box">
         <div class="gol-tools">
           <select id="gol-pattern"></select>
@@ -277,7 +273,7 @@
           <button class="gol-btn" id="gol-step">Step</button>
           <button class="gol-btn" id="gol-random">Random</button>
           <button class="gol-btn" id="gol-clear">Clear</button>
-          <label class="gol-speed">Gens/s <input type="range" id="gol-speed" min="1" max="60" value="20"></label>
+          <label class="gol-speed">Gens/s <input type="range" id="gol-speed" min="1" max="60" value="20"><span id="gol-sps">20</span></label>
         </div>
         <div class="gol-stats" id="gol-stats">Gen 0 &middot; Live 0 &middot; &mdash;</div>
         <canvas id="gol-canvas" width="480" height="480"></canvas>
@@ -839,19 +835,46 @@
         resetHistory();
         draw();
       });
-      speedEl.addEventListener('input', function () { if (golTimer) setRunning(true); });
-      canvas.addEventListener('click', function (e) {
-        if (!gol || golTimer) return;
+      speedEl.addEventListener('input', function () {
+        document.getElementById('gol-sps').textContent = speedEl.value;
+        if (golTimer) {
+          clearInterval(golTimer);
+          golTimer = setInterval(doStep, Math.round(1000 / Number(speedEl.value)));
+        }
+      });
+      var painting = 0;
+      function cellFromEvent(e) {
         var rect = canvas.getBoundingClientRect();
-        var x = Math.floor((e.clientX - rect.left) / rect.width * SIZE);
-        var y = Math.floor((e.clientY - rect.top) / rect.height * SIZE);
+        return {
+          x: Math.floor((e.clientX - rect.left) / rect.width * SIZE),
+          y: Math.floor((e.clientY - rect.top) / rect.height * SIZE)
+        };
+      }
+      function paintAt(x, y) {
         if (x < 0 || y < 0 || x >= SIZE || y >= SIZE) return;
         var view = new Uint8Array(gol.HEAPU8.buffer, golBuf, SIZE * SIZE);
-        gol._gol_set_cell(x, y, view[y * SIZE + x] ? 0 : 1);
-        golSeen.clear();
-        draw();
-        updateStats('Running');
+        if (view[y * SIZE + x] !== painting) {
+          gol._gol_set_cell(x, y, painting);
+          golSeen.clear();
+          draw();
+          updateStats('Running');
+        }
+      }
+      canvas.addEventListener('mousedown', function (e) {
+        if (!gol || golTimer) return;
+        var c = cellFromEvent(e);
+        if (c.x < 0 || c.y < 0 || c.x >= SIZE || c.y >= SIZE) return;
+        var view = new Uint8Array(gol.HEAPU8.buffer, golBuf, SIZE * SIZE);
+        painting = view[c.y * SIZE + c.x] ? 0 : 1;
+        paintAt(c.x, c.y);
+        e.preventDefault();
       });
+      canvas.addEventListener('mousemove', function (e) {
+        if (!painting) return;
+        var c = cellFromEvent(e);
+        paintAt(c.x, c.y);
+      });
+      window.addEventListener('mouseup', function () { painting = 0; });
       document.addEventListener('visibilitychange', function () {
         if (document.hidden) { golWasRunning = !!golTimer; setRunning(false); }
         else if (golWasRunning) { golWasRunning = false; setRunning(true); }
