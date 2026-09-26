@@ -84,15 +84,15 @@
 
   .mod-grid { margin-top: 18px; padding-left: 18px; }
   .mod-row {
-    padding: 12px 0;
+    padding: 14px 0;
   }
   .mod-row:last-child { padding-bottom: 0; }
-  .mod-row .mt-name { font-weight: 600; font-size: 15px; }
-  .mod-row .mt-count { color: var(--accent); font-size: 13px; margin-top: 2px; }
-  .mod-row .mt-links { margin-top: 4px; font-size: 13px; padding-left: 14px; }
+  .mod-row .mt-name { font-weight: 600; font-size: 16px; }
+  .mod-row .mt-count { color: var(--accent); font-size: 20px; font-weight: 700; margin-top: 6px; letter-spacing: 0.5px; }
+  .mod-row .mt-links { margin-top: 8px; font-size: 14px; padding-left: 14px; }
   .mod-row .mt-links span { color: var(--muted); }
-  .mod-row .mt-links a { margin-right: 14px; }
-  .mt-links .micon { width: 14px; height: 14px; vertical-align: -2px; margin-right: 4px; display: inline-block; }
+  .mod-row .mt-links a { margin-right: 18px; display: inline-flex; align-items: center; }
+  .mt-links .micon { width: 20px; height: 20px; margin-right: 6px; flex: 0 0 auto; }
 
   .vstrip {
     margin-top: 8px;
@@ -125,7 +125,7 @@
   }
   .chess-thumb:hover .chess-play { color: #fff; }
   #chess-running { width: 480px; max-width: 100%; }
-  #chess-container { min-height: 480px; }
+  #chess-container { width: 480px; height: 480px; max-width: 100%; }
   #chess-loading { color: var(--muted); padding: 24px 0; }
 
   .footer { margin-top: 48px; color: var(--muted); font-size: 13px; }
@@ -364,6 +364,7 @@
     list.forEach(v => {
       const card = document.createElement('div');
       card.className = 'vcard video-click';
+      card.dataset.score = (typeof v.views === 'number') ? v.views : 0;
       let img = document.createElement('img');
       img.alt = '';
       img.loading = 'lazy';
@@ -445,6 +446,8 @@
       if (d.title) document.querySelectorAll('[data-vid-title="' + id + '"]').forEach(el => { el.textContent = d.title; });
       document.querySelectorAll('[data-vid-stats="' + id + '"]').forEach(el => {
         el.textContent = fmt(d.views) + ' views / ' + fmt(d.likes) + ' likes';
+        const card = el.closest('.vcard');
+        if (card) card.dataset.score = d.views;
       });
       if (d.thumb) document.querySelectorAll('[data-yid="' + id + '"]').forEach(el => { el.src = d.thumb; });
     });
@@ -506,6 +509,16 @@
   function applyPlaylistAgg(id, agg) {
     document.querySelectorAll('[data-pl-agg="' + id + '"]').forEach(el => {
       el.textContent = agg.count + ' videos \u00B7 ' + fmt(agg.views) + ' views \u00B7 ' + fmt(agg.likes) + ' likes';
+      const card = el.closest('.vcard');
+      if (card) card.dataset.score = agg.views;
+    });
+  }
+
+  function reorderStrips() {
+    document.querySelectorAll('.vstrip').forEach(strip => {
+      const cards = Array.prototype.slice.call(strip.children).filter(c => c.classList.contains('vcard'));
+      cards.sort((a, b) => (Number(b.dataset.score) || 0) - (Number(a.dataset.score) || 0));
+      cards.forEach(c => strip.appendChild(c));
     });
   }
 
@@ -526,6 +539,8 @@
         try { applyPlaylistAgg(id, await aggregatePlaylist(id)); } catch (e) { console.warn('playlist agg ' + id + ' failed', e); }
       }));
     } catch (e) { console.warn('playlist live refresh failed', e); }
+
+    reorderStrips();
   }
 
   window.forceRefreshLive = async function (key) {
@@ -594,9 +609,20 @@
   }
 
   buildAllStrips();
+  reorderStrips();
   buildArsenalists();
   refreshLive();
   loadModCounts(forceRequested());
+
+  function waitForChessPaint(container) {
+    return new Promise(resolve => {
+      const t0 = Date.now();
+      const timer = setInterval(() => {
+        const hasPaint = container.querySelector('canvas, img, video') || !!container.querySelector('#cheerpjDisplay') || container.children.length > 0;
+        if (hasPaint || Date.now() - t0 > 90000) { clearInterval(timer); resolve(hasPaint); }
+      }, 400);
+    });
+  }
 
   let chessBooted = false;
   function bootChessFromLink(e) {
@@ -622,10 +648,16 @@
         if (!resp.ok) throw new Error('jar ' + resp.status);
         const buf = await resp.arrayBuffer();
         window.cheerpOSAddStringFile('/str/chess-minimax.jar', new Uint8Array(buf));
-        loading.style.display = 'none';
-        document.getElementById('chess-container').style.display = 'block';
-        window.cheerpjCreateDisplay(-1, -1, document.getElementById('chess-container'));
-        await window.cheerpjRunMain('ChessGame', '/str/chess-minimax.jar');
+        var container = document.getElementById('chess-container');
+        container.style.display = 'block';
+        window.cheerpjCreateDisplay(-1, -1, container);
+        window.cheerpjRunMain('ChessGame', '/str/chess-minimax.jar').catch(function (err) {
+          console.error('CHEERPJ_BOOT_ERROR', err);
+          loading.style.display = 'block';
+          loading.textContent = 'Failed to start Java engine: ' + (err && (err.message || err.stack || err));
+        });
+        var painted = await waitForChessPaint(container);
+        if (painted) loading.style.display = 'none';
       } catch (err) {
         console.error('CHEERPJ_BOOT_ERROR', err);
         loading.style.display = 'block';
@@ -657,6 +689,29 @@
     window.addEventListener('scroll', onScroll);
     onScroll();
   })();
+
+  function lerpScrollTo(targetOffset, duration) {
+    var startY = window.pageYOffset;
+    var diff = targetOffset - startY;
+    var dur = duration || 700;
+    var t0 = performance.now();
+    function ease(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+    function step(now) {
+      var p = Math.min((now - t0) / dur, 1);
+      window.scrollTo(0, startY + diff * ease(p));
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  document.querySelectorAll('.nav a[href^="#"]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var sec = document.getElementById(a.getAttribute('href').slice(1));
+      if (!sec) return;
+      e.preventDefault();
+      lerpScrollTo(sec.offsetTop - 16, 700);
+    });
+  });
 </script>
 </body>
 </html>
