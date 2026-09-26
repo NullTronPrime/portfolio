@@ -137,6 +137,14 @@
   .gol-stats { color: var(--muted); font-size: 13px; margin-bottom: 10px; }
   #gol-canvas { width: 480px; height: 480px; max-width: 100%; border: 1px solid #21262d; background: #0d1117; image-rendering: pixelated; display: block; cursor: crosshair; }
 
+  .fluid-box { margin-top: 15px; }
+  .fluid-tools { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+  .fluid-btn { background: #161b22; color: #c9d1d9; border: 1px solid #21262d; border-radius: 5px; padding: 4px 10px; font-family: inherit; font-size: 12px; cursor: pointer; }
+  .fluid-btn:hover { border-color: #58a6ff; color: #58a6ff; }
+  .fluid-stats { margin-bottom: 8px; font-size: 12px; color: #9da7b3; }
+  #fluid-canvas { width: 480px; height: 320px; max-width: 100%; border: 1px solid #21262d; background: #0d1117; image-rendering: pixelated; display: block; cursor: crosshair; }
+  .fluid-note { margin-top: 8px; font-size: 12px; color: #9da7b3; }
+
   .modfolio { margin-top: 20px; }
   .modfolio img { width: 450px; max-width: 100%; height: auto; display: block; }
 
@@ -270,8 +278,30 @@
 
     <section id="fluid-sim">
       <h2>Fluid Sim (Rust)</h2>
-      <p class="lead">A fluid simulation written in Rust.Just an excercise to learn a new language but it performs excellent even at 1080p where other fluid sims might not.</p>
-      <p><a href="https://github.com/NullTronPrime/fluidsimrust" target="_blank" rel="noopener">GitHub: fluidsimrust</a></p>
+      <p class="lead">A fluid simulation written in Rust.Just an excercise to learn a new language but it performs excellent even at 1080p where other fluid sims might not. The original code now runs 1:1 in the browser via WebAssembly, with all the modes (1-7) at a scaled-down resolution - the GPU pipelines are skipped since browsers can't use them, everything falls back to the CPU sims. <a href="https://github.com/NullTronPrime/fluidsimrust" target="_blank" rel="noopener">GitHub: fluidsimrust</a></p>
+      <div class="fluid-box">
+        <div class="fluid-tools">
+          <button class="fluid-btn" data-key="1">Wind Tunnel</button>
+          <button class="fluid-btn" data-key="2">Tank</button>
+          <button class="fluid-btn" data-key="3">Paint</button>
+          <button class="fluid-btn" data-key="4">Hi-Res</button>
+          <button class="fluid-btn" data-key="5">2D Fire</button>
+          <button class="fluid-btn" data-key="6">3D Fire</button>
+          <button class="fluid-btn" data-key="p">Pause</button>
+          <button class="fluid-btn" data-key="m">Step</button>
+          <button class="fluid-btn" data-key="o">OverRelax</button>
+          <button class="fluid-btn" data-key="s">Streamlines</button>
+          <button class="fluid-btn" data-key="v">Velocities</button>
+          <button class="fluid-btn" data-key="r">Pressure</button>
+          <button class="fluid-btn" data-key="n">Smoke</button>
+          <button class="fluid-btn" data-key="f">Floor</button>
+          <button class="fluid-btn" data-key="b">Ring</button>
+          <button class="fluid-btn" data-key="w">Swirls</button>
+        </div>
+        <div class="fluid-stats" id="fluid-stats">Loading...</div>
+        <canvas id="fluid-canvas" width="480" height="320"></canvas>
+        <p class="fluid-note">Drag: move obstacle - Right-drag: orbit (3D) - Scroll: zoom (3D) - keys 1-7, P, M also work</p>
+      </div>
     </section>
 
     <section id="gol">
@@ -304,6 +334,7 @@
 </div>
 
 <script src="gol/gol.js"></script>
+<script id="fluid-loader" data-src="fluid/fluid.wasm" src="fluid/fluid.js"></script>
 <script>
   (function () {
     var img = document.getElementById('modfolio-img');
