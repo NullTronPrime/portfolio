@@ -128,6 +128,18 @@
   #chess-container { width: 480px; height: 480px; max-width: 100%; }
   #chess-loading { color: var(--muted); padding: 24px 0; }
 
+  .gol-box { margin-top: 16px; }
+  .gol-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 10px; }
+  #gol-pattern { background: #0d1117; color: #e6edf3; border: 1px solid #30363d; padding: 6px 8px; font-family: inherit; font-size: 13px; }
+  #gol-pattern:focus { outline: none; border-color: var(--accent); }
+  .gol-btn { background: transparent; color: #e6edf3; border: 1px solid #30363d; padding: 6px 14px; font-family: inherit; font-size: 13px; cursor: pointer; }
+  .gol-btn:hover { border-color: var(--accent); color: #fff; }
+  .gol-btn.active { border-color: var(--accent); color: var(--accent); }
+  .gol-speed { color: var(--muted); font-size: 13px; display: flex; align-items: center; gap: 8px; }
+  .gol-speed input { width: 120px; accent-color: var(--accent); }
+  .gol-stats { color: var(--muted); font-size: 13px; margin-bottom: 10px; }
+  #gol-canvas { width: 480px; height: 480px; max-width: 100%; border: 1px solid #21262d; background: #0d1117; image-rendering: pixelated; display: block; cursor: crosshair; }
+
   .footer { margin-top: 48px; color: var(--muted); font-size: 13px; }
 
   @media (max-width: 820px) {
@@ -258,6 +270,18 @@
     <section id="gol">
       <h2>Game of Life Simulator</h2>
       <p class="lead">A Conway's Game of Life simulator. Able to run up to 4 million cells at a decent 24 generations per second with features to analyse still forms , methelbauhs and even the occurence frequencies across runs. It also incorporates a new file type (.gol) that preserves data from incredibly long runs to be analysed later or started from that point</p>
+      <div class="gol-box">
+        <div class="gol-tools">
+          <select id="gol-pattern"></select>
+          <button class="gol-btn" id="gol-play">Play</button>
+          <button class="gol-btn" id="gol-step">Step</button>
+          <button class="gol-btn" id="gol-random">Random</button>
+          <button class="gol-btn" id="gol-clear">Clear</button>
+          <label class="gol-speed">Gens/s <input type="range" id="gol-speed" min="1" max="60" value="20"></label>
+        </div>
+        <div class="gol-stats" id="gol-stats">Gen 0 &middot; Live 0 &middot; &mdash;</div>
+        <canvas id="gol-canvas" width="480" height="480"></canvas>
+      </div>
     </section>
 
     <section id="battleships">
@@ -272,6 +296,7 @@
   </main>
 </div>
 
+<script src="gol/gol.js"></script>
 <script>
   const YOUTUBE_API_KEY = 'AIzaSyATrTPQrtzddEGcbiX-XRJj-yIB1w9O0vw';
   const YT_BASE = 'https://www.googleapis.com/youtube/v3';
@@ -712,6 +737,149 @@
       lerpScrollTo(sec.offsetTop - 16, 700);
     });
   });
+
+  (function () {
+    var gol = null;
+    var SIZE = 160, SCALE = 3;
+    var golTimer = null, golGens = 0, golWasRunning = false;
+    var golAge = null, golSeen = null, golBuf = 0;
+    var canvas = document.getElementById('gol-canvas');
+    var select = document.getElementById('gol-pattern');
+    var statsEl = document.getElementById('gol-stats');
+    var playBtn = document.getElementById('gol-play');
+    var speedEl = document.getElementById('gol-speed');
+    var off = document.createElement('canvas');
+    off.width = SIZE; off.height = SIZE;
+    var offCtx = off.getContext('2d');
+    var ctx = canvas.getContext('2d');
+    var img = offCtx.createImageData(SIZE, SIZE);
+
+    function setRunning(run) {
+      if (run && !golTimer) golTimer = setInterval(doStep, Math.round(1000 / Number(speedEl.value)));
+      if (!run && golTimer) { clearInterval(golTimer); golTimer = null; }
+      playBtn.textContent = golTimer ? 'Pause' : 'Play';
+      playBtn.classList.toggle('active', !!golTimer);
+    }
+
+    function resetHistory() {
+      golGens = 0;
+      golAge = new Uint8Array(SIZE * SIZE);
+      golSeen = new Map();
+      updateStats('Running');
+    }
+
+    function updateStats(state) {
+      statsEl.textContent = 'Gen ' + golGens + ' \u00b7 Live ' + (gol ? gol._gol_live() : 0) + ' \u00b7 ' + state;
+    }
+
+    function placePattern(name) {
+      if (!gol) return;
+      gol.ccall('gol_place', 'number', ['string'], [name]);
+      resetHistory();
+      draw();
+    }
+
+    function doStep() {
+      if (!gol) return;
+      try { gol._gol_step(); } catch (e) { setRunning(false); return; }
+      golGens++;
+      var live = gol._gol_live();
+      var key = gol._gol_hash_lo() + '_' + gol._gol_hash_hi();
+      var state;
+      if (live === 0) state = 'Extinct';
+      else if (golSeen.has(key)) {
+        var per = golGens - golSeen.get(key);
+        state = per === 1 ? 'Still life' : 'Oscillator (P' + per + ')';
+      } else {
+        golSeen.set(key, golGens);
+        if (golSeen.size > 50000) golSeen.clear();
+        state = live > 30 * SIZE ? 'Unbounded' : 'Running';
+      }
+      draw();
+      updateStats(state);
+    }
+
+    function draw() {
+      if (!gol) return;
+      gol._gol_get_grid(golBuf);
+      var view = new Uint8Array(gol.HEAPU8.buffer, golBuf, SIZE * SIZE);
+      var d = img.data;
+      for (var i = 0, p = 0; i < SIZE * SIZE; i++, p += 4) {
+        if (view[i]) {
+          var a = golAge[i];
+          golAge[i] = a < 255 ? a + 1 : a;
+          var t = a > 70 ? 1 : a / 70;
+          d[p] = Math.round(60 + 88 * t);
+          d[p + 1] = Math.round(90 + 96 * t);
+          d[p + 2] = Math.round(140 + 115 * t);
+        } else {
+          golAge[i] = 0;
+          d[p] = 13; d[p + 1] = 17; d[p + 2] = 23;
+        }
+        d[p + 3] = 255;
+      }
+      offCtx.putImageData(img, 0, 0);
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(off, 0, 0, canvas.width, canvas.height);
+    }
+
+    if (canvas) {
+      select.addEventListener('change', function () { placePattern(select.value); });
+      playBtn.addEventListener('click', function () { setRunning(!golTimer); });
+      document.getElementById('gol-step').addEventListener('click', function () { if (gol && !golTimer) { doStep(); updateStats('Running'); } });
+      document.getElementById('gol-random').addEventListener('click', function () {
+        if (!gol) return;
+        gol._gol_random(0.25, (Date.now() & 0xfffffff) | 1);
+        resetHistory();
+        draw();
+      });
+      document.getElementById('gol-clear').addEventListener('click', function () {
+        if (!gol) return;
+        gol._gol_clear();
+        resetHistory();
+        draw();
+      });
+      speedEl.addEventListener('input', function () { if (golTimer) setRunning(true); });
+      canvas.addEventListener('click', function (e) {
+        if (!gol || golTimer) return;
+        var rect = canvas.getBoundingClientRect();
+        var x = Math.floor((e.clientX - rect.left) / rect.width * SIZE);
+        var y = Math.floor((e.clientY - rect.top) / rect.height * SIZE);
+        if (x < 0 || y < 0 || x >= SIZE || y >= SIZE) return;
+        var view = new Uint8Array(gol.HEAPU8.buffer, golBuf, SIZE * SIZE);
+        gol._gol_set_cell(x, y, view[y * SIZE + x] ? 0 : 1);
+        golSeen.clear();
+        draw();
+        updateStats('Running');
+      });
+      document.addEventListener('visibilitychange', function () {
+        if (document.hidden) { golWasRunning = !!golTimer; setRunning(false); }
+        else if (golWasRunning) { golWasRunning = false; setRunning(true); }
+      });
+    }
+
+    function initGol() {
+      if (gol || typeof CreateGOL !== 'function') return;
+      CreateGOL().then(function (M) {
+        gol = M;
+        M._gol_init(SIZE, SIZE);
+        golBuf = M._malloc(SIZE * SIZE);
+        var n = M._gol_pattern_count();
+        for (var i = 0; i < n; i++) {
+          var name = M.UTF8ToString(M._gol_pattern_name(i));
+          var o = document.createElement('option');
+          o.value = name; o.textContent = name;
+          select.appendChild(o);
+        }
+        select.value = 'gosper-gun';
+        placePattern('gosper-gun');
+        setRunning(true);
+      }).catch(function () {
+        statsEl.textContent = 'GoL engine failed to load.';
+      });
+    }
+    if (canvas) initGol();
+  })();
 </script>
 </body>
 </html>
