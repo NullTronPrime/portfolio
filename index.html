@@ -137,6 +137,9 @@
   .gol-stats { color: var(--muted); font-size: 13px; margin-bottom: 10px; }
   #gol-canvas { width: 480px; height: 480px; max-width: 100%; border: 1px solid #21262d; background: #0d1117; image-rendering: pixelated; display: block; cursor: crosshair; }
 
+  .modfolio { margin-top: 20px; }
+  .modfolio img { width: 450px; max-width: 100%; height: auto; display: block; }
+
   .footer { margin-top: 48px; color: var(--muted); font-size: 13px; }
 
   @media (max-width: 820px) {
@@ -194,6 +197,9 @@
           <h3>Coding languages I am familiar with.</h3>
           <p>C, C++ , Javascript , Lua , C# , Python , Assembly(x86) ,Typescript ,PHP , Java , HTML , Rust among others</p>
         </div>
+      </div>
+      <div class="modfolio">
+        <img id="modfolio-img" data-src="https://modfolio.creeperkatze.dev/modrinth/user/Official_Cogfly" alt="Official_Cogfly Modrinth stats" width="450" height="350">
       </div>
     </section>
 
@@ -293,6 +299,12 @@
 </div>
 
 <script src="gol/gol.js"></script>
+<script>
+  (function () {
+    var img = document.getElementById('modfolio-img');
+    if (img && img.dataset.src) img.src = img.dataset.src + '?timestamp=' + Math.floor(Date.now() / 3600000) * 3600000;
+  })();
+</script>
 <script>
   const YOUTUBE_API_KEY = 'AIzaSyATrTPQrtzddEGcbiX-XRJj-yIB1w9O0vw';
   const YT_BASE = 'https://www.googleapis.com/youtube/v3';
