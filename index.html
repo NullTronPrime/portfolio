@@ -112,10 +112,6 @@
   .mod-ic { width: 42px; height: 42px; border-radius: 8px; object-fit: cover; flex: 0 0 auto; }
   .mod-row .mt-name { font-weight: 600; font-size: 16px; }
   .mod-row .mt-count { color: var(--accent); font-size: 20px; font-weight: 700; margin-top: 6px; letter-spacing: 0.5px; }
-  .mod-row .mt-links { margin-top: 8px; font-size: 14px; padding-left: 14px; }
-  .mod-row .mt-links span { color: var(--muted); }
-  .mod-row .mt-links a { margin-right: 18px; display: inline-flex; align-items: center; }
-  .mt-links .micon { width: 20px; height: 20px; margin-right: 6px; flex: 0 0 auto; }
 
   .dl-bit { display: inline-flex; align-items: center; gap: 6px; }
   .dl-bit img { width: 16px; height: 16px; flex: 0 0 auto; }
@@ -722,8 +718,11 @@
     { key: 'curseforge', icon: 'https://cdn.simpleicons.org/curseforge/9da7b3' }
   ];
 
-  function dlBitHTML(platform, num, big) {
-    return '<span class="dl-bit' + (big ? ' big' : '') + '"><img src="' + (platform === 'modrinth' ? MOD_PLATS[0].icon : MOD_PLATS[1].icon) + '" alt="' + platform + '">' + fmt(num) + ' downloads</span>';
+  const MO_HREF = function (slug) { return 'https://modrinth.com/mod/' + slug; };
+  const CF_HREF = function (slug) { return 'https://www.curseforge.com/minecraft/mc-mods/' + slug; };
+
+  function dlBitHTML(platform, num, big, href) {
+    return '<a href="' + href + '" target="_blank" rel="noopener" style="text-decoration:none; display:inline-block;"><span class="dl-bit' + (big ? ' big' : '') + '"><img src="' + (platform === 'modrinth' ? MOD_PLATS[0].icon : MOD_PLATS[1].icon) + '" alt="' + platform + '">' + fmt(num) + ' downloads</span></a>';
   }
 
   function buildArsenalists() {
@@ -735,10 +734,6 @@
       row.innerHTML = icon + '<div>' +
         '<div class="mt-name">' + m.name + '</div>' +
         '<div class="mt-count" id="mc-' + (m.modrinth || '') + '">Loading downloads...</div>' +
-        '<div class="mt-links">' +
-          (m.modrinth ? '<a href="https://modrinth.com/mod/' + m.modrinth + '" target="_blank" rel="noopener"><img class="micon" src="https://cdn.simpleicons.org/modrinth/9da7b3" alt="">Modrinth</a>' : '') +
-          (m.curse ? '<a href="https://www.curseforge.com/minecraft/mc-mods/' + m.modrinth + '" target="_blank" rel="noopener"><img class="micon" src="https://cdn.simpleicons.org/curseforge/9da7b3" alt="">CurseForge</a>' : '') +
-        '</div>' +
         (m.store ? '<a class="view-more vm-sm" href="' + m.store + '" target="_blank" rel="noopener">View More</a>' : '') +
       '</div>';
       grid.appendChild(row);
@@ -747,14 +742,14 @@
 
   async function loadCountsFor(m, countEl, force, big) {
     if (!countEl) return;
-    const cacheKey = 'modCounts2_' + (m.modrinth || m.name);
+    const cacheKey = 'modCounts3_' + (m.modrinth || m.name);
     if (!force) { const c = cacheGet(cacheKey); if (c) { countEl.innerHTML = c; return; } }
     const bits = [];
     if (m.modrinth) {
       try {
         const j = await cachedJSON('https://api.modrinth.com/v2/project/' + m.modrinth, 'modrinth_' + m.modrinth);
         const n = Number(j.downloads) || 0;
-        if (n > 0) bits.push(dlBitHTML('modrinth', n, big));
+        if (n > 0) bits.push(dlBitHTML('modrinth', n, big, MO_HREF(m.modrinth)));
       } catch (e) {}
     }
     if (m.curse) {
@@ -766,7 +761,7 @@
         const mm = svg.match(/aria-label="Downloads:\s*([\d,]+)"/);
         const raw = mm ? mm[1].replace(/,/g, '') : '';
         const n = Number(raw);
-        if (n > 0) bits.push(dlBitHTML('curseforge', n, big));
+        if (n > 0) bits.push(dlBitHTML('curseforge', n, big, CF_HREF(m.modrinth)));
       } catch (e) {}
     }
     if (bits.length) { const t = bits.join(''); countEl.innerHTML = t; cacheSet(cacheKey, t); }
