@@ -99,7 +99,6 @@
   .mc-zone section h2 { color: var(--mc-accent); }
   .mc-zone section .lead { color: var(--mc-text); }
   .mc-zone a { color: var(--mc-green); }
-  .mc-zone .ars-sub { color: var(--mc-accent); }
   .mc-zone .vcard img { border-color: var(--mc-border); }
   .mc-zone .vcard .vt { color: var(--mc-text); }
   .mc-zone .vcard .vs { color: var(--mc-muted); }
@@ -107,17 +106,51 @@
   .mc-zone .mod-row .mt-name { color: var(--mc-text); }
   .mc-zone .mod-row .mt-count { color: var(--mc-green); }
 
+  .mod-grid { margin-top: 18px; }
   .mod-row { display: flex; align-items: flex-start; gap: 14px; padding: 14px 0; }
+  .mod-row:last-child { padding-bottom: 0; }
   .mod-ic { width: 42px; height: 42px; border-radius: 8px; object-fit: cover; flex: 0 0 auto; }
   .mod-row .mt-name { font-weight: 600; font-size: 16px; }
-
-  .mod-grid { margin-top: 18px; }
-  .mod-row:last-child { padding-bottom: 0; }
   .mod-row .mt-count { color: var(--accent); font-size: 20px; font-weight: 700; margin-top: 6px; letter-spacing: 0.5px; }
   .mod-row .mt-links { margin-top: 8px; font-size: 14px; padding-left: 14px; }
   .mod-row .mt-links span { color: var(--muted); }
   .mod-row .mt-links a { margin-right: 18px; display: inline-flex; align-items: center; }
   .mt-links .micon { width: 20px; height: 20px; margin-right: 6px; flex: 0 0 auto; }
+
+  .dl-bit { display: inline-flex; align-items: center; gap: 6px; }
+  .dl-bit img { width: 16px; height: 16px; flex: 0 0 auto; }
+  .dl-bit + .dl-bit { margin-left: 14px; }
+  .dl-bit.big img { width: 22px; height: 22px; }
+  .dl-bit.big { font-size: 22px; }
+
+  .view-more {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 18px;
+    border: 1px solid var(--mc-accent);
+    border-radius: 9px;
+    color: var(--mc-green) !important;
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+  }
+  .view-more:hover { background: rgba(0, 175, 92, 0.08); text-decoration: none; }
+  .view-more.vm-sm { margin-top: 8px; padding: 5px 13px; font-size: 13px; border-radius: 8px; }
+
+  .rad-flex { display: flex; gap: 28px; align-items: flex-start; }
+  .rad-text { flex: 1 1 auto; }
+  .rad-dl { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; }
+  .rad-ic { width: 96px; height: 96px; border-radius: 18px; display: block; }
+  .rad-dl .dl-big { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+  .rad-dl .dl-bit.big { margin-left: 0; }
+
+  @media (max-width: 820px) {
+    .rad-flex { flex-direction: column; }
+    .rad-dl { flex-direction: row; align-items: center; }
+    .rad-dl .dl-big { flex-direction: row; }
+    .rad-dl .dl-bit.big { margin-left: 0; }
+  }
 
   .vstrip {
     margin-top: 8px;
@@ -155,8 +188,8 @@
 
   .gol-box { margin-top: 16px; }
   .gol-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 10px; }
-  #gol-pattern { background: #0d1117; color: #e6edf3; border: 1px solid #30363d; padding: 6px 8px; font-family: inherit; font-size: 13px; }
-  #gol-pattern:focus { outline: none; border-color: var(--accent); }
+  #gol-pattern, #gol-size { background: #0d1117; color: #e6edf3; border: 1px solid #30363d; padding: 6px 8px; font-family: inherit; font-size: 13px; }
+  #gol-pattern:focus, #gol-size:focus { outline: none; border-color: var(--accent); }
   .gol-btn { background: transparent; color: #e6edf3; border: 1px solid #30363d; padding: 6px 14px; font-family: inherit; font-size: 13px; cursor: pointer; }
   .gol-btn:hover { border-color: var(--accent); color: #fff; }
   .gol-btn.active { border-color: var(--accent); color: var(--accent); }
@@ -198,6 +231,7 @@
         <li><a href="#welcome">Welcome</a></li>
         <li><a href="#modfolio">ModFolio</a></li>
         <li><a href="#deep-seas">Create: Deep Seas</a></li>
+        <li><a href="#radars">Create: Radars</a></li>
         <li><a href="#arsenalists">Create: Arsenalists</a></li>
         <li><a href="#randomiser">Angry Birds Epic: Randomiser</a></li>
         <li><a href="#all-stars">Angry Birds Epic: All Stars</a></li>
@@ -254,38 +288,47 @@
         <div class="vstrip" id="ds-strip"></div>
       </section>
 
+      <section id="radars">
+        <h2>Create: Radars</h2>
+        <div class="rad-flex">
+          <div class="rad-text">
+            <p class="lead">Create: Radars is a mod that offers a variety of tools and blocks for Surveillance, Detection, and Controlling Weapons. It also incorporates advanced ballistics calculation to more accurately aim cannons.</p>
+            <p><a href="https://github.com/Arsenalists-of-Create/Create-Radar" target="_blank" rel="noopener">GitHub: Create: Radars</a></p>
+            <a class="view-more" href="https://minecraftstorage.com/mods/create-radars?ref=ceoofgoogle" target="_blank" rel="noopener">View More</a>
+          </div>
+          <div class="rad-dl">
+            <img class="rad-ic" src="https://cdn.modrinth.com/data/BLu2Yqfq/d2e206a0bbee73647a9ebf99607abbae5a8960c7_96.webp" alt="Create: Radars">
+            <div class="dl-big" id="rad-dl"></div>
+          </div>
+        </div>
+        <div class="vstrip" id="rad-strip"></div>
+      </section>
+
       <section id="arsenalists">
         <h2>Create: Arsenalists</h2>
-        <p class="lead">Create: Arsenalists is a team dedicated to working on military styled mods that add to create </p>
+        <p class="lead">Create: Arsenalists is a team dedicated to working on military styled mods that add to create</p>
         <div class="mod-grid" id="ars-mods"></div>
-        <h3 class="ars-sub">Create: Radars</h3>
-        <p class="lead ars-lead"> Create Radars is a mod that offers a variety of tools and blocks for Surveillance, Detection, and Controlling Weapons.It also incorporates advanced ballistics calculation to more accurately aim cannons</p>
-        <p><a href="https://github.com/Arsenalists-of-Create/Create-Radar" target="_blank" rel="noopener">GitHub: Create: Radars</a></p>
-        <div class="vstrip vstrip-sm" id="rad-strip"></div>
-      </section>
-
-      <style>.ars-sub { margin: 28px 0 8px; padding-left: 18px; font-size: 20px; font-weight: 700; letter-spacing: 1px; }
-      .ars-lead { margin-left: 18px; max-width: 640px; }</style>
-
-      <section id="randomiser">
-        <h2>Angry Birds Epic: Randomiser</h2>
-        <p class="lead">Angry birds epic randomiser is a spin on the original game , swapping anything from enemies to backdrops. It results in a fresh outlook on the game each playthrough. Its the first large game development project that i worked on my own which gained traction</p>
-        <div class="vstrip" id="ab-strip"></div>
-      </section>
-
-      <section id="all-stars">
-        <h2>Angry Birds Epic: All Stars</h2>
-        <p class="lead">Angry birds all stars is the most popular angry birds epic mod with a discord server of over 40k people and is the go to mod to play angry birds epic hassle free. It removes all pay to win elements, rebalances levels to be more fun while remaining challenging and adds a huge amount of new endgame content while keeping it accessible to everyone. A huge dev and mod team is required to make sure the mod stays balanced</p>
-        <div class="vstrip" id="as-strip"></div>
-      </section>
-
-      <section id="broken-rifts">
-        <h2>Angry Birds Epic: Broken Rifts</h2>
-        <p class="lead">Angry birds epic broken rifts is a promising but work in progress mod, It introduces the concept of interdimensional travel to angry birds epic. Not exactly a common combo but it seemingly works by the reactions of our playtesters. The beta contains a ton of new enemies and maps tailored to fit the "era" they're from </p>
-        <div class="vstrip" id="br-strip"></div>
       </section>
 
     </div>
+
+    <section id="randomiser">
+      <h2>Angry Birds Epic: Randomiser</h2>
+      <p class="lead">Angry birds epic randomiser is a spin on the original game , swapping anything from enemies to backdrops. It results in a fresh outlook on the game each playthrough. Its the first large game development project that i worked on my own which gained traction</p>
+      <div class="vstrip" id="ab-strip"></div>
+    </section>
+
+    <section id="all-stars">
+      <h2>Angry Birds Epic: All Stars</h2>
+      <p class="lead">Angry birds all stars is the most popular angry birds epic mod with a discord server of over 40k people and is the go to mod to play angry birds epic hassle free. It removes all pay to win elements, rebalances levels to be more fun while remaining challenging and adds a huge amount of new endgame content while keeping it accessible to everyone. A huge dev and mod team is required to make sure the mod stays balanced</p>
+      <div class="vstrip" id="as-strip"></div>
+    </section>
+
+    <section id="broken-rifts">
+      <h2>Angry Birds Epic: Broken Rifts</h2>
+      <p class="lead">Angry birds epic broken rifts is a promising but work in progress mod, It introduces the concept of interdimensional travel to angry birds epic. Not exactly a common combo but it seemingly works by the reactions of our playtesters. The beta contains a ton of new enemies and maps tailored to fit the "era" they're from </p>
+      <div class="vstrip" id="br-strip"></div>
+    </section>
 
     <section id="chess">
       <h2>Chess Engine</h2>
@@ -310,7 +353,7 @@
 
     <section id="fluid-sim">
       <h2>Fluid Sim (Rust)</h2>
-      <p class="lead">A fluid simulation written in Rust.Just an excercise to learn a new language but it performs excellent even at 1080p where other fluid sims might not. The original code now runs 1:1 in the browser via WebAssembly, with all the modes (1-7) at a scaled-down resolution - the GPU pipelines are skipped since browsers can't use them, everything falls back to the CPU sims. <a href="https://github.com/NullTronPrime/fluidsimrust" target="_blank" rel="noopener">GitHub: fluidsimrust</a></p>
+      <p class="lead">A fluid simulation written in Rust.Just an excercise to learn a new language but it performs excellent even at 1080p where other fluid sims might not. The original code now runs 1:1 in the browser via WebAssembly, albeit at a scaled-down resolution since the GPU pipelines are skipped since browsers can't use them. <a href="https://github.com/NullTronPrime/fluidsimrust" target="_blank" rel="noopener">GitHub: fluidsimrust</a></p>
       <div class="fluid-box">
         <div class="fluid-tools">
           <button class="fluid-btn" data-key="1">Wind Tunnel</button>
@@ -333,6 +376,13 @@
       <div class="gol-box">
         <div class="gol-tools">
           <select id="gol-pattern"></select>
+          <select id="gol-size">
+            <option value="120">120</option>
+            <option value="160" selected>160</option>
+            <option value="200">200</option>
+            <option value="240">240</option>
+            <option value="320">320</option>
+          </select>
           <button class="gol-btn" id="gol-play">Play</button>
           <button class="gol-btn" id="gol-step">Step</button>
           <button class="gol-btn" id="gol-random">Random</button>
@@ -648,12 +698,22 @@
   };
 
   const ARS_MATRIX = [
-    { name: 'Create: Radars', modrinth: 'create-radars', curse: 1152836, icon: 'https://cdn.modrinth.com/data/BLu2Yqfq/d2e206a0bbee73647a9ebf99607abbae5a8960c7_96.webp' },
-    { name: 'Create: Energy Cannons', modrinth: 'create-energy-cannons', curse: 1476035, icon: 'https://cdn.modrinth.com/data/Pf340qLy/4a2c9645a92d2ac8018dc7ae78bdabf10d87e574_96.webp' },
+    { name: 'Create: Energy Cannons', modrinth: 'create-energy-cannons', curse: 1476035, icon: 'https://cdn.modrinth.com/data/Pf340qLy/4a2c9645a92d2ac8018dc7ae78bdabf10d87e574_96.webp', store: 'https://minecraftstorage.com/mods/create-energy-cannons?ref=ceoofgoogle' },
     { name: 'Create: Radars (Refabricated)', modrinth: 'create-radars-refabricated', icon: 'https://cdn.modrinth.com/data/IUlhKVP4/373d152d22d3b7b29849c86c9a312249c9955b34_96.webp' },
     { name: 'Create: Clothes', modrinth: 'create-clothes', curse: 1262083, icon: 'https://cdn.modrinth.com/data/htYLZ8Hw/7ec14cce7afd989580ef6d9e9a08408e8df960bb_96.webp' },
     { name: 'Create More Fluid Tanks', modrinth: 'create-more-fluid-tanks', icon: 'https://cdn.modrinth.com/data/BJd3hQKC/66ecac86ab4109d43eb80d6e9944fe3fab04837b_96.webp' }
   ];
+
+  const RADARS = { name: 'Create: Radars', modrinth: 'create-radars', curse: 1152836, icon: 'https://cdn.modrinth.com/data/BLu2Yqfq/d2e206a0bbee73647a9ebf99607abbae5a8960c7_96.webp', store: 'https://minecraftstorage.com/mods/create-radars?ref=ceoofgoogle' };
+
+  const MOD_PLATS = [
+    { key: 'modrinth', icon: 'https://cdn.simpleicons.org/modrinth/9da7b3' },
+    { key: 'curseforge', icon: 'https://cdn.simpleicons.org/curseforge/9da7b3' }
+  ];
+
+  function dlBitHTML(platform, num, big) {
+    return '<span class="dl-bit' + (big ? ' big' : '') + '"><img src="' + (platform === 'modrinth' ? MOD_PLATS[0].icon : MOD_PLATS[1].icon) + '" alt="' + platform + '">' + fmt(num) + '</span>';
+  }
 
   function buildArsenalists() {
     const grid = document.getElementById('ars-mods');
@@ -668,39 +728,44 @@
           (m.modrinth ? '<a href="https://modrinth.com/mod/' + m.modrinth + '" target="_blank" rel="noopener"><img class="micon" src="https://cdn.simpleicons.org/modrinth/9da7b3" alt="">Modrinth</a>' : '') +
           (m.curse ? '<a href="https://www.curseforge.com/minecraft/mc-mods/' + m.modrinth + '" target="_blank" rel="noopener"><img class="micon" src="https://cdn.simpleicons.org/curseforge/9da7b3" alt="">CurseForge</a>' : '') +
         '</div>' +
+        (m.store ? '<a class="view-more vm-sm" href="' + m.store + '" target="_blank" rel="noopener">View More</a>' : '') +
       '</div>';
       grid.appendChild(row);
     });
   }
 
+  async function loadCountsFor(m, countEl, force, big) {
+    if (!countEl) return;
+    const cacheKey = 'modCounts2_' + (m.modrinth || m.name);
+    if (!force) { const c = cacheGet(cacheKey); if (c) { countEl.innerHTML = c; return; } }
+    const bits = [];
+    if (m.modrinth) {
+      try {
+        const j = await cachedJSON('https://api.modrinth.com/v2/project/' + m.modrinth, 'modrinth_' + m.modrinth);
+        const n = Number(j.downloads) || 0;
+        if (n > 0) bits.push(dlBitHTML('modrinth', n, big));
+      } catch (e) {}
+    }
+    if (m.curse) {
+      try {
+        const badge = 'https://mod-download-count-badge.vercel.app?curseforge=' + m.curse + '&format=json';
+        const url = 'https://img.shields.io/endpoint?url=' + encodeURIComponent(badge);
+        const res = await fetch(url);
+        const svg = await res.text();
+        const mm = svg.match(/aria-label="Downloads:\s*([\d,]+)"/);
+        const raw = mm ? mm[1].replace(/,/g, '') : '';
+        const n = Number(raw);
+        if (n > 0) bits.push(dlBitHTML('curseforge', n, big));
+      } catch (e) {}
+    }
+    if (bits.length) { const t = bits.join(''); countEl.innerHTML = t; cacheSet(cacheKey, t); }
+  }
+
   async function loadModCounts(force) {
     for (const m of ARS_MATRIX) {
-      let countEl = document.getElementById('mc-' + (m.modrinth || ''));
-      if (!countEl) continue;
-      const cacheKey = 'modCounts2_' + (m.modrinth || m.curse || m.name);
-      if (!force) { const c = cacheGet(cacheKey); if (c) { countEl.textContent = c; continue; } }
-      const parts = [];
-      if (m.modrinth) {
-        try {
-          const j = await cachedJSON('https://api.modrinth.com/v2/project/' + m.modrinth, 'modrinth_' + m.modrinth);
-          const n = Number(j.downloads) || 0;
-          if (n > 0) parts.push('Modrinth: ' + fmt(n) + ' downloads');
-        } catch (e) {}
-      }
-      if (m.curse) {
-        try {
-          const badge = 'https://mod-download-count-badge.vercel.app?curseforge=' + m.curse + '&format=json';
-          const url = 'https://img.shields.io/endpoint?url=' + encodeURIComponent(badge);
-          const res = await fetch(url);
-          const svg = await res.text();
-          const mm = svg.match(/aria-label="Downloads:\s*([\d,]+)"/);
-          const raw = mm ? mm[1].replace(/,/g, '') : '';
-          const n = Number(raw);
-          if (n > 0) parts.push('CurseForge: ' + fmt(n) + ' downloads');
-        } catch (e) {}
-      }
-      if (parts.length) { const t = parts.join(' \u00b7 '); countEl.textContent = t; cacheSet(cacheKey, t); }
+      await loadCountsFor(m, document.getElementById('mc-' + (m.modrinth || '')), force, false);
     }
+    await loadCountsFor(RADARS, document.getElementById('rad-dl'), force, true);
   }
 
   buildAllStrips();
@@ -815,6 +880,7 @@
     var golAge = null, golSeen = null, golBuf = 0;
     var canvas = document.getElementById('gol-canvas');
     var select = document.getElementById('gol-pattern');
+    var sizeEl = document.getElementById('gol-size');
     var statsEl = document.getElementById('gol-stats');
     var playBtn = document.getElementById('gol-play');
     var speedEl = document.getElementById('gol-speed');
@@ -824,9 +890,20 @@
     var ctx = canvas.getContext('2d');
     var img = offCtx.createImageData(SIZE, SIZE);
 
+    function runLoop() {
+      doStep();
+      if (golTimer) {
+        golTimer = setTimeout(runLoop, Math.round(1000 / Number(speedEl.value)));
+      }
+    }
+
     function setRunning(run) {
-      if (run && !golTimer) golTimer = setInterval(doStep, Math.round(1000 / Number(speedEl.value)));
-      if (!run && golTimer) { clearInterval(golTimer); golTimer = null; }
+      if (run && !golTimer) {
+        golTimer = setTimeout(runLoop, Math.round(1000 / Number(speedEl.value)));
+      } else if (!run && golTimer) {
+        clearTimeout(golTimer);
+        golTimer = null;
+      }
       playBtn.textContent = golTimer ? 'Pause' : 'Play';
       playBtn.classList.toggle('active', !!golTimer);
     }
@@ -849,6 +926,15 @@
       draw();
     }
 
+    function ageLive() {
+      gol._gol_get_grid(golBuf);
+      var view = new Uint8Array(gol.HEAPU8.buffer, golBuf, SIZE * SIZE);
+      for (var i = 0; i < SIZE * SIZE; i++) {
+        if (view[i]) { var a = golAge[i]; golAge[i] = a < 255 ? a + 1 : a; }
+        else { golAge[i] = 0; }
+      }
+    }
+
     function doStep() {
       if (!gol) return;
       try { gol._gol_step(); } catch (e) { setRunning(false); return; }
@@ -865,6 +951,7 @@
         if (golSeen.size > 50000) golSeen.clear();
         state = live > 30 * SIZE ? 'Unbounded' : 'Running';
       }
+      ageLive();
       draw();
       updateStats(state);
     }
@@ -877,13 +964,11 @@
       for (var i = 0, p = 0; i < SIZE * SIZE; i++, p += 4) {
         if (view[i]) {
           var a = golAge[i];
-          golAge[i] = a < 255 ? a + 1 : a;
           var t = a > 70 ? 1 : a / 70;
           d[p] = Math.round(60 + 88 * t);
           d[p + 1] = Math.round(90 + 96 * t);
           d[p + 2] = Math.round(140 + 115 * t);
         } else {
-          golAge[i] = 0;
           d[p] = 13; d[p + 1] = 17; d[p + 2] = 23;
         }
         d[p + 3] = 255;
@@ -911,10 +996,23 @@
       });
       speedEl.addEventListener('input', function () {
         document.getElementById('gol-sps').textContent = speedEl.value;
-        if (golTimer) {
-          clearInterval(golTimer);
-          golTimer = setInterval(doStep, Math.round(1000 / Number(speedEl.value)));
-        }
+      });
+      sizeEl.addEventListener('change', function () {
+        if (!gol) return;
+        var ns = Number(sizeEl.value);
+        if (ns === SIZE) return;
+        var was = !!golTimer;
+        setRunning(false);
+        if (gol._gol_destroy) gol._gol_destroy();
+        gol._free(golBuf);
+        SIZE = ns;
+        golBuf = gol._malloc(SIZE * SIZE);
+        off.width = SIZE; off.height = SIZE;
+        img = offCtx.createImageData(SIZE, SIZE);
+        gol._gol_init(SIZE, SIZE);
+        if (select.value) { placePattern(select.value); }
+        else { gol._gol_clear(); resetHistory(); draw(); }
+        if (was) setRunning(true);
       });
       var painting = 0;
       function cellFromEvent(e) {
