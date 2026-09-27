@@ -190,6 +190,7 @@
   .gol-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 10px; }
   #gol-pattern, #gol-size { background: #0d1117; color: #e6edf3; border: 1px solid #30363d; padding: 6px 8px; font-family: inherit; font-size: 13px; }
   #gol-pattern:focus, #gol-size:focus { outline: none; border-color: var(--accent); }
+  .gol-size-label { color: var(--muted); font-size: 13px; display: flex; align-items: center; gap: 8px; }
   .gol-btn { background: transparent; color: #e6edf3; border: 1px solid #30363d; padding: 6px 14px; font-family: inherit; font-size: 13px; cursor: pointer; }
   .gol-btn:hover { border-color: var(--accent); color: #fff; }
   .gol-btn.active { border-color: var(--accent); color: var(--accent); }
@@ -283,8 +284,16 @@
 
       <section id="deep-seas">
         <h2>Create: Deep Seas</h2>
-        <p class="lead">Create deep seas is a mod that adds full submarine functionality to minecraft including but not limited to : a fully function finite element analysis system to calculate accurate hull pressure distribution ,  procedurally generated accurate ocean terrain with simulated tectonic boundries and plate shift using voronoi cells .The mod is split into 2 main parts , create submarine that deals with all the aspects of a submarine like the hull controller, the hermetic seal , fog controller among other things; the second part is the abyss , a new dimension over 1000 blocks deep yet generates faster than regular minecraft. It uses accurate plate tectonics to generate abberations at plate boundries for more realism.</p>
-        <p><a href="https://github.com/MaxCreateMC/Create-Deep-Seas" target="_blank" rel="noopener">GitHub: Create: Deep Seas</a></p>
+        <div class="rad-flex">
+          <div class="rad-text">
+            <p class="lead">Create deep seas is a mod that adds full submarine functionality to minecraft including but not limited to : a fully function finite element analysis system to calculate accurate hull pressure distribution ,  procedurally generated accurate ocean terrain with simulated tectonic boundries and plate shift using voronoi cells .The mod is split into 2 main parts , create submarine that deals with all the aspects of a submarine like the hull controller, the hermetic seal , fog controller among other things; the second part is the abyss , a new dimension over 1000 blocks deep yet generates faster than regular minecraft. It uses accurate plate tectonics to generate abberations at plate boundries for more realism.</p>
+            <p><a href="https://github.com/MaxCreateMC/Create-Deep-Seas" target="_blank" rel="noopener">GitHub: Create: Deep Seas</a></p>
+          </div>
+          <div class="rad-dl">
+            <img class="rad-ic" src="https://cdn.modrinth.com/data/mva5q4qZ/f165f28003c4dfe2b3d0a1d98592d197832757a5_96.webp" alt="Create: Deep Seas">
+            <div class="dl-big" id="ds-dl"></div>
+          </div>
+        </div>
         <div class="vstrip" id="ds-strip"></div>
       </section>
 
@@ -376,13 +385,13 @@
       <div class="gol-box">
         <div class="gol-tools">
           <select id="gol-pattern"></select>
-          <select id="gol-size">
+          <label class="gol-size-label">Grid size: <select id="gol-size">
             <option value="120">120</option>
             <option value="160" selected>160</option>
             <option value="200">200</option>
             <option value="240">240</option>
             <option value="320">320</option>
-          </select>
+          </select></label>
           <button class="gol-btn" id="gol-play">Play</button>
           <button class="gol-btn" id="gol-step">Step</button>
           <button class="gol-btn" id="gol-random">Random</button>
@@ -706,13 +715,15 @@
 
   const RADARS = { name: 'Create: Radars', modrinth: 'create-radars', curse: 1152836, icon: 'https://cdn.modrinth.com/data/BLu2Yqfq/d2e206a0bbee73647a9ebf99607abbae5a8960c7_96.webp', store: 'https://minecraftstorage.com/mods/create-radars?ref=ceoofgoogle' };
 
+  const DEEP_SEAS = { name: 'Create: Deep Seas', modrinth: 'create-deep-seas', curse: 1533137, icon: 'https://cdn.modrinth.com/data/mva5q4qZ/f165f28003c4dfe2b3d0a1d98592d197832757a5_96.webp' };
+
   const MOD_PLATS = [
     { key: 'modrinth', icon: 'https://cdn.simpleicons.org/modrinth/9da7b3' },
     { key: 'curseforge', icon: 'https://cdn.simpleicons.org/curseforge/9da7b3' }
   ];
 
   function dlBitHTML(platform, num, big) {
-    return '<span class="dl-bit' + (big ? ' big' : '') + '"><img src="' + (platform === 'modrinth' ? MOD_PLATS[0].icon : MOD_PLATS[1].icon) + '" alt="' + platform + '">' + fmt(num) + '</span>';
+    return '<span class="dl-bit' + (big ? ' big' : '') + '"><img src="' + (platform === 'modrinth' ? MOD_PLATS[0].icon : MOD_PLATS[1].icon) + '" alt="' + platform + '">' + fmt(num) + ' downloads</span>';
   }
 
   function buildArsenalists() {
@@ -766,6 +777,7 @@
       await loadCountsFor(m, document.getElementById('mc-' + (m.modrinth || '')), force, false);
     }
     await loadCountsFor(RADARS, document.getElementById('rad-dl'), force, true);
+    await loadCountsFor(DEEP_SEAS, document.getElementById('ds-dl'), force, true);
   }
 
   buildAllStrips();
