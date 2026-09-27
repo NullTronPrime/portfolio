@@ -78,13 +78,41 @@
   .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
   .about-col h3 { font-size: 17px; font-weight: 700; margin: 0 0 8px; }
   .about-col p { color: var(--muted); margin: 0; }
+  .about-col { margin-bottom: 18px; }
 
-  .mod-grid { margin-top: 18px; padding-left: 18px; }
-  .mod-row {
-    padding: 14px 0;
+  .start-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 40px; align-items: start; }
+  .start-grid section { padding: 20px 0; }
+
+  .mc-zone {
+    margin: 20px 0 0;
+    padding: 8px 28px 24px;
+    border: 1px solid #2a2a2e;
+    border-radius: 14px;
+    background: #101013;
+    --mc-accent: #00af5c;
+    --mc-green: #1bd96a;
+    --mc-dark: #101013;
+    --mc-text: #f8f8f8;
+    --mc-muted: #9b9e98;
+    --mc-border: #2a2a2e;
   }
-  .mod-row:last-child { padding-bottom: 0; }
+  .mc-zone section h2 { color: var(--mc-accent); }
+  .mc-zone section .lead { color: var(--mc-text); }
+  .mc-zone a { color: var(--mc-green); }
+  .mc-zone .ars-sub { color: var(--mc-accent); }
+  .mc-zone .vcard img { border-color: var(--mc-border); }
+  .mc-zone .vcard .vt { color: var(--mc-text); }
+  .mc-zone .vcard .vs { color: var(--mc-muted); }
+  .mc-zone .vcard .vplay { color: var(--mc-green); }
+  .mc-zone .mod-row .mt-name { color: var(--mc-text); }
+  .mc-zone .mod-row .mt-count { color: var(--mc-green); }
+
+  .mod-row { display: flex; align-items: flex-start; gap: 14px; padding: 14px 0; }
+  .mod-ic { width: 42px; height: 42px; border-radius: 8px; object-fit: cover; flex: 0 0 auto; }
   .mod-row .mt-name { font-weight: 600; font-size: 16px; }
+
+  .mod-grid { margin-top: 18px; }
+  .mod-row:last-child { padding-bottom: 0; }
   .mod-row .mt-count { color: var(--accent); font-size: 20px; font-weight: 700; margin-top: 6px; letter-spacing: 0.5px; }
   .mod-row .mt-links { margin-top: 8px; font-size: 14px; padding-left: 14px; }
   .mod-row .mt-links span { color: var(--muted); }
@@ -155,6 +183,7 @@
     .sidebar { width: 100%; flex: none; position: static; height: auto; padding: 24px 20px; }
     .content { padding: 20px 20px 60px; }
     .about-grid { grid-template-columns: 1fr; }
+    .start-grid { grid-template-columns: 1fr; gap: 20px; }
   }
 </style>
 </head>
@@ -194,65 +223,69 @@
       <p class="hero-tag">Solo developer of Randomiser, co-developer of Create Deep Seas, Current lead developer of create radars, part of the All Stars development team, co-developer of the Broken Rifts mod.</p>
     </div>
 
-    <section id="welcome">
-      <h2>Welcome</h2>
-      <div class="about-grid">
+    <div class="start-grid">
+      <section id="welcome">
+        <h2>Welcome</h2>
+        <div class="about-col">
+          <h3>Coding languages im familiar with</h3>
+          <p>C, C++ , Javascript , Lua , C# , Python , Assembly(x86) ,Typescript ,PHP , Java , HTML , Rust among others</p>
+        </div>
         <div class="about-col">
           <h3>Names i go by</h3>
           <p>NullTronPrime, Official_Cogfly , R.B </p>
         </div>
-        <div class="about-col">
-          <h3>Coding languages I am familiar with.</h3>
-          <p>C, C++ , Javascript , Lua , C# , Python , Assembly(x86) ,Typescript ,PHP , Java , HTML , Rust among others</p>
+      </section>
+
+      <section id="modfolio">
+        <h2>ModFolio</h2>
+        <div class="modfolio">
+          <img id="modfolio-img" data-src="https://modfolio.creeperkatze.dev/modrinth/user/Official_Cogfly" alt="Official_Cogfly Modrinth stats" width="450" height="350">
         </div>
-      </div>
-    </section>
-
-    <section id="modfolio">
-      <h2>ModFolio</h2>
-      <div class="modfolio">
-        <img id="modfolio-img" data-src="https://modfolio.creeperkatze.dev/modrinth/user/Official_Cogfly" alt="Official_Cogfly Modrinth stats" width="450" height="350">
-      </div>
-    </section>
+      </section>
+    </div>
 
 
-    <section id="deep-seas">
-      <h2>Create: Deep Seas</h2>
-      <p class="lead">Create deep seas is a mod that adds full submarine functionality to minecraft including but not limited to : a fully function finite element analysis system to calculate accurate hull pressure distribution ,  procedurally generated accurate ocean terrain with simulated tectonic boundries and plate shift using voronoi cells .The mod is split into 2 main parts , create submarine that deals with all the aspects of a submarine like the hull controller, the hermetic seal , fog controller among other things; the second part is the abyss , a new dimension over 1000 blocks deep yet generates faster than regular minecraft. It uses accurate plate tectonics to generate abberations at plate boundries for more realism.</p>
-      <p><a href="https://github.com/MaxCreateMC/Create-Deep-Seas" target="_blank" rel="noopener">GitHub: Create: Deep Seas</a></p>
-      <div class="vstrip" id="ds-strip"></div>
-    </section>
+    <div class="mc-zone">
 
-    <section id="arsenalists">
-      <h2>Create: Arsenalists</h2>
-      <p class="lead">Create: Arsenalists is a team dedicated to working on military styled mods that add to create </p>
-      <div class="mod-grid" id="ars-mods"></div>
-      <h3 class="ars-sub">Create: Radars</h3>
-      <p class="lead ars-lead"> Create Radars is a mod that offers a variety of tools and blocks for Surveillance, Detection, and Controlling Weapons.It also incorporates advanced ballistics calculation to more accurately aim cannons</p>
-      <p><a href="https://github.com/Arsenalists-of-Create/Create-Radar" target="_blank" rel="noopener">GitHub: Create: Radars</a></p>
-      <div class="vstrip vstrip-sm" id="rad-strip"></div>
-    </section>
+      <section id="deep-seas">
+        <h2>Create: Deep Seas</h2>
+        <p class="lead">Create deep seas is a mod that adds full submarine functionality to minecraft including but not limited to : a fully function finite element analysis system to calculate accurate hull pressure distribution ,  procedurally generated accurate ocean terrain with simulated tectonic boundries and plate shift using voronoi cells .The mod is split into 2 main parts , create submarine that deals with all the aspects of a submarine like the hull controller, the hermetic seal , fog controller among other things; the second part is the abyss , a new dimension over 1000 blocks deep yet generates faster than regular minecraft. It uses accurate plate tectonics to generate abberations at plate boundries for more realism.</p>
+        <p><a href="https://github.com/MaxCreateMC/Create-Deep-Seas" target="_blank" rel="noopener">GitHub: Create: Deep Seas</a></p>
+        <div class="vstrip" id="ds-strip"></div>
+      </section>
 
-    <style>.ars-sub { margin: 28px 0 8px; padding-left: 18px; font-size: 20px; font-weight: 700; letter-spacing: 1px; }
-    .ars-lead { margin-left: 18px; max-width: 640px; }</style>
+      <section id="arsenalists">
+        <h2>Create: Arsenalists</h2>
+        <p class="lead">Create: Arsenalists is a team dedicated to working on military styled mods that add to create </p>
+        <div class="mod-grid" id="ars-mods"></div>
+        <h3 class="ars-sub">Create: Radars</h3>
+        <p class="lead ars-lead"> Create Radars is a mod that offers a variety of tools and blocks for Surveillance, Detection, and Controlling Weapons.It also incorporates advanced ballistics calculation to more accurately aim cannons</p>
+        <p><a href="https://github.com/Arsenalists-of-Create/Create-Radar" target="_blank" rel="noopener">GitHub: Create: Radars</a></p>
+        <div class="vstrip vstrip-sm" id="rad-strip"></div>
+      </section>
 
-    <section id="randomiser">
-      <h2>Angry Birds Epic: Randomiser</h2>
-      <p class="lead">Angry birds epic randomiser is a spin on the original game , swapping anything from enemies to backdrops. It results in a fresh outlook on the game each playthrough. Its the first large game development project that i worked on my own which gained traction</p>
-      <div class="vstrip" id="ab-strip"></div>
-    </section>
+      <style>.ars-sub { margin: 28px 0 8px; padding-left: 18px; font-size: 20px; font-weight: 700; letter-spacing: 1px; }
+      .ars-lead { margin-left: 18px; max-width: 640px; }</style>
 
-    <section id="all-stars">
-      <h2>Angry Birds Epic: All Stars</h2>
-      <p class="lead">Angry birds all stars is the most popular angry birds epic mod with a discord server of over 40k people and is the go to mod to play angry birds epic hassle free. It removes all pay to win elements, rebalances levels to be more fun while remaining challenging and adds a huge amount of new endgame content while keeping it accessible to everyone. A huge dev and mod team is required to make sure the mod stays balanced</p>
-      <div class="vstrip" id="as-strip"></div>
-    </section>
+      <section id="randomiser">
+        <h2>Angry Birds Epic: Randomiser</h2>
+        <p class="lead">Angry birds epic randomiser is a spin on the original game , swapping anything from enemies to backdrops. It results in a fresh outlook on the game each playthrough. Its the first large game development project that i worked on my own which gained traction</p>
+        <div class="vstrip" id="ab-strip"></div>
+      </section>
 
-    <section id="broken-rifts">
-      <h2>Angry Birds Epic: Broken Rifts</h2>
-      <p class="lead">Angry birds epic broken rifts is a promising but work in progress mod, It introduces the concept of interdimensional travel to angry birds epic. Not exactly a common combo but it seemingly works by the reactions of our playtesters. The beta contains a ton of new enemies and maps tailored to fit the "era" they're from </p>
-      <div class="vstrip" id="br-strip"></div>
-    </section>
+      <section id="all-stars">
+        <h2>Angry Birds Epic: All Stars</h2>
+        <p class="lead">Angry birds all stars is the most popular angry birds epic mod with a discord server of over 40k people and is the go to mod to play angry birds epic hassle free. It removes all pay to win elements, rebalances levels to be more fun while remaining challenging and adds a huge amount of new endgame content while keeping it accessible to everyone. A huge dev and mod team is required to make sure the mod stays balanced</p>
+        <div class="vstrip" id="as-strip"></div>
+      </section>
+
+      <section id="broken-rifts">
+        <h2>Angry Birds Epic: Broken Rifts</h2>
+        <p class="lead">Angry birds epic broken rifts is a promising but work in progress mod, It introduces the concept of interdimensional travel to angry birds epic. Not exactly a common combo but it seemingly works by the reactions of our playtesters. The beta contains a ton of new enemies and maps tailored to fit the "era" they're from </p>
+        <div class="vstrip" id="br-strip"></div>
+      </section>
+
+    </div>
 
     <section id="chess">
       <h2>Chess Engine</h2>
@@ -615,11 +648,11 @@
   };
 
   const ARS_MATRIX = [
-    { name: 'Create: Radars', modrinth: 'create-radars', curse: 1152836 },
-    { name: 'Create: Energy Cannons', modrinth: 'create-energy-cannons', curse: 1476035 },
-    { name: 'Create: Radars (Refabricated)', modrinth: 'create-radars-refabricated' },
-    { name: 'Create: Clothes', modrinth: 'create-clothes', curse: 1262083 },
-    { name: 'Create More Fluid Tanks', modrinth: 'create-more-fluid-tanks' }
+    { name: 'Create: Radars', modrinth: 'create-radars', curse: 1152836, icon: 'https://cdn.modrinth.com/data/BLu2Yqfq/d2e206a0bbee73647a9ebf99607abbae5a8960c7_96.webp' },
+    { name: 'Create: Energy Cannons', modrinth: 'create-energy-cannons', curse: 1476035, icon: 'https://cdn.modrinth.com/data/Pf340qLy/4a2c9645a92d2ac8018dc7ae78bdabf10d87e574_96.webp' },
+    { name: 'Create: Radars (Refabricated)', modrinth: 'create-radars-refabricated', icon: 'https://cdn.modrinth.com/data/IUlhKVP4/373d152d22d3b7b29849c86c9a312249c9955b34_96.webp' },
+    { name: 'Create: Clothes', modrinth: 'create-clothes', curse: 1262083, icon: 'https://cdn.modrinth.com/data/htYLZ8Hw/7ec14cce7afd989580ef6d9e9a08408e8df960bb_96.webp' },
+    { name: 'Create More Fluid Tanks', modrinth: 'create-more-fluid-tanks', icon: 'https://cdn.modrinth.com/data/BJd3hQKC/66ecac86ab4109d43eb80d6e9944fe3fab04837b_96.webp' }
   ];
 
   function buildArsenalists() {
@@ -627,12 +660,15 @@
     ARS_MATRIX.forEach(m => {
       const row = document.createElement('div');
       row.className = 'mod-row';
-      row.innerHTML = '<div class="mt-name">' + m.name + '</div>' +
+      const icon = m.icon ? '<img class="mod-ic" src="' + m.icon + '" alt="">' : '';
+      row.innerHTML = icon + '<div>' +
+        '<div class="mt-name">' + m.name + '</div>' +
         '<div class="mt-count" id="mc-' + (m.modrinth || '') + '">Loading downloads...</div>' +
         '<div class="mt-links">' +
           (m.modrinth ? '<a href="https://modrinth.com/mod/' + m.modrinth + '" target="_blank" rel="noopener"><img class="micon" src="https://cdn.simpleicons.org/modrinth/9da7b3" alt="">Modrinth</a>' : '') +
           (m.curse ? '<a href="https://www.curseforge.com/minecraft/mc-mods/' + m.modrinth + '" target="_blank" rel="noopener"><img class="micon" src="https://cdn.simpleicons.org/curseforge/9da7b3" alt="">CurseForge</a>' : '') +
-        '</div>';
+        '</div>' +
+      '</div>';
       grid.appendChild(row);
     });
   }
