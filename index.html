@@ -158,10 +158,95 @@
   }
   .vcard { flex: 0 0 220px; }
   .vcard.video-click { cursor: pointer; }
+  .vcard.video-click img { transition: border-color .15s ease, opacity .15s ease; }
+  .vcard.video-click:hover img { border-color: var(--accent); opacity: .85; }
+  .vcard.video-click:hover .vplay { color: #fff; }
   .vcard img { width: 100%; display: block; aspect-ratio: 16 / 9; object-fit: cover; border: 1px solid #21262d; }
   .vcard .vt { font-size: 13px; font-weight: 600; line-height: 1.35; margin-top: 8px; }
   .vcard .vs { font-size: 12px; color: var(--muted); margin-top: 3px; }
   .vcard .vplay { display: block; font-size: 12px; color: var(--accent); margin-top: 4px; }
+
+  .vmodal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(1, 4, 9, .88);
+    backdrop-filter: blur(3px);
+  }
+  .vmodal.open { display: flex; }
+  .vmodal-box { position: relative; width: 100%; max-width: 1000px; }
+  .vmodal-frame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #000;
+    border: 1px solid #21262d;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .vmodal-frame iframe { width: 100%; height: 100%; display: block; border: 0; }
+  .vmodal-bar { display: flex; align-items: center; gap: 12px; margin-top: 10px; }
+  .vmodal-title { flex: 1 1 auto; font-size: 14px; font-weight: 600; line-height: 1.35; color: var(--text); }
+  .vmodal-open { font-size: 12px; white-space: nowrap; }
+  .vmodal-x {
+    position: absolute;
+    top: -14px;
+    right: -14px;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid #30363d;
+    background: #161b22;
+    color: var(--text);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 2;
+  }
+  .vmodal-x:hover { border-color: var(--accent); color: var(--accent); }
+
+  .vfeature { margin-top: 16px; display: flex; gap: 18px; align-items: flex-start; }
+  .vfeature-thumb {
+    position: relative;
+    flex: 0 0 320px;
+    max-width: 100%;
+    cursor: pointer;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--mc-border, #2a2a2e);
+  }
+  .vfeature-thumb img { width: 100%; display: block; aspect-ratio: 16 / 9; object-fit: cover; }
+  .vfeature-thumb .vf-play {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    color: #fff; font-size: 54px; line-height: 1; pointer-events: none;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, .8);
+    transition: transform .15s ease;
+  }
+  .vfeature-thumb:hover { border-color: var(--accent); }
+  .vfeature-thumb:hover .vf-play { transform: translate(-50%, -50%) scale(1.12); }
+  .vfeature-body { padding-top: 2px; }
+  .vfeature-tag {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    padding: 3px 10px;
+  }
+  .vfeature-title { font-size: 18px; font-weight: 700; margin: 10px 0 4px; color: var(--text); }
+  .vfeature-by { font-size: 13px; color: var(--muted); margin-bottom: 10px; }
+  .vfeature-stats { font-size: 12px; color: var(--muted); }
+
+  @media (max-width: 820px) {
+    .vfeature { flex-direction: column; }
+    .vfeature-thumb { flex: none; width: 100%; }
+  }
 
   .vstrip-sm { gap: 12px; }
   .vstrip-sm .vcard { flex: 0 0 150px; }
@@ -238,6 +323,7 @@
         <li><a href="#fluid-sim">Fluid Sim (Rust)</a></li>
         <li><a href="#gol">Game of Life Simulator</a></li>
         <li><a href="#battleships">Battleships (CS50 Project)</a></li>
+        <li><a href="#myos">Unikernel OS (myos)</a></li>
       </ul>
     </nav>
     <div class="contact">
@@ -290,6 +376,7 @@
             <div class="dl-big" id="ds-dl"></div>
           </div>
         </div>
+        <div class="vfeature" id="ds-feature"></div>
         <div class="vstrip" id="ds-strip"></div>
       </section>
 
@@ -377,7 +464,7 @@
 
     <section id="gol">
       <h2>Game of Life Simulator</h2>
-      <p class="lead">A Conway's Game of Life simulator. Able to run up to 4 million cells at a decent 24 generations per second with features to analyse still forms , methelbauhs and even the occurence frequencies across runs. It also incorporates a new file type (.gol) that preserves data from incredibly long runs to be analysed later or started from that point. The original code is actually written in c++ as you can see (<a href="https://github.com/NullTronPrime/gameoflifeanalysis" target="_blank" rel="noopener">here</a>) i did not recreate this in javascript i compiled it to a wasm so i can run 1:1 the exact code in the browser</p>
+      <p class="lead">A Conway's Game of Life simulator. Able to run up to 4 million cells at a decent 24 generations per second with features to analyse still forms , methelbauhs and even the occurence frequencies across runs. It also incorporates a new file type (.gol) that preserves data from incredibly long runs to be analysed later or started from that point. The original code is actually written in c++ as you can see (<a href="https://github.com/NullTronPrime/gameoflifeanalysis" target="_blank" rel="noopener">here</a>) i did not recreate this in javascript i compiled it to a wasm so i can run 1:1 the exact code in the browser. What you see below is frontend js hooking into the backend compiled wasm, it also has a detection for what gamestate you're in whether its stable, oscillating, or extinct.</p>
       <div class="gol-box">
         <div class="gol-tools">
           <select id="gol-pattern"></select>
@@ -404,11 +491,30 @@
       <p class="lead">Battleships project made for CS50. Incorporates over 38 rest endpoints , allows any 2 people in the world to play battleships against eachother in a multitude of modes to spice up the original game.</p>
     </section>
 
+    <section id="myos">
+      <h2>myos &mdash; Unikernel Operating System</h2>
+      <p class="lead">Filler text. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+      <p><a href="https://github.com/NullTronPrime/myos" target="_blank" rel="noopener">GitHub: NullTronPrime/myos</a></p>
+    </section>
+
     <div class="footer">
       NullTronPrime &middot; Portfolio
     </div>
 
   </main>
+</div>
+
+<div class="vmodal" id="vmodal" role="dialog" aria-modal="true" aria-label="Video player">
+  <div class="vmodal-box">
+    <button class="vmodal-x" id="vmodal-x" aria-label="Close video">&#215;</button>
+    <div class="vmodal-frame">
+      <iframe id="vmodal-iframe" title="Video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+    </div>
+    <div class="vmodal-bar">
+      <div class="vmodal-title" id="vmodal-title"></div>
+      <a class="vmodal-open" id="vmodal-open" href="#" target="_blank" rel="noopener">Open on YouTube</a>
+    </div>
+  </div>
 </div>
 
 <script src="gol/gol.js"></script>
@@ -468,7 +574,15 @@
       { id: 'Yhg76TILLTA', t: 'Technical test of the sail for the Create Deep Seas mod', views: 10560, likes: 432 },
       { id: '6mmuLgR6srY', t: 'Submarines are fun (Aeronautics)', views: 5664, likes: 205 },
       { id: 'AkFfycZuoS8', t: 'WORKING Attack Submarine with Create Aeronautics', views: 3998, likes: 133 },
-      { id: 'V6MoJcBu8yQ', t: 'Test Driving My Submersible! Create: Deep Seas!', views: 80, likes: 4 }],
+      { id: 'V6MoJcBu8yQ', t: 'Test Driving My Submersible! Create: Deep Seas!', views: 80, likes: 4 },
+      { id: 'YqjAoyEAa0U', t: 'Create Aeronautics Ships Just Got WORKING Sails! | Create Deep Seas Update 3.0 First Impressions' },
+      { id: '9rGHl3azr8c', t: "Create Deep Seas is The Addon I've been waiting for! | Caner Crebes" },
+      { id: 'S678nBtufps', t: 'They UPDATED SUBMARINES In Minecraft Create: Aeronautics! | LunaScarlet' },
+      { id: '7_a5MhUuKi4', t: 'Testing Create: Deep Seas 3.0 with Reliantshell. It Did NOT Go Well | JIVE MC' },
+      { id: 'tHKR504vf6Q', t: 'Building a U-Boat | Create Aeronautics & Create Deep Seas Showcase' },
+      { id: '8fs4VLQKv_E', t: "I Tested Create Deep Seas' New Buoyancy on the Going Merry (It Did Not Go Well)" },
+      { id: '3hco9NonOr8', t: 'They ADDED SUBMARINES To Minecraft Create: Aeronautics! | LunaScarlet' },
+      { id: 'DKS9LbS1gC4', t: 'Working Submarine in Minecraft?! | Create Aeronautics + Add-on (Deep Seas) | Bagryaniy' }],
     ab: [{ id: '7bxRdLClzxI', t: 'I tried the Angry Birds Epic Randomizer', views: 96494, likes: 3318 },
       { id: '799KYQQbFII', t: 'Can You Beat Angry Birds Epic If Every Level Is Randomized? - Part 1', views: 4804, likes: 90 },
       { id: '89mRuQX4TTs', t: 'The Angry Birds Epic Randomiser Experience...', views: 1293, likes: 38 },
@@ -505,6 +619,107 @@
       { id: '-LmA5reO0zM', t: 'I Built The BEST Create Mod Air Defense Systems' },
       { id: '8sSmkOBWg9E', t: 'Гайд по Create Radars 1.20.1 Радары, Автонаведение пушек и орудий. Часть 1. (minecraft java edition)' }]
   };
+
+  const vmodal = document.getElementById('vmodal');
+  const vmodalIframe = document.getElementById('vmodal-iframe');
+  const vmodalTitle = document.getElementById('vmodal-title');
+  const vmodalOpen = document.getElementById('vmodal-open');
+  let vmodalLastFocus = null;
+
+  function embedUrlFor(v) {
+    return v.list
+      ? 'https://www.youtube.com/embed/videoseries?list=' + encodeURIComponent(v.list) + '&autoplay=1&rel=0'
+      : 'https://www.youtube.com/embed/' + encodeURIComponent(v.id) + '?autoplay=1&rel=0';
+  }
+
+  function watchUrlFor(v) {
+    return v.list
+      ? 'https://www.youtube.com/playlist?list=' + encodeURIComponent(v.list)
+      : 'https://www.youtube.com/watch?v=' + encodeURIComponent(v.id);
+  }
+
+  function openVideoModal(v) {
+    if (!vmodal) return;
+    vmodalLastFocus = document.activeElement;
+    vmodalIframe.src = embedUrlFor(v);
+    vmodalTitle.textContent = v.t || '';
+    vmodalOpen.href = watchUrlFor(v);
+    vmodal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    document.getElementById('vmodal-x').focus();
+  }
+
+  function closeVideoModal() {
+    if (!vmodal || !vmodal.classList.contains('open')) return;
+    vmodal.classList.remove('open');
+    vmodalIframe.src = 'about:blank';
+    document.body.style.overflow = '';
+    if (vmodalLastFocus && vmodalLastFocus.focus) vmodalLastFocus.focus();
+    vmodalLastFocus = null;
+  }
+
+  if (vmodal) {
+    document.getElementById('vmodal-x').addEventListener('click', closeVideoModal);
+    vmodal.addEventListener('click', function (e) {
+      if (e.target === vmodal) closeVideoModal();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeVideoModal();
+    });
+  }
+
+  const FEATURED = {
+    ds: { id: '9Pd45qRCRaA', t: 'Unbearable Pressure', by: 'A video by MaxCreateMC covering the work behind Create: Deep Seas', views: null, likes: null }
+  };
+
+  function buildFeatured(key) {
+    const el = document.getElementById(key + '-feature');
+    const v = FEATURED[key];
+    if (!el || !v) return;
+    const thumb = document.createElement('div');
+    thumb.className = 'vfeature-thumb';
+    thumb.setAttribute('role', 'button');
+    thumb.setAttribute('tabindex', '0');
+    thumb.setAttribute('aria-label', 'Play ' + v.t);
+    const img = document.createElement('img');
+    img.src = 'https://i.ytimg.com/vi/' + v.id + '/maxresdefault.jpg';
+    img.alt = '';
+    img.loading = 'lazy';
+    img.dataset.yid = v.id;
+    img.onerror = function () { img.src = 'https://i.ytimg.com/vi/' + v.id + '/hqdefault.jpg'; };
+    const play = document.createElement('span');
+    play.className = 'vf-play';
+    play.textContent = '\u25B6';
+    thumb.appendChild(img);
+    thumb.appendChild(play);
+
+    const body = document.createElement('div');
+    body.className = 'vfeature-body';
+    const tag = document.createElement('span');
+    tag.className = 'vfeature-tag';
+    tag.textContent = 'Featured';
+    const title = document.createElement('div');
+    title.className = 'vfeature-title';
+    title.dataset.vidTitle = v.id;
+    title.textContent = v.t;
+    const by = document.createElement('div');
+    by.className = 'vfeature-by';
+    by.textContent = v.by;
+    const stats = document.createElement('div');
+    stats.className = 'vfeature-stats';
+    stats.dataset.vidStats = v.id;
+    body.appendChild(tag);
+    body.appendChild(title);
+    body.appendChild(by);
+    body.appendChild(stats);
+
+    el.appendChild(thumb);
+    el.appendChild(body);
+    thumb.addEventListener('click', () => openVideoModal(v));
+    thumb.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openVideoModal(v); }
+    });
+  }
 
   function buildStrip(elId, list) {
     const el = document.getElementById(elId);
@@ -544,18 +759,14 @@
       p.className = 'vplay';
       p.textContent = '\u25B6 Play';
       card.appendChild(p);
-      card.addEventListener('click', () => {
-        const url = v.list
-          ? 'https://www.youtube.com/playlist?list=' + v.list
-          : 'https://www.youtube.com/watch?v=' + v.id;
-        window.open(url, '_blank', 'noopener');
-      });
+      card.addEventListener('click', () => openVideoModal(v));
       el.appendChild(card);
     });
     return list;
   }
 
   function buildAllStrips() {
+    buildFeatured('ds');
     buildStrip('ds-strip', STRIPS.ds);
     buildStrip('ab-strip', STRIPS.ab);
     buildStrip('as-strip', STRIPS.as);
@@ -672,6 +883,7 @@
   async function refreshLive() {
     const videoIds = [];
     Object.keys(STRIPS).forEach(k => STRIPS[k].forEach(v => { if (v.id) videoIds.push(v.id); }));
+    Object.keys(FEATURED).forEach(k => { if (FEATURED[k].id) videoIds.push(FEATURED[k].id); });
     const plIds = Object.keys(PLAYLISTS);
     const uniqueVids = Array.from(new Set(videoIds));
 
