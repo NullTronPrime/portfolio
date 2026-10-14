@@ -155,7 +155,19 @@
     overflow-x: auto;
     padding-bottom: 12px;
     padding-top: 4px;
+    scrollbar-width: thin;
+    scrollbar-color: #3b4149 transparent;
   }
+  .vstrip::-webkit-scrollbar { height: 10px; }
+  .vstrip::-webkit-scrollbar-track { background: #0d1117; border-radius: 6px; }
+  .vstrip::-webkit-scrollbar-thumb { background: #3b4149; border-radius: 6px; border: 2px solid #0d1117; }
+  .vstrip::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+  .sidebar { scrollbar-width: thin; scrollbar-color: #3b4149 transparent; }
+  .sidebar::-webkit-scrollbar { width: 10px; }
+  .sidebar::-webkit-scrollbar-track { background: transparent; }
+  .sidebar::-webkit-scrollbar-thumb { background: #3b4149; border-radius: 6px; border: 2px solid var(--bg); }
+  .sidebar::-webkit-scrollbar-thumb:hover { background: var(--accent); }
   .vcard { flex: 0 0 220px; }
   .vcard.video-click { cursor: pointer; }
   .vcard.video-click img { transition: border-color .15s ease, opacity .15s ease; }
@@ -323,7 +335,7 @@
         <li><a href="#fluid-sim">Fluid Sim (Rust)</a></li>
         <li><a href="#gol">Game of Life Simulator</a></li>
         <li><a href="#battleships">Battleships (CS50 Project)</a></li>
-        <li><a href="#myos">Unikernel OS (myos)</a></li>
+        <li><a href="#ParasyteOS">Unikernel OS (ParasyteOS)</a></li>
       </ul>
     </nav>
     <div class="contact">
@@ -491,10 +503,11 @@
       <p class="lead">Battleships project made for CS50. Incorporates over 38 rest endpoints , allows any 2 people in the world to play battleships against eachother in a multitude of modes to spice up the original game.</p>
     </section>
 
-    <section id="myos">
-      <h2>myos &mdash; Unikernel Operating System</h2>
-      <p class="lead">Filler text. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-      <p><a href="https://github.com/NullTronPrime/myos" target="_blank" rel="noopener">GitHub: NullTronPrime/myos</a></p>
+    <section id="ParasyteOS">
+      <h2>ParasyteOS &mdash; Unikernel Operating System</h2>
+      <p class="lead">ParasyteOS is a unikernel operating system that runs as an ordinary Linux process. No bootloader, no hypervisor, no emulation &mdash; the launcher maps a guest ELF into its own address space, installs a seccomp-bpf filter, and services every syscall the guest makes from Rust. Syscalls issued from guest code (below 4 GiB) are trapped via SIGSYS and handled by the kernel; calls from host libraries (above 4 GiB) pass through untouched. Written in Rust with a self-hosted C runtime (<code>minic</code> + <code>crt0.S</code>) so guests can be built with no host libc at all.</p>
+      <p class="lead">It boots into a working desktop: an X11 client written from scratch (live window at ~60fps with damage tracking, plus headless PPM snapshots), a terminal with a <code>sh2</code> shell, ptys and job control, a browser with QuickJS linked directly into it (real DOM tree, timers, innerHTML, reflected attributes, synchronous XHR) and a hand-rolled TLS 1.2 stack (ECDHE-RSA-AES128-GCM with CBC fallback, own P-256 and AES-GCM, SNI/ALPN, SAN hostname verification) on top of its own DNS resolver and HTTP/1.1 client. Also does sockets, fork/execve, futexes, signals and audio. Covered by 337 kernel unit tests and a 49-check contract suite, both runnable headless on WSL2.</p>
+      <p><a href="https://github.com/NullTronPrime/ParasyteOS" target="_blank" rel="noopener">GitHub: NullTronPrime/ParasyteOS</a></p>
     </section>
 
     <div class="footer">
@@ -669,7 +682,7 @@
   }
 
   const FEATURED = {
-    ds: { id: '9Pd45qRCRaA', t: 'Unbearable Pressure', by: 'A video by MaxCreateMC covering the work behind Create: Deep Seas', views: null, likes: null }
+    ds: { id: '9Pd45qRCRaA', t: 'Unbearable Pressure', by: 'Showcases my lattice mesh hull pressure calculator', views: null, likes: null }
   };
 
   function buildFeatured(key) {
